@@ -1,0 +1,1 @@
+# MeTTa Knowledge Graph initialization

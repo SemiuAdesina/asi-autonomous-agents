@@ -1,0 +1,16 @@
+{
+  "yaml.validate": false,
+  "docker-compose.validation.enabled": false,
+  "yaml.schemas": {},
+  "files.associations": {
+    "docker-compose*.yml": "plaintext",
+    "docker-compose*.yaml": "plaintext"
+  },
+  "yaml.customTags": [],
+  "yaml.format.enable": false,
+  "yaml.format.singleQuote": false,
+  "yaml.format.bracketSpacing": true,
+  "yaml.format.proseWrap": "preserve",
+  "docker.showStartPage": false,
+  "docker.showWelcomeOnStartup": false
+}

@@ -1,0 +1,127 @@
+services:
+  # Frontend - Next.js Application
+  - type: web
+    name: asi-autonomous-agents-frontend
+    runtime: node
+    plan: free
+    buildCommand: |
+      cd frontend
+      npm install
+      npm run build
+    startCommand: |
+      cd frontend
+      npm start
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: ETHERSCAN_API_KEY
+        value: 1TDVEAUG58UJERFH926EFRXTUBDDBKNNRX
+      - key: NEXT_PUBLIC_API_URL
+        value: https://asi-autonomous-agents-backend.onrender.com
+      - key: NEXT_PUBLIC_AGENTVERSE_URL
+        value: https://agentverse.ai
+    healthCheckPath: /
+    autoDeploy: true
+
+  # Backend - Flask API Server
+  - type: web
+    name: asi-autonomous-agents-backend
+    runtime: python
+    plan: free
+    buildCommand: |
+      cd backend
+      pip install -r requirements.txt
+    startCommand: |
+      cd backend
+      python3 app.py
+    envVars:
+      - key: FLASK_ENV
+        value: production
+      - key: FLASK_DEBUG
+        value: "false"
+      - key: DATABASE_URL
+        value: postgresql://user:password@localhost/asi_agents
+      - key: REDIS_URL
+        value: redis://localhost:6379
+      - key: JWT_SECRET_KEY
+        value: jXOTT9i3Gk/WmG+snMX0F3SivPM/rIqiXyY9GvczMYM=
+    healthCheckPath: /health
+    autoDeploy: true
+
+  # Healthcare Agent
+  - type: worker
+    name: asi-healthcare-agent
+    runtime: python
+    plan: free
+    buildCommand: |
+      cd backend/agents/healthcare_agent
+      pip install -r ../../requirements.txt
+    startCommand: |
+      cd backend/agents/healthcare_agent
+      python3 main.py
+    envVars:
+      - key: AGENT_PORT
+        value: 8001
+      - key: AGENT_NAME
+        value: Healthcare Assistant
+      - key: METTA_ENDPOINT
+        value: http://localhost:8080
+    autoDeploy: true
+
+  # Financial Agent
+  - type: worker
+    name: asi-financial-agent
+    runtime: python
+    plan: free
+    buildCommand: |
+      cd backend/agents/financial_agent
+      pip install -r ../../requirements.txt
+    startCommand: |
+      cd backend/agents/financial_agent
+      python3 main.py
+    envVars:
+      - key: AGENT_PORT
+        value: 8003
+      - key: AGENT_NAME
+        value: Financial Advisor
+      - key: ETHERSCAN_API_KEY
+        value: 1TDVEAUG58UJERFH926EFRXTUBDDBKNNRX
+    autoDeploy: true
+
+  # Logistics Agent
+  - type: worker
+    name: asi-logistics-agent
+    runtime: python
+    plan: free
+    buildCommand: |
+      cd backend/agents/logistics_agent
+      pip install -r ../../requirements.txt
+    startCommand: |
+      cd backend/agents/logistics_agent
+      python3 main.py
+    envVars:
+      - key: AGENT_PORT
+        value: 8002
+      - key: AGENT_NAME
+        value: Logistics Coordinator
+    autoDeploy: true
+
+  # PostgreSQL Database
+  - type: pserv
+    name: asi-agents-database
+    runtime: docker
+    plan: free
+    envVars:
+      - key: POSTGRES_DB
+        value: asi_agents
+      - key: POSTGRES_USER
+        value: asi_user
+      - key: POSTGRES_PASSWORD
+        value: asi_password_2024
+
+  # Redis Cache
+  - type: redis
+    name: asi-agents-redis
+    plan: free
+    ipAllowList: []
+    maxmemoryPolicy: allkeys-lru

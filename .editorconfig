@@ -1,0 +1,19 @@
+root = true
+
+[*]
+charset = utf-8
+end_of_line = lf
+insert_final_newline = true
+trim_trailing_whitespace = true
+
+[*.yml]
+file_type = plaintext
+
+[*.yaml]
+file_type = plaintext
+
+[docker-compose*.yml]
+file_type = plaintext
+
+[docker-compose*.yaml]
+file_type = plaintext
