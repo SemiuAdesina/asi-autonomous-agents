@@ -48,50 +48,50 @@ const Features = () => {
     <section id="features" className="py-20 bg-dark-800/30">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <motion.div
-          className="text-center mb-16"
+          className="text-center mb-12 sm:mb-16"
           initial={{ opacity: 0, y: 30 }}
           whileInView={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8 }}
           viewport={{ once: true }}
         >
-          <h2 className="text-4xl md:text-5xl font-bold mb-6">
+          <h2 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold mb-4 sm:mb-6">
             <span className="glow-text font-orbitron">Platform Features</span>
           </h2>
-          <p className="text-xl text-gray-300 max-w-3xl mx-auto font-rajdhani">
+          <p className="text-base sm:text-lg md:text-xl text-gray-300 max-w-3xl mx-auto font-rajdhani px-4 sm:px-0">
             Discover the powerful capabilities that make our autonomous agents 
             the future of decentralized AI systems.
           </p>
         </motion.div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6 lg:gap-8">
           {features.map((feature, index) => (
             <motion.div
               key={index}
-              className="cyber-card p-8 group hover:border-primary-500/50 transition-all duration-300"
+              className="cyber-card p-4 sm:p-6 lg:p-8 group hover:border-primary-500/50 transition-all duration-300"
               initial={{ opacity: 0, y: 30 }}
               whileInView={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.6, delay: index * 0.1 }}
               viewport={{ once: true }}
               whileHover={{ scale: 1.02, y: -5 }}
             >
-              <div className="flex items-center mb-6">
-                <div className="w-16 h-16 bg-gradient-to-r from-primary-500 to-primary-600 rounded-xl flex items-center justify-center mr-4 group-hover:scale-110 transition-transform duration-300">
-                  <FontAwesomeIcon icon={feature.icon} className="w-8 h-8 text-white" />
+              <div className="flex items-center mb-4 sm:mb-6">
+                <div className="w-12 h-12 sm:w-14 sm:h-14 lg:w-16 lg:h-16 bg-gradient-to-r from-primary-500 to-primary-600 rounded-xl flex items-center justify-center mr-3 sm:mr-4 group-hover:scale-110 transition-transform duration-300">
+                  <FontAwesomeIcon icon={feature.icon} className="w-6 h-6 sm:w-7 sm:h-7 lg:w-8 lg:h-8 text-white" />
                 </div>
-                <h3 className="text-xl font-semibold text-white group-hover:text-primary-300 transition-colors font-exo">
+                <h3 className="text-lg sm:text-xl font-semibold text-white group-hover:text-primary-300 transition-colors font-exo">
                   {feature.title}
                 </h3>
               </div>
 
-              <p className="text-gray-300 mb-6 leading-relaxed font-rajdhani">
+              <p className="text-sm sm:text-base text-gray-300 mb-4 sm:mb-6 leading-relaxed font-rajdhani">
                 {feature.description}
               </p>
 
-              <div className="space-y-3">
+              <div className="space-y-2 sm:space-y-3">
                 {feature.benefits.map((benefit, benefitIndex) => (
                   <div key={benefitIndex} className="flex items-center">
-                    <div className="w-2 h-2 bg-primary-500 rounded-full mr-3" />
-                    <span className="text-sm text-gray-300 font-rajdhani">{benefit}</span>
+                    <div className="w-1.5 h-1.5 sm:w-2 sm:h-2 bg-primary-500 rounded-full mr-2 sm:mr-3 flex-shrink-0" />
+                    <span className="text-xs sm:text-sm text-gray-300 font-rajdhani">{benefit}</span>
                   </div>
                 ))}
               </div>
@@ -101,22 +101,22 @@ const Features = () => {
 
         {/* CTA Section */}
         <motion.div
-          className="text-center mt-16"
+          className="text-center mt-12 sm:mt-16"
           initial={{ opacity: 0, y: 30 }}
           whileInView={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8 }}
           viewport={{ once: true }}
         >
-          <div className="cyber-card p-8 max-w-4xl mx-auto">
-            <h3 className="text-2xl font-bold text-white mb-4 font-orbitron">
+          <div className="cyber-card p-6 sm:p-8 max-w-4xl mx-auto">
+            <h3 className="text-xl sm:text-2xl font-bold text-white mb-3 sm:mb-4 font-orbitron">
               Ready to Experience the Future?
             </h3>
-            <p className="text-gray-300 mb-6 font-rajdhani">
+            <p className="text-sm sm:text-base text-gray-300 mb-4 sm:mb-6 font-rajdhani">
               Join the ASI Alliance ecosystem and deploy your own autonomous agents today.
             </p>
-            <div className="flex flex-col sm:flex-row gap-4 justify-center">
+            <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 justify-center">
               <motion.button 
-                className="cyber-button"
+                className="cyber-button text-sm sm:text-base px-6 sm:px-8 py-3 sm:py-4"
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
                 onClick={() => window.open('https://agentverse.ai/', '_blank')}
@@ -124,7 +124,7 @@ const Features = () => {
                 Deploy Your Agent
               </motion.button>
               <motion.button 
-                className="px-8 py-3 border border-primary-500/50 text-primary-400 hover:bg-primary-500/10 rounded-lg transition-all duration-300"
+                className="px-6 sm:px-8 py-3 sm:py-4 border border-primary-500/50 text-primary-400 hover:bg-primary-500/10 rounded-lg transition-all duration-300 text-sm sm:text-base"
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
                 onClick={() => window.open('https://docs.fetch.ai/', '_blank')}

@@ -1,7 +1,5 @@
 // Direct Agent Communication Service
-// This service connects directly to uAgents using WebSocket
-
-import { io, Socket } from 'socket.io-client'
+// This service connects directly to uAgents using HTTP
 
 interface AgentMessage {
   timestamp: string
@@ -22,85 +20,68 @@ interface AgentResponse {
 }
 
 class DirectAgentService {
-  private agentSockets: Map<string, Socket> = new Map()
+  private agentConnections: Map<string, boolean> = new Map()
   private agentPorts: Map<string, number> = new Map()
+  private agentUrls: Map<string, string> = new Map()
 
   constructor() {
-    // Map agent IDs to their ports
-    this.agentPorts.set('fetch-healthcare-001', 8001)
-    this.agentPorts.set('fetch-logistics-002', 8002)
-    this.agentPorts.set('fetch-finance-003', 8003)
+    // Map agent IDs to their ports (HTTP endpoints) - Updated for Render-optimized agents
+    this.agentPorts.set('fetch-healthcare-001', 8001)  // Render-optimized Healthcare Agent
+    this.agentPorts.set('fetch-logistics-002', 8002)    // Render-optimized Logistics Agent  
+    this.agentPorts.set('fetch-finance-003', 8003)     // Render-optimized Financial Agent
     this.agentPorts.set('fetch-education-004', 8004)
     this.agentPorts.set('fetch-system-005', 8005)
     this.agentPorts.set('fetch-research-006', 8006)
+    
+    // Map agent names to their IDs for easier lookup - Updated for Render deployment
+    this.agentPorts.set('healthcare-agent', 8001)  // Render-optimized Healthcare Agent
+    this.agentPorts.set('logistics-agent', 8002)   // Render-optimized Logistics Agent
+    this.agentPorts.set('financial-agent', 8003)   // Render-optimized Financial Agent
+    this.agentPorts.set('education-agent', 8004)
+    this.agentPorts.set('system-agent', 8005)
+    this.agentPorts.set('research-agent', 8006)
+
+    // Map agent IDs to Render URLs for production deployment
+    this.agentUrls.set('healthcare-agent', process.env.NEXT_PUBLIC_HEALTHCARE_AGENT_URL || 'http://localhost:8001')
+    this.agentUrls.set('logistics-agent', process.env.NEXT_PUBLIC_LOGISTICS_AGENT_URL || 'http://localhost:8002')
+    this.agentUrls.set('financial-agent', process.env.NEXT_PUBLIC_FINANCIAL_AGENT_URL || 'http://localhost:8003')
   }
 
   async connectToAgent(agentId: string): Promise<boolean> {
     try {
-      const port = this.agentPorts.get(agentId)
-      if (!port) {
-        console.error(`No port mapping found for agent: ${agentId}`)
-        return false
-      }
-
       // Check if already connected
-      if (this.agentSockets.has(agentId)) {
+      if (this.agentConnections.has(agentId)) {
         console.log(`Already connected to agent: ${agentId}`)
         return true
       }
 
-      console.log(`Connecting directly to agent ${agentId} on port ${port}`)
+      console.log(`Connecting to Render-optimized agent ${agentId} via backend API`)
       
-      // Create WebSocket connection to the agent
-      const socket = io(`http://localhost:${port}`, {
-        transports: ['websocket'],
-        timeout: 5000,
-        forceNew: true
+      // For Render-optimized agents, we connect through the backend API
+      // The agents are running as pure uAgents with mailbox enabled
+      const response = await fetch('/api/coordinator/agents', {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+        }
       })
-
-      // Set up event listeners
-      socket.on('connect', () => {
-        console.log(`Connected to agent ${agentId}`)
-      })
-
-      socket.on('disconnect', () => {
-        console.log(`Disconnected from agent ${agentId}`)
-        this.agentSockets.delete(agentId)
-      })
-
-      socket.on('connect_error', (error) => {
-        console.error(`Connection error to agent ${agentId}:`, error)
-        this.agentSockets.delete(agentId)
-      })
-
-      socket.on('message', (data: AgentResponse) => {
-        console.log(`Received message from agent ${agentId}:`, data)
-      })
-
-      socket.on('acknowledgement', (data: AgentResponse) => {
-        console.log(`Received acknowledgement from agent ${agentId}:`, data)
-      })
-
-      // Wait for connection
-      await new Promise((resolve, reject) => {
-        const timeout = setTimeout(() => {
-          reject(new Error('Connection timeout'))
-        }, 5000)
-
-        socket.on('connect', () => {
-          clearTimeout(timeout)
-          resolve(true)
-        })
-
-        socket.on('connect_error', (error) => {
-          clearTimeout(timeout)
-          reject(error)
-        })
-      })
-
-      this.agentSockets.set(agentId, socket)
-      return true
-
+      
+      if (response.ok) {
+        const agents = await response.json()
+        const agent = agents.find((a: any) => a.id === agentId || a.name.toLowerCase().includes(agentId.toLowerCase()))
+        
+        if (agent) {
+          console.log(`✅ Successfully connected to agent ${agentId} via backend API`)
+          this.agentConnections.set(agentId, true)
+          return true
+        } else {
+          console.error(`Agent ${agentId} not found in backend registry`)
+          return false
+        }
+      } else {
+        console.error(`Backend API error: ${response.status}`)
+        return false
+      }
     } catch (error) {
       console.error(`Failed to connect to agent ${agentId}:`, error)
       return false
@@ -109,56 +90,29 @@ class DirectAgentService {
 
   async sendMessage(agentId: string, message: string): Promise<string> {
     try {
-      const socket = this.agentSockets.get(agentId)
-      if (!socket) {
-        throw new Error(`Not connected to agent: ${agentId}`)
-      }
-
-      if (!socket.connected) {
-        throw new Error(`Socket not connected for agent: ${agentId}`)
-      }
-
-      // Create message in Chat Protocol format
-      const agentMessage: AgentMessage = {
-        timestamp: new Date().toISOString(),
-        msg_id: this.generateMessageId(),
-        content: [
-          {
-            type: 'text',
-            text: message
-          }
-        ]
-      }
-
-      console.log(`Sending message to agent ${agentId}:`, agentMessage)
-
-      // Send message and wait for response
-      return new Promise((resolve, reject) => {
-        const timeout = setTimeout(() => {
-          reject(new Error('Message timeout'))
-        }, 10000)
-
-        // Listen for response
-        const responseHandler = (data: AgentResponse) => {
-          clearTimeout(timeout)
-          socket.off('message', responseHandler)
-          
-          if (data.content && data.content.length > 0) {
-            const textContent = data.content.find(c => c.type === 'text')
-            if (textContent && textContent.text) {
-              resolve(textContent.text)
-            } else {
-              resolve('Agent responded but no text content found')
-            }
-          } else {
-            resolve('Agent acknowledged message')
-          }
-        }
-
-        socket.on('message', responseHandler)
-        socket.emit('message', agentMessage)
+      console.log(`Sending message to Render-optimized agent ${agentId} via backend API`)
+      
+      // For Render-optimized agents, send messages through the backend API
+      // The backend will route messages to the appropriate agent via Agentverse
+      const response = await fetch('/api/generate-response', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          prompt: message,
+          agentType: agentId,
+          timestamp: new Date().toISOString()
+        })
       })
 
+      if (response.ok) {
+        const data = await response.json()
+        return data.response || data.message || 'Agent responded successfully'
+      } else {
+        console.error(`Backend API error for agent ${agentId}: ${response.status}`)
+        throw new Error(`Backend API error: ${response.status}`)
+      }
     } catch (error) {
       console.error(`Error sending message to agent ${agentId}:`, error)
       throw error
@@ -167,11 +121,9 @@ class DirectAgentService {
 
   async disconnectFromAgent(agentId: string): Promise<void> {
     try {
-      const socket = this.agentSockets.get(agentId)
-      if (socket) {
+      if (this.agentConnections.has(agentId)) {
         console.log(`Disconnecting from agent ${agentId}`)
-        socket.disconnect()
-        this.agentSockets.delete(agentId)
+        this.agentConnections.delete(agentId)
       }
     } catch (error) {
       console.error(`Error disconnecting from agent ${agentId}:`, error)
@@ -180,20 +132,19 @@ class DirectAgentService {
 
   async disconnectFromAllAgents(): Promise<void> {
     console.log('Disconnecting from all agents')
-    const disconnectPromises = Array.from(this.agentSockets.keys()).map(agentId => 
+    const disconnectPromises = Array.from(this.agentConnections.keys()).map(agentId => 
       this.disconnectFromAgent(agentId)
     )
     await Promise.all(disconnectPromises)
   }
 
   isConnectedToAgent(agentId: string): boolean {
-    const socket = this.agentSockets.get(agentId)
-    return socket ? socket.connected : false
+    return this.agentConnections.has(agentId)
   }
 
   getConnectedAgents(): string[] {
-    return Array.from(this.agentSockets.keys()).filter(agentId => 
-      this.isConnectedToAgent(agentId)
+    return Array.from(this.agentConnections.keys()).filter(agentId => 
+      this.agentConnections.get(agentId)
     )
   }
 

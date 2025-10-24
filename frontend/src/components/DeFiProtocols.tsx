@@ -273,25 +273,25 @@ const DeFiProtocols = () => {
   return (
     <div className="space-y-6">
       {/* Header */}
-      <div className="cyber-card p-6">
+      <div className="cyber-card p-4 sm:p-6">
         <div className="flex items-center justify-between mb-6">
-          <h2 className="text-2xl font-bold text-white font-orbitron">DeFi Protocols</h2>
-          <FontAwesomeIcon icon={faEthereumBrand} className="w-8 h-8 text-primary-400" />
+          <h2 className="text-lg sm:text-2xl font-bold text-white font-orbitron">DeFi Protocols</h2>
+          <FontAwesomeIcon icon={faEthereumBrand} className="w-6 h-6 sm:w-8 sm:h-8 text-primary-400" />
         </div>
 
         {/* ASI Alliance Notice */}
-        <div className="mb-6 p-4 bg-green-500/10 border border-green-500/30 rounded-lg">
-          <div className="flex items-center justify-between mb-2">
+        <div className="mb-6 p-3 sm:p-4 bg-green-500/10 border border-green-500/30 rounded-lg">
+          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 mb-2">
             <div className="flex items-center space-x-2">
-              <FontAwesomeIcon icon={faEthereumBrand} className="w-4 h-4 text-green-400" />
-              <span className="text-green-400 font-medium">ASI Alliance Real Agents</span>
+              <FontAwesomeIcon icon={faEthereumBrand} className="w-3 h-3 sm:w-4 sm:h-4 text-green-400" />
+              <span className="text-green-400 font-medium text-sm sm:text-base">ASI Alliance Real Agents</span>
             </div>
-            <div className="flex items-center space-x-2 text-primary-400 text-sm">
-              <FontAwesomeIcon icon={faCheckCircle} className="w-4 h-4" />
+            <div className="flex items-center space-x-2 text-primary-400 text-xs sm:text-sm">
+              <FontAwesomeIcon icon={faCheckCircle} className="w-3 h-3 sm:w-4 sm:h-4" />
               <span>{dataSource}</span>
             </div>
           </div>
-          <p className="text-green-300 text-sm">
+          <p className="text-green-300 text-xs sm:text-sm">
             {isConnected 
               ? `Connected to wallet ${account?.slice(0, 6)}...${account?.slice(-4)}. Powered by ASI Alliance agents with MeTTa Knowledge Graph integration!`
               : 'This application is powered by real ASI Alliance AI agents. Connect a wallet to interact with our Financial Advisor, Healthcare Assistant, and Logistics Coordinator agents.'
@@ -305,7 +305,7 @@ const DeFiProtocols = () => {
             <button
               key={category}
               onClick={() => setSelectedCategory(category)}
-              className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${
+              className={`px-3 sm:px-4 py-2 rounded-lg text-xs sm:text-sm font-medium transition-colors ${
                 selectedCategory === category
                   ? 'bg-primary-500 text-white'
                   : 'bg-dark-800/50 text-gray-300 hover:bg-primary-500/20'
@@ -317,81 +317,81 @@ const DeFiProtocols = () => {
         </div>
 
         {/* Stats */}
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-          <div className="text-center p-4 bg-dark-800/50 rounded-lg">
-            <div className="text-2xl font-bold text-white">{protocols.length}</div>
-            <div className="text-sm text-gray-400">Protocols</div>
+        <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
+          <div className="text-center p-3 sm:p-4 bg-dark-800/50 rounded-lg">
+            <div className="text-lg sm:text-2xl font-bold text-white">{protocols.length}</div>
+            <div className="text-xs sm:text-sm text-gray-400">Protocols</div>
           </div>
-          <div className="text-center p-4 bg-dark-800/50 rounded-lg">
-            <div className="text-2xl font-bold text-white">{pools.length}</div>
-            <div className="text-sm text-gray-400">Pools</div>
+          <div className="text-center p-3 sm:p-4 bg-dark-800/50 rounded-lg">
+            <div className="text-lg sm:text-2xl font-bold text-white">{pools.length}</div>
+            <div className="text-xs sm:text-sm text-gray-400">Pools</div>
           </div>
-          <div className="text-center p-4 bg-dark-800/50 rounded-lg">
-            <div className="text-2xl font-bold text-white">
+          <div className="text-center p-3 sm:p-4 bg-dark-800/50 rounded-lg">
+            <div className="text-lg sm:text-2xl font-bold text-white">
               {formatCurrency(protocols.reduce((sum, p) => sum + p.tvl, 0))}
             </div>
-            <div className="text-sm text-gray-400">Total TVL</div>
+            <div className="text-xs sm:text-sm text-gray-400">Total TVL</div>
           </div>
-          <div className="text-center p-4 bg-dark-800/50 rounded-lg">
-            <div className="text-2xl font-bold text-white">
+          <div className="text-center p-3 sm:p-4 bg-dark-800/50 rounded-lg">
+            <div className="text-lg sm:text-2xl font-bold text-white">
               {formatPercent(protocols.reduce((sum, p) => sum + p.apy, 0) / protocols.length)}
             </div>
-            <div className="text-sm text-gray-400">Avg APY</div>
+            <div className="text-xs sm:text-sm text-gray-400">Avg APY</div>
           </div>
         </div>
       </div>
 
       {/* Protocols Grid */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
         {filteredProtocols.map((protocol, index) => (
           <motion.div
             key={protocol.id}
-            className="cyber-card p-6 group hover:border-primary-500/50 transition-all duration-300"
+            className="cyber-card p-4 sm:p-6 group hover:border-primary-500/50 transition-all duration-300"
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: index * 0.1 }}
           >
             <div className="flex flex-col space-y-3 mb-4">
-              <div className="flex items-center space-x-3">
-                <div className="w-10 h-10 bg-gradient-to-r from-primary-500 to-primary-600 rounded-lg flex items-center justify-center flex-shrink-0">
-                  <FontAwesomeIcon icon={faCoins} className="w-5 h-5 text-white" />
+              <div className="flex items-start sm:items-center space-x-3">
+                <div className="w-8 h-8 sm:w-10 sm:h-10 bg-gradient-to-r from-primary-500 to-primary-600 rounded-lg flex items-center justify-center flex-shrink-0">
+                  <FontAwesomeIcon icon={faCoins} className="w-4 h-4 sm:w-5 sm:h-5 text-white" />
                 </div>
                 <div className="min-w-0 flex-1">
-                  <h3 className="text-lg font-semibold text-white group-hover:text-primary-300 transition-colors font-exo">
+                  <h3 className="text-base sm:text-lg font-semibold text-white group-hover:text-primary-300 transition-colors font-exo">
                     {protocol.name}
                   </h3>
-                  <p className="text-sm text-gray-400">{protocol.category}</p>
+                  <p className="text-xs sm:text-sm text-gray-400">{protocol.category}</p>
                 </div>
               </div>
-              <div className="flex justify-end items-center space-x-2">
-                <span className={`px-3 py-1 rounded-full text-xs font-medium border whitespace-nowrap ${getRiskColor(protocol.risk)}`}>
+              <div className="flex justify-between sm:justify-end items-center space-x-2">
+                <span className={`px-2 sm:px-3 py-1 rounded-full text-xs font-medium border whitespace-nowrap ${getRiskColor(protocol.risk)}`}>
                   {protocol.risk} Risk
                 </span>
                 <FontAwesomeIcon 
                   icon={protocol.status === 'active' ? faCheckCircle : faExclamationTriangle} 
-                  className={`w-4 h-4 flex-shrink-0 ${getStatusColor(protocol.status)}`} 
+                  className={`w-3 h-3 sm:w-4 sm:h-4 flex-shrink-0 ${getStatusColor(protocol.status)}`} 
                 />
               </div>
             </div>
 
-            <p className="text-gray-300 text-sm mb-4 leading-relaxed">
+            <p className="text-gray-300 text-xs sm:text-sm mb-4 leading-relaxed">
               {protocol.description}
             </p>
 
             <div className="space-y-3 mb-4">
               <div className="flex justify-between">
-                <span className="text-gray-400 text-sm">TVL:</span>
-                <span className="text-white text-sm font-medium">{formatCurrency(protocol.tvl)}</span>
+                <span className="text-gray-400 text-xs sm:text-sm">TVL:</span>
+                <span className="text-white text-xs sm:text-sm font-medium">{formatCurrency(protocol.tvl)}</span>
               </div>
               <div className="flex justify-between">
-                <span className="text-gray-400 text-sm">APY:</span>
-                <span className="text-green-400 text-sm font-medium">{formatPercent(protocol.apy)}</span>
+                <span className="text-gray-400 text-xs sm:text-sm">APY:</span>
+                <span className="text-green-400 text-xs sm:text-sm font-medium">{formatPercent(protocol.apy)}</span>
               </div>
             </div>
 
             {/* Supported Tokens */}
             <div className="mb-4">
-              <h4 className="text-sm font-medium text-gray-400 mb-2">Supported Tokens:</h4>
+              <h4 className="text-xs sm:text-sm font-medium text-gray-400 mb-2">Supported Tokens:</h4>
               <div className="flex flex-wrap gap-1">
                 {(protocol.tokens || ['ETH', 'USDC', 'USDT']).slice(0, 5).map((token) => (
                   <span
@@ -411,7 +411,7 @@ const DeFiProtocols = () => {
 
             {/* Features */}
             <div className="mb-4">
-              <h4 className="text-sm font-medium text-gray-400 mb-2">Key Features:</h4>
+              <h4 className="text-xs sm:text-sm font-medium text-gray-400 mb-2">Key Features:</h4>
               <div className="flex flex-wrap gap-1">
                 {(protocol.features || ['Trading', 'Liquidity']).slice(0, 2).map((feature) => (
                   <span
@@ -431,7 +431,7 @@ const DeFiProtocols = () => {
 
             {/* Action Button */}
             <motion.button
-              className="w-full flex items-center justify-center space-x-2 p-3 bg-primary-500/20 hover:bg-primary-500/30 text-primary-300 hover:text-white rounded-lg transition-colors border border-primary-500/30 cursor-pointer"
+              className="w-full flex items-center justify-center space-x-2 p-2 sm:p-3 bg-primary-500/20 hover:bg-primary-500/30 text-primary-300 hover:text-white rounded-lg transition-colors border border-primary-500/30 cursor-pointer text-xs sm:text-sm"
               whileHover={{ scale: 1.02 }}
               whileTap={{ scale: 0.98 }}
               onClick={(e) => {
@@ -474,7 +474,7 @@ const DeFiProtocols = () => {
                 }
               }}
             >
-              <span className="text-sm font-medium">Visit Protocol</span>
+              <span className="text-xs sm:text-sm font-medium">Visit Protocol</span>
               <FontAwesomeIcon icon={faExternalLinkAlt} className="w-3 h-3" />
             </motion.button>
           </motion.div>
@@ -482,47 +482,46 @@ const DeFiProtocols = () => {
       </div>
 
       {/* Liquidity Pools */}
-      <div className="cyber-card p-6">
-        <h3 className="text-xl font-semibold text-white mb-6">Top Liquidity Pools</h3>
-        <div className="space-y-4">
+      <div className="cyber-card p-4 sm:p-6">
+        <h3 className="text-lg sm:text-xl font-semibold text-white mb-6">Top Liquidity Pools</h3>
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
           {pools.map((pool, index) => (
             <motion.div
               key={pool.id}
-              className="p-4 bg-dark-800/50 rounded-lg overflow-hidden"
-              initial={{ opacity: 0, x: -20 }}
-              animate={{ opacity: 1, x: 0 }}
+              className="p-3 sm:p-4 bg-dark-800/50 rounded-lg"
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
               transition={{ delay: index * 0.1 }}
             >
               <div className="flex items-center justify-between mb-3">
-                <div className="flex items-center space-x-4 flex-1 min-w-0">
-                  <div className="w-10 h-10 bg-gradient-to-r from-primary-500 to-primary-600 rounded-lg flex items-center justify-center flex-shrink-0">
-                    <FontAwesomeIcon icon={faCoins} className="w-5 h-5 text-white" />
-                  </div>
-                  <div className="min-w-0 flex-1">
-                    <h4 className="text-white font-medium">{pool.pair}</h4>
-                    <p className="text-sm text-gray-400">{pool.protocol}</p>
-                  </div>
-                </div>
-                
-                <span className={`px-3 py-1 rounded-full text-xs font-medium border whitespace-nowrap ${getRiskColor(pool.risk)}`}>
-                  {pool.risk} Risk
+                <h4 className="text-white font-medium text-sm sm:text-base">{pool.pair}</h4>
+                <span className="text-primary-400 text-xs sm:text-sm font-medium">
+                  {(pool.apy ?? 0).toFixed(1)}% APY
                 </span>
               </div>
-              
-              <div className="flex items-center justify-between">
-                <div className="text-center min-w-[80px]">
-                  <div className="text-white font-medium text-sm">{formatCurrency(pool.liquidity)}</div>
-                  <div className="text-xs text-gray-400">Liquidity</div>
+
+              <div className="space-y-2">
+                <div className="flex justify-between">
+                  <span className="text-gray-400 text-xs sm:text-sm">Protocol:</span>
+                  <span className="text-white text-xs sm:text-sm">{pool.protocol}</span>
                 </div>
-                
-                <div className="text-center min-w-[60px]">
-                  <div className="text-green-400 font-medium text-sm">{formatPercent(pool.apy)}</div>
-                  <div className="text-xs text-gray-400">APY</div>
+                <div className="flex justify-between">
+                  <span className="text-gray-400 text-xs sm:text-sm">Liquidity:</span>
+                  <span className="text-white text-xs sm:text-sm">{formatCurrency(pool.liquidity)}</span>
                 </div>
-                
-                <div className="text-center min-w-[80px]">
-                  <div className="text-white font-medium text-sm">{formatCurrency(pool.volume24h)}</div>
-                  <div className="text-xs text-gray-400">24h Volume</div>
+                <div className="flex justify-between">
+                  <span className="text-gray-400 text-xs sm:text-sm">24h Volume:</span>
+                  <span className="text-white text-xs sm:text-sm">{formatCurrency(pool.volume24h)}</span>
+                </div>
+                <div className="flex justify-between">
+                  <span className="text-gray-400 text-xs sm:text-sm">24h Fees:</span>
+                  <span className="text-white text-xs sm:text-sm">{formatCurrency(pool.fees24h)}</span>
+                </div>
+                <div className="flex justify-between">
+                  <span className="text-gray-400 text-xs sm:text-sm">Risk:</span>
+                  <span className={`text-xs sm:text-sm font-medium ${getRiskColor(pool.risk)}`}>
+                    {pool.risk.charAt(0).toUpperCase() + pool.risk.slice(1)}
+                  </span>
                 </div>
               </div>
             </motion.div>
@@ -531,9 +530,9 @@ const DeFiProtocols = () => {
       </div>
 
       {/* Action Buttons */}
-      <div className="flex flex-col sm:flex-row gap-4">
+      <div className="flex flex-col sm:flex-row gap-3 sm:gap-4">
         <motion.button
-          className="flex-1 cyber-button"
+          className="flex-1 cyber-button text-sm sm:text-base"
           whileHover={{ scale: 1.02 }}
           whileTap={{ scale: 0.98 }}
           onClick={() => {
@@ -544,17 +543,17 @@ const DeFiProtocols = () => {
             }
           }}
         >
-          <FontAwesomeIcon icon={faExternalLinkAlt} className="w-4 h-4 mr-2" />
+          <FontAwesomeIcon icon={faExternalLinkAlt} className="w-3 h-3 sm:w-4 sm:h-4 mr-2" />
           View DeFi Pulse
         </motion.button>
         
         <motion.button
-          className="flex-1 px-6 py-3 border border-primary-500/50 text-primary-400 hover:bg-primary-500/10 rounded-lg transition-all duration-300"
+          className="flex-1 px-4 sm:px-6 py-2 sm:py-3 border border-primary-500/50 text-primary-400 hover:bg-primary-500/10 rounded-lg transition-all duration-300 text-sm sm:text-base"
           whileHover={{ scale: 1.02 }}
           whileTap={{ scale: 0.98 }}
           onClick={loadDeFiData}
         >
-          <FontAwesomeIcon icon={faCoins} className="w-4 h-4 mr-2" />
+          <FontAwesomeIcon icon={faCoins} className="w-3 h-3 sm:w-4 sm:h-4 mr-2" />
           Refresh Data
         </motion.button>
       </div>

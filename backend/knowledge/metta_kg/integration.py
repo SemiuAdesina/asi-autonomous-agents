@@ -173,12 +173,10 @@ class MeTTaKnowledgeGraph:
             List of matching concepts and relationships
         """
         try:
-            # This is a simplified semantic search
-            # In a real implementation, you would use vector embeddings or NLP
+            # Use the MeTTa server's query endpoint with simple text query
             query = {
-                "query": f"MATCH (c:Concept) WHERE c.name CONTAINS '{query_text}' OR c.description CONTAINS '{query_text}' "
-                        f"RETURN c LIMIT {limit}",
-                "parameters": {}
+                "query": query_text,
+                "limit": limit
             }
             
             response = self.session.post(
@@ -189,9 +187,26 @@ class MeTTaKnowledgeGraph:
             
             if response.status_code == 200:
                 data = response.json()
-                return data.get('results', [])
-            
-            return []
+                if data.get('status') == 'success' and data.get('results'):
+                    # Extract concepts from the response
+                    results = []
+                    for item in data['results']:
+                        if 'concept' in item:
+                            concept = item['concept']
+                            results.append({
+                                'name': concept.get('name'),
+                                'description': concept.get('description'),
+                                'domain': concept.get('domain'),
+                                'properties': concept.get('properties', {}),
+                                'confidence': item.get('confidence', 0.5)
+                            })
+                    return results
+                else:
+                    logger.warning(f"No results found for query: {query_text}")
+                    return []
+            else:
+                logger.error(f"MeTTa server error: {response.status_code}")
+                return []
             
         except Exception as e:
             logger.error(f"Error in semantic search: {e}")

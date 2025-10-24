@@ -2,520 +2,535 @@
 
 ![tag:innovationlab](https://img.shields.io/badge/innovationlab-3D8BD3)
 ![tag:hackathon](https://img.shields.io/badge/hackathon-5F43F1)
+[![ASI Alliance](https://img.shields.io/badge/ASI%20Alliance-Hackathon-blue)](https://asi-alliance.org)
+[![License](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
+[![Python](https://img.shields.io/badge/Python-3.9+-blue.svg)](https://python.org)
+[![Next.js](https://img.shields.io/badge/Next.js-15.5+-black.svg)](https://nextjs.org)
+[![uAgents](https://img.shields.io/badge/uAgents-Fetch.ai-purple.svg)](https://docs.fetch.ai/agents/)
 
-A comprehensive decentralized AI ecosystem built with ASI Alliance technologies, featuring autonomous agents that perceive, reason, and act across Web3 systems.
+A comprehensive multi-agent system built for the ASI Alliance Hackathon, featuring intelligent agents with Chat Protocol support, MeTTa Knowledge Graph integration, and real-time communication capabilities.
+
+## Table of Contents
+
+1. [Overview](#overview)
+2. [Architecture](#architecture)
+3. [Features](#features)
+4. [Prerequisites](#prerequisites)
+5. [Installation](#installation)
+6. [Configuration](#configuration)
+7. [Running the Application](#running-the-application)
+8. [API Documentation](#api-documentation)
+9. [Agent System](#agent-system)
+10. [Frontend Components](#frontend-components)
+11. [Testing](#testing)
+12. [Deployment](#deployment)
+13. [Contributing](#contributing)
+14. [License](#license)
 
 ## Overview
 
-The ASI Autonomous Agents Platform demonstrates the power of autonomous AI agents in a decentralized ecosystem. Built with uAgents framework, integrated with MeTTa Knowledge Graph, and deployed on Agentverse, this platform showcases the future of decentralized AI applications.
+The ASI Autonomous Agents Platform is a sophisticated multi-agent system that demonstrates the integration of Fetch.ai uAgents framework with SingularityNET's MeTTa Knowledge Graph. The platform provides three specialized agents (Healthcare, Financial, and Logistics) that can communicate using both native Chat Protocol and HTTP APIs.
 
-## Key Features
+### Key Technologies
 
-- **Autonomous AI Agents**: Healthcare, Financial, and Logistics agents with specialized capabilities
-- **Real-time Communication**: Agent-to-agent messaging and user-agent interaction via Socket.IO
-- **Knowledge Integration**: MeTTa Knowledge Graph for structured reasoning and enhanced responses
-- **Web3 Connectivity**: Wallet integration with MetaMask and Phantom support
-- **DeFi Integration**: Real-time DeFi protocol data and portfolio management
-- **Modern UI**: Cyber-themed responsive design with Tailwind CSS and Framer Motion
-- **Cross-agent Collaboration**: Agents working together across domains
-- **Chat Protocol**: ASI:One compatibility for seamless agent communication
+- **Backend**: Python Flask with SQLAlchemy
+- **Frontend**: Next.js with React and TypeScript
+- **Agents**: Fetch.ai uAgents framework
+- **Knowledge Graph**: SingularityNET MeTTa
+- **Real-time Communication**: WebSocket/Socket.IO
+- **Database**: SQLite (development) / PostgreSQL (production)
+- **Authentication**: JWT-based authentication
+- **AI Integration**: ASI:One API integration
 
-## Technology Stack
+## Architecture
 
-### Frontend Technologies
-- **Next.js 14** with React 18 and TypeScript
-- **Tailwind CSS** with custom cyber-themed styling and glowing effects
-- **Framer Motion** and **React Spring** for smooth animations
-- **FontAwesome**, **Lucide React**, **React Icons** for comprehensive iconography
-- **Web3.js**, **Wagmi**, **RainbowKit** for blockchain integration
-- **React Toastify** for Web3-specific notifications
-- **Matrix Background** component for immersive cyber aesthetics
-
-### Backend Technologies
-- **Flask** with Socket.IO for real-time communication
-- **PostgreSQL** with SQLAlchemy ORM for data persistence
-- **Redis** for caching and session management
-- **Celery** for background task processing
-- **JWT** authentication with Flask-JWT-Extended
-- **uAgents Framework** for autonomous agent implementation
-- **Flask-Migrate** for database migrations
-- **Flask-CORS** for cross-origin requests
-
-### ASI Alliance Technologies
-- **uAgents Framework**: Core agent implementation with Chat Protocol
-- **MeTTa Knowledge Graph**: Structured knowledge access from SingularityNET
-- **Agentverse**: Agent registry and orchestration platform
-- **Chat Protocol**: ASI:One compatibility for agent communication
-- **Fetch.ai Infrastructure**: Decentralized execution environment
-
-### Web3 Integration
-- **Ethereum** and **Polygon** network support
-- **MetaMask** and **Phantom** wallet integration
-- **DeFi Protocols**: Uniswap, Compound, Aave, Curve, Yearn, Lido integration
-- **Smart Contracts**: Agent deployment and interaction
-- **Wallet State Persistence**: localStorage for maintaining connections
-
-## Project Structure
+### System Components
 
 ```
-asi-autonomous-agents/
-├── frontend/                    # Next.js React application
-│   ├── src/
-│   │   ├── components/         # React components
-│   │   │   ├── AgentChat.tsx   # Real-time agent communication
-│   │   │   ├── AgentGrid.tsx   # Agent discovery and display
-│   │   │   ├── DeFiProtocols.tsx # DeFi protocol integration
-│   │   │   ├── PortfolioDashboard.tsx # Portfolio management
-│   │   │   ├── Web3Integration.tsx # Web3 wallet integration
-│   │   │   ├── MatrixBackground.tsx # Cyber-themed background
-│   │   │   └── ...             # Other UI components
-│   │   ├── contexts/           # React contexts
-│   │   │   ├── AgentContext.tsx # Agent state management
-│   │   │   ├── Web3Context.tsx # Web3 wallet management
-│   │   │   └── MobileMenuContext.tsx # Mobile menu state
-│   │   ├── pages/             # Next.js pages and API routes
-│   │   │   ├── api/
-│   │   │   │   ├── defi-data.ts # DeFi protocol data API
-│   │   │   │   ├── portfolio-data.ts # Portfolio data API
-│   │   │   │   ├── discover-agents.ts # Agent discovery API
-│   │   │   │   └── generate-response.ts # Agent response API
-│   │   │   └── index.tsx       # Main application page
-│   │   └── services/          # API services
-│   │       ├── agentCommunication.ts # Agent communication service
-│   │       └── blockchain.ts  # Blockchain interaction service
-│   ├── package.json           # Frontend dependencies
-│   └── Dockerfile            # Frontend container
-├── backend/                     # Flask API server
-│   ├── agents/                 # uAgents implementations
-│   │   ├── healthcare_agent/   # Healthcare Assistant
-│   │   │   └── main.py        # Healthcare agent with MeTTa integration
-│   │   ├── logistics_agent/    # Logistics Coordinator
-│   │   │   └── main.py        # Logistics agent with supply chain optimization
-│   │   └── financial_agent/    # Financial Advisor
-│   │       └── main.py         # Financial agent with DeFi integration
-│   ├── knowledge/              # MeTTa Knowledge Graph integration
-│   │   └── metta_kg/
-│   │       └── integration.py # MeTTa Knowledge Graph client
-│   ├── routes/                # API endpoints
-│   │   ├── agents.py          # Agent management endpoints
-│   │   ├── auth.py            # Authentication endpoints
-│   │   ├── messages.py        # Message handling endpoints
-│   │   └── knowledge.py       # Knowledge graph endpoints
-│   ├── tests/                 # Comprehensive test suite
-│   │   ├── unit/              # Unit tests
-│   │   └── integration/       # Integration tests
-│   ├── models.py              # Database models (User, Agent, Message, etc.)
-│   ├── app.py                 # Flask application with Socket.IO
-│   ├── metta_server.py        # MeTTa Knowledge Graph server
-│   ├── run_agents.py          # Agent orchestration script
-│   ├── deploy_agents.py       # Agent deployment script
-│   └── requirements.txt       # Backend dependencies
-├── scripts/                    # Deployment and utility scripts
-│   └── deploy.sh              # Production deployment script
-├── .github/workflows/          # CI/CD pipelines
-│   ├── integration-tests.yml  # Integration testing workflow
-│   ├── deploy.yml             # Deployment workflow
-│   └── security-quality.yml   # Security and quality checks
-├── docker-compose.yml          # Docker orchestration
-├── docker-compose.prod.yml     # Production Docker configuration
-└── README.md                  # This file
+┌─────────────────┐    ┌─────────────────┐    ┌─────────────────┐
+│   Frontend      │    │   Backend API   │    │   Agent System  │
+│   (Next.js)     │◄──►│   (Flask)       │◄──►│   (uAgents)     │
+└─────────────────┘    └─────────────────┘    └─────────────────┘
+         │                       │                       │
+         │                       │                       │
+         ▼                       ▼                       ▼
+┌─────────────────┐    ┌─────────────────┐    ┌─────────────────┐
+│   WebSocket     │    │   Database      │    │   MeTTa KG      │
+│   Real-time     │    │   (SQLite/PG)   │    │   Integration   │
+└─────────────────┘    └─────────────────┘    └─────────────────┘
 ```
 
-## Quick Start
+### Agent Architecture
 
-### Prerequisites
+Each agent follows a consistent structure:
 
-- **Docker** and Docker Compose (recommended)
-- **Node.js** 18+ and npm (for local development)
-- **Python** 3.9+ (for local development)
-- **PostgreSQL** 13+ (for local development)
-- **Redis** 6+ (for local development)
+- **Agent Core**: Main agent logic with Chat Protocol support
+- **Knowledge Integration**: MeTTa Knowledge Graph queries
+- **AI Integration**: ASI:One API for enhanced responses
+- **HTTP Server**: REST API endpoints for web integration
+- **Utilities**: Helper functions and data processing
 
-### Docker Deployment (Recommended)
+## Features
 
-1. Clone the repository:
+### Core Features
+
+- **Multi-Agent System**: Three specialized agents (Healthcare, Financial, Logistics)
+- **Chat Protocol**: Native uAgents communication protocol
+- **MeTTa Integration**: Knowledge graph queries and reasoning
+- **Real-time Communication**: WebSocket-based live updates
+- **Web Interface**: Modern React-based dashboard
+- **Authentication**: Secure JWT-based user management
+- **API Documentation**: Comprehensive REST API
+
+### Agent Capabilities
+
+#### Healthcare Assistant
+- Medical analysis and symptom checking
+- Treatment planning and recommendations
+- Drug interaction checking
+- MeTTa Knowledge Graph medical queries
+- ASI:One integration for enhanced medical reasoning
+
+#### Financial Advisor
+- Portfolio management and analysis
+- Risk assessment and mitigation
+- DeFi protocol integration
+- Market analysis and trends
+- Investment strategy recommendations
+
+#### Logistics Coordinator
+- Route optimization algorithms
+- Inventory management systems
+- Delivery tracking and monitoring
+- Supply chain analysis
+- Cost optimization strategies
+
+### Frontend Features
+
+- **Portfolio Dashboard**: Comprehensive overview of all agents
+- **Chat Protocol Manager**: Session management and monitoring
+- **Real-time Manager**: WebSocket connection monitoring
+- **Knowledge Manager**: MeTTa query interface
+- **Learning Analytics**: Agent performance metrics
+- **Agent Grid**: Visual agent status and capabilities
+
+## Prerequisites
+
+### System Requirements
+
+- Python 3.9 or higher
+- Node.js 18 or higher
+- npm or yarn package manager
+- Git
+
+### External Services
+
+- ASI:One API key (for enhanced AI responses)
+- Etherscan API key (for blockchain data)
+- MeTTa Knowledge Graph server (optional, uses mock data if unavailable)
+
+## Installation
+
+### 1. Clone the Repository
+
 ```bash
-git clone https://github.com/SemiuAdesina/asi-autonomous-agents.git
+git clone https://github.com/your-username/asi-autonomous-agents.git
 cd asi-autonomous-agents
 ```
 
-2. Start all services:
+### 2. Backend Setup
+
 ```bash
-docker-compose up --build -d
-```
-
-3. Access the application:
-- Frontend: http://localhost:3000
-- Backend API: http://localhost:5001
-- MeTTa Server: http://localhost:8080
-
-### Local Development
-
-#### Backend Setup
-
-1. Navigate to backend directory:
-```bash
+# Navigate to backend directory
 cd backend
-```
 
-2. Create virtual environment:
-```bash
-python -m venv venv
+# Create virtual environment
+python3 -m venv venv
+
+# Activate virtual environment
 source venv/bin/activate  # On Windows: venv\Scripts\activate
-```
 
-3. Install dependencies:
-```bash
+# Install dependencies
 pip install -r requirements.txt
+
+# Initialize database
+python setup_local_db.py
 ```
 
-4. Start the backend:
-```bash
-python app.py
-```
+### 3. Frontend Setup
 
-#### Frontend Setup
-
-1. Navigate to frontend directory:
 ```bash
-cd frontend
-```
+# Navigate to frontend directory
+cd ../frontend
 
-2. Install dependencies:
-```bash
+# Install dependencies
 npm install
 ```
 
-3. Start the development server:
+### 4. Environment Configuration
+
+Create environment files:
+
 ```bash
+# Copy example environment file
+cp .env.example .env
+
+# Edit environment variables
+nano .env
+```
+
+Required environment variables:
+
+```env
+# Database
+DATABASE_URL=sqlite:///instance/asi_agents.db
+
+# JWT Secret
+JWT_SECRET_KEY=your-secret-key-here
+
+# ASI:One Integration
+ASI_ONE_API_KEY=your-asi-one-api-key
+ASI_BASE_URL=https://api.asi.one
+ASI_MODEL=gpt-3.5-turbo
+
+# Etherscan API
+ETHERSCAN_API_KEY=your-etherscan-api-key
+
+# MeTTa Knowledge Graph
+METTA_SERVER_URL=http://localhost:8080
+```
+
+## Configuration
+
+### Agent Configuration
+
+Each agent can be configured through environment variables:
+
+```env
+# Healthcare Agent
+HEALTHCARE_AGENT_PORT=8002
+HEALTHCARE_AGENT_ADDRESS=agent1qgkvje3s0e9vsu7s5dcxf8d8rrw2z3y77dcyzmzjk8s6p6n3ekwlxzjl3vl
+
+# Financial Agent
+FINANCIAL_AGENT_PORT=8003
+FINANCIAL_AGENT_ADDRESS=agent1qtm6dj5n89vjda5adz223x7t7pdzle3rskugery36w4en3je67whkuke606
+
+# Logistics Agent
+LOGISTICS_AGENT_PORT=8004
+LOGISTICS_AGENT_ADDRESS=agent1q09g48srfjc74zzlr80ag93qaaev7ue9vhgl2u3jgykca0trwm2hxpw66jl
+```
+
+### Database Configuration
+
+The system supports both SQLite (development) and PostgreSQL (production):
+
+```env
+# Development (SQLite)
+DATABASE_URL=sqlite:///instance/asi_agents.db
+
+# Production (PostgreSQL)
+DATABASE_URL=postgresql://username:password@localhost:5432/asi_agents
+```
+
+## Running the Application
+
+### Development Mode
+
+#### 1. Start Backend Services
+
+```bash
+# Terminal 1: Main Flask application
+cd backend
+source venv/bin/activate
+python app.py
+
+# Terminal 2: Healthcare Agent
+cd backend/agents/healthcare_agent
+python agent.py
+
+# Terminal 3: Financial Agent (optional)
+cd backend/agents/financial_agent
+python agent.py
+
+# Terminal 4: Logistics Agent (optional)
+cd backend/agents/logistics_agent
+python agent.py
+```
+
+#### 2. Start Frontend
+
+```bash
+# Terminal 5: Frontend development server
+cd frontend
 npm run dev
 ```
 
-## Agent Registry
+### Production Mode
 
-All agents are deployed on Agentverse with Chat Protocol enabled for ASI:One compatibility:
+```bash
+# Build frontend
+cd frontend
+npm run build
 
-### Healthcare Assistant
-- **Agent Address**: `agent1qgkvje3s0e9vsu7s5dcxf8d8rrw2z3y77dcyzmzjk8s6p6n3ekwlxzjl3vl`
-- **Port**: 8001
-- **Capabilities**: 
-  - Medical symptom analysis and treatment recommendations
-  - Drug interaction checking and safety assessments
-  - Health information queries and medical guidance
-  - Integration with MeTTa knowledge for medical data
-- **Use Case**: AI-powered medical assistance
+# Start production backend
+cd backend
+gunicorn -w 4 -b 0.0.0.0:5001 app:app
+```
 
-### Logistics Coordinator
-- **Agent Address**: `agent1qve8agrlc8yjqa3wqrz7cehwr2eh06yq4339afd0hhd0ec4g7vwyv5pw40u`
-- **Port**: 8002
-- **Capabilities**:
-  - Supply chain analysis and optimization
-  - Route optimization and delivery tracking
-  - Inventory management and demand forecasting
-  - Cross-agent coordination for complex logistics tasks
-- **Use Case**: Supply chain optimization
+### Access Points
 
-### Financial Advisor
-- **Agent Address**: `agent1q0mhyw50uglat30my4ecm93t9xnt0wfegddx9k3s8t0nqn5k42z6qjvd69g`
-- **Port**: 8003
-- **Capabilities**:
-  - Market analysis and investment insights
-  - Portfolio optimization and risk assessment
-  - DeFi protocol integration and yield farming opportunities
-  - Real-time financial data analysis
-- **Use Case**: DeFi protocol integration
+- **Frontend**: http://localhost:3000
+- **Backend API**: http://localhost:5001
+- **Healthcare Agent**: http://localhost:8002
+- **Financial Agent**: http://localhost:8003
+- **Logistics Agent**: http://localhost:8004
 
-## API Endpoints
+## API Documentation
 
-### Agent Management
-- `GET /api/agents/` - List all available agents
-- `GET /api/agents/{id}` - Get specific agent details
-- `POST /api/agents/` - Create new agent
-- `GET /api/agents/{id}/messages` - Get agent message history
+### Authentication Endpoints
 
-### DeFi Integration
-- `GET /api/defi-data` - Get DeFi protocol data and liquidity pools
-- `GET /api/portfolio-data` - Get portfolio information and analytics
+```http
+POST /api/auth/register
+POST /api/auth/login
+GET  /api/auth/profile
+POST /api/auth/logout
+```
+
+### Agent Endpoints
+
+```http
+GET  /api/agents
+GET  /api/agents/{agent_id}
+POST /api/agents/{agent_id}/message
+```
+
+### Knowledge Graph Endpoints
+
+```http
+POST /api/knowledge/metta-query
+GET  /api/knowledge/concepts
+POST /api/knowledge/concepts
+```
+
+### Message Endpoints
+
+```http
+POST /api/messages
+GET  /api/messages/{session_id}
+POST /api/generate-response
+```
+
+### Learning Analytics Endpoints
+
+```http
+GET /api/learning/metrics
+GET /api/learning/patterns
+GET /api/learning/knowledge-updates
+```
+
+## Agent System
 
 ### Agent Communication
-- `POST /api/generate-response` - Send message to agent and get response
 
-### Knowledge Graph
-- `GET /api/knowledge/query` - Query MeTTa Knowledge Graph
-- `POST /api/knowledge/concept` - Add new concept to knowledge graph
+Agents communicate using two protocols:
 
-### Authentication
-- `POST /api/auth/login` - User authentication
-- `POST /api/auth/register` - User registration
-- `POST /api/auth/refresh` - Token refresh
+1. **Chat Protocol**: Native uAgents communication
+2. **HTTP Protocol**: REST API fallback
 
-## Database Models
+### Agent Lifecycle
 
-### User Model
-- User authentication and profile management
-- Wallet address integration
-- Agent ownership and permissions
+1. **Initialization**: Agent starts and registers with coordinator
+2. **Manifest Publication**: Agent capabilities published to Agentverse
+3. **Session Management**: Chat sessions created and managed
+4. **Message Processing**: Incoming messages processed and responded to
+5. **Knowledge Integration**: MeTTa queries executed for enhanced responses
 
-### Agent Model
-- Agent metadata and capabilities
-- Status tracking and health monitoring
-- Agent type classification
+### Agent Registration
 
-### Message Model
-- Message content and metadata
-- Sender type classification (user, agent, system)
-- Timestamp and message type tracking
+Agents automatically register with the system using their manifests:
 
-### KnowledgeGraph Model
-- Concept definitions and relationships
-- Source tracking and confidence scores
-- Domain-specific knowledge organization
+```json
+{
+  "name": "Healthcare Assistant",
+  "description": "AI-powered medical diagnosis and treatment recommendations",
+  "capabilities": [
+    "Medical Analysis",
+    "Symptom Checker",
+    "Treatment Planning",
+    "Drug Interaction Check",
+    "MeTTa Knowledge Graph",
+    "ASI:One Integration"
+  ],
+  "protocols": ["chat", "http"],
+  "address": "agent1qgkvje3s0e9vsu7s5dcxf8d8rrw2z3y77dcyzmzjk8s6p6n3ekwlxzjl3vl"
+}
+```
 
-### AgentSession Model
-- Session management and tracking
-- User-agent interaction history
-- Session metadata and status
+## Frontend Components
 
-### Transaction Model
-- Blockchain transaction tracking
-- Gas usage and status monitoring
-- Agent transaction history
+### Core Components
+
+- **PortfolioPage**: Main dashboard with agent overview
+- **AgentGrid**: Visual representation of agent status
+- **ChatProtocolManager**: Session management interface
+- **RealtimeManager**: WebSocket monitoring dashboard
+- **KnowledgeManager**: MeTTa query interface
+- **LearningAnalytics**: Performance metrics visualization
+
+### State Management
+
+The frontend uses React Context for state management:
+
+- **AgentContext**: Agent data and status
+- **AuthContext**: User authentication state
+- **Web3Context**: Blockchain integration
+- **MobileMenuContext**: Responsive navigation
+
+### Real-time Features
+
+- **WebSocket Connection**: Live updates from backend
+- **Agent Status Monitoring**: Real-time agent health checks
+- **Message Notifications**: Instant chat message alerts
+- **Performance Metrics**: Live analytics updates
 
 ## Testing
 
-### Frontend Tests
-```bash
-cd frontend
-npm test
-```
+### Backend Testing
 
-**Test Coverage:**
-- Component rendering and interaction
-- Context state management
-- API service integration
-- Web3 wallet functionality
-- Error handling and edge cases
-
-### Backend Tests
 ```bash
 cd backend
-source venv/bin/activate
-pytest tests/
+
+# Run all tests
+python -m pytest
+
+# Run specific test categories
+python -m pytest tests/unit/
+python -m pytest tests/integration/
+
+# Run with coverage
+python -m pytest --cov=. --cov-report=html
 ```
 
-**Test Coverage:**
-- Unit tests for all models and utilities
-- Integration tests for API endpoints
-- Agent communication testing
-- Database operations and migrations
-- MeTTa Knowledge Graph integration
+### Frontend Testing
 
-### Integration Tests
 ```bash
-docker-compose -f docker-compose.test.yml up --build
+cd frontend
+
+# Run unit tests
+npm test
+
+# Run tests with coverage
+npm run test:coverage
+
+# Run E2E tests
+npm run test:e2e
+```
+
+### Smoke Tests
+
+```bash
+# Run comprehensive smoke tests
+python scripts/smoke_test.py
 ```
 
 ## Deployment
 
-### Production Deployment
+### Render Deployment (Recommended)
 
-1. Configure environment variables:
+This project is optimized for deployment on Render.com:
+
+1. **Backend Service**:
+   - Runtime: Python 3.9+
+   - Build Command: `pip install -r requirements.txt`
+   - Start Command: `gunicorn -w 4 -b 0.0.0.0:$PORT app:app`
+   - Environment Variables: See `.env.example`
+
+2. **Frontend Service**:
+   - Runtime: Node.js 18+
+   - Build Command: `npm ci && npm run build`
+   - Publish Directory: `out`
+   - Environment Variables: `NEXT_PUBLIC_API_URL`
+
+3. **Database**:
+   - PostgreSQL service on Render
+   - Connection string: `DATABASE_URL`
+
+### Manual Deployment
+
+1. **Backend Deployment**:
 ```bash
-cp backend/config/env_template.txt .env
-# Edit .env with production values
+   cd backend
+   pip install -r requirements.txt
+   gunicorn -w 4 -b 0.0.0.0:5001 app:app
 ```
 
-2. Deploy using Docker Compose:
+2. **Frontend Deployment**:
 ```bash
-docker-compose -f docker-compose.prod.yml up -d
+   cd frontend
+   npm run build
+   npm start
 ```
 
-3. Run health checks:
+3. **Agent Deployment**:
 ```bash
-./scripts/deploy.sh production
+   # Deploy each agent individually
+   cd backend/agents/healthcare_agent
+   python agent.py
+   ```
+
+### Environment Variables for Production
+
+```env
+FLASK_ENV=production
+DATABASE_URL=postgresql://user:pass@host:port/db
+JWT_SECRET_KEY=production-secret-key
+ASI_ONE_API_KEY=production-api-key
 ```
-
-### CI/CD Pipeline
-
-The project includes automated CI/CD pipelines:
-
-- **Integration Tests**: Runs on every pull request
-- **Deployment Pipeline**: Automated staging and production deployment
-- **Security & Quality**: Code analysis and vulnerability scanning
-- **Docker Build**: Automated container building and testing
-
-## Configuration
-
-### Environment Variables
-
-#### Backend
-- `DATABASE_URL`: PostgreSQL connection string
-- `REDIS_URL`: Redis connection string
-- `FLASK_ENV`: Environment (development/production)
-- `JWT_SECRET_KEY`: JWT signing key
-- `METTA_ENDPOINT`: MeTTa Knowledge Graph endpoint
-- `AGENTVERSE_ENDPOINT`: Agentverse platform endpoint
-- `SECRET_KEY`: Flask secret key
-
-#### Frontend
-- `NEXT_PUBLIC_API_URL`: Backend API URL
-- `NEXT_PUBLIC_WALLET_CONNECT_PROJECT_ID`: WalletConnect project ID
-
-### Database Setup
-
-1. Start PostgreSQL:
-```bash
-docker-compose up postgres -d
-```
-
-2. Run migrations:
-```bash
-cd backend
-source venv/bin/activate
-flask db upgrade
-```
-
-## Monitoring
-
-### Health Checks
-
-All services include health check endpoints:
-- Backend: `GET /api/health`
-- Frontend: Built-in Next.js health checks
-- Database: PostgreSQL health monitoring
-- Redis: Redis ping checks
-- MeTTa Server: Knowledge graph health status
-
-### Logging
-
-- Application logs: Structured JSON logging
-- Error tracking: Centralized error collection
-- Performance monitoring: Request timing and metrics
-- Agent communication logs: Message flow tracking
-
-## Security
-
-### Container Security
-- Non-root user execution
-- Minimal base images (Alpine Linux)
-- Security scanning integration
-- Network isolation
-
-### Application Security
-- JWT authentication with refresh tokens
-- CORS configuration
-- Input validation and sanitization
-- SQL injection prevention
-- XSS protection
-
-### Blockchain Security
-- Smart contract audits and best practices
-- Multi-signature wallets for critical operations
-- Gas limit protection against DoS attacks
-- Wallet connection validation
-
-## MeTTa Knowledge Graph Integration
-
-### Features
-- **Semantic Search**: Advanced query capabilities across domains
-- **Concept Management**: Add, query, and relate concepts
-- **Domain Context**: Healthcare, logistics, finance knowledge
-- **Relationship Mapping**: Complex concept relationships
-- **Confidence Scoring**: Reliability assessment for knowledge
-
-### Integration Points
-- Healthcare Agent: Medical knowledge and symptom analysis
-- Financial Agent: DeFi protocol knowledge and market insights
-- Logistics Agent: Supply chain optimization knowledge
-- Cross-agent Knowledge Sharing: Collaborative intelligence
-
-## Web3 Integration
-
-### Wallet Support
-- **MetaMask**: Primary Ethereum wallet
-- **Phantom**: Solana wallet support
-- **WalletConnect**: Multi-wallet compatibility
-- **Connection Persistence**: localStorage state management
-
-### DeFi Protocols
-- **Uniswap V3**: Concentrated liquidity and multiple fee tiers
-- **Compound**: Algorithmic money markets
-- **Aave**: Non-custodial liquidity protocol
-- **Curve Finance**: Stablecoin-focused exchange
-- **Yearn Finance**: Automated yield farming
-- **Lido**: Liquid staking protocol
-
-### Blockchain Networks
-- **Ethereum**: Primary network support
-- **Polygon**: Layer 2 scaling solution
-- **Cross-chain Compatibility**: Multi-network support
 
 ## Contributing
+
+### Development Workflow
 
 1. Fork the repository
 2. Create a feature branch
 3. Make your changes
 4. Add tests for new functionality
-5. Run the test suite
+5. Ensure all tests pass
 6. Submit a pull request
 
-### Development Guidelines
+### Code Standards
 
-- Follow TypeScript best practices
-- Write comprehensive tests
-- Use conventional commit messages
-- Update documentation for new features
-- Ensure ASI Alliance technology integration
+- **Python**: Follow PEP 8 guidelines
+- **TypeScript**: Use strict type checking
+- **Testing**: Maintain >80% code coverage
+- **Documentation**: Update README for new features
 
-## Troubleshooting
+### Pull Request Process
 
-### Common Issues
-
-#### Docker Build Failures
-- Ensure Docker is running
-- Check available disk space
-- Verify network connectivity
-- Clear Docker cache if needed
-
-#### Database Connection Issues
-- Verify PostgreSQL is running
-- Check connection string format
-- Ensure database exists
-- Check firewall settings
-
-#### Frontend Build Errors
-- Clear Next.js cache: `rm -rf .next`
-- Reinstall dependencies: `rm -rf node_modules && npm install`
-- Check TypeScript errors
-- Verify environment variables
-
-#### Agent Communication Issues
-- Check agent status and health
-- Verify Socket.IO connections
-- Check MeTTa Knowledge Graph availability
-- Review agent logs for errors
-
-### Getting Help
-
-- Check the comprehensive test suite for examples
-- Review existing issues on GitHub
-- Create a new issue with detailed information
-- Check agent logs and system health endpoints
+1. Ensure all tests pass
+2. Update documentation
+3. Add appropriate labels
+4. Request review from maintainers
 
 ## License
 
 This project is licensed under the MIT License - see the LICENSE file for details.
 
+## Support
+
+For support and questions:
+
+- Create an issue in the GitHub repository
+- Contact the development team
+- Check the documentation wiki
+
 ## Acknowledgments
 
-- **ASI Alliance** for providing the infrastructure and technologies
-- **Fetch.ai Innovation Lab** for uAgents framework
-- **SingularityNET** for MeTTa Knowledge Graph
-- **Open source community** for various dependencies
-- **DeFi protocols** for providing integration opportunities
+- Fetch.ai for the uAgents framework
+- SingularityNET for MeTTa Knowledge Graph
+- ASI Alliance for the hackathon opportunity
+- All contributors and testers
 
 ---
 
-**Built for the ASI Alliance Hackathon**
-
-This platform represents the future of decentralized AI applications, showcasing how autonomous agents can work together across Web3 systems to provide comprehensive solutions for healthcare, finance, and logistics domains.
+**Note**: This project was developed for the ASI Alliance Hackathon and demonstrates advanced multi-agent system capabilities with real-world applications in healthcare, finance, and logistics.

@@ -12,14 +12,29 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
   }
 
   try {
-    // For now, we'll use a simple rule-based response system
-    // In production, this would integrate with OpenAI, Anthropic, or similar AI service
-    const response = generateIntelligentResponse(prompt, agentType)
-    
-    res.status(200).json({ response })
+    // Call the backend Flask API for real AI responses
+    const backendUrl = process.env.BACKEND_URL || 'http://localhost:5001'
+    const response = await fetch(`${backendUrl}/api/generate-response`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ prompt, agentType })
+    })
+
+    if (response.ok) {
+      const data = await response.json()
+      res.status(200).json({ response: data.response })
+    } else {
+      // Fallback to rule-based response if backend is unavailable
+      const fallbackResponse = generateIntelligentResponse(prompt, agentType)
+      res.status(200).json({ response: fallbackResponse })
+    }
   } catch (error) {
-    console.error('Error generating response:', error)
-    res.status(500).json({ error: 'Failed to generate response' })
+    console.error('Error calling backend AI service:', error)
+    // Fallback to rule-based response
+    const fallbackResponse = generateIntelligentResponse(prompt, agentType)
+    res.status(200).json({ response: fallbackResponse })
   }
 }
 

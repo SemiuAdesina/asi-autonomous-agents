@@ -47,6 +47,16 @@ const WalletSelector = ({ isOpen, onClose, onSelectWallet }: WalletSelectorProps
         typeof (window as any).coinbaseWalletExtension !== 'undefined'
     },
     {
+      id: 'phantom',
+      name: 'Phantom',
+      icon: faWallet,
+      description: 'The most popular Solana wallet',
+      installUrl: 'https://phantom.app/',
+      isInstalled: typeof window !== 'undefined' && 
+        typeof (window as any).solana !== 'undefined' && 
+        (window as any).solana.isPhantom === true
+    },
+    {
       id: 'walletconnect',
       name: 'WalletConnect',
       icon: faWallet,

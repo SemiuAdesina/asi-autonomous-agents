@@ -7,6 +7,7 @@ interface Web3ContextType {
   isConnected: boolean
   account: string | null
   chainId: number | null
+  walletType: 'ethereum' | 'solana' | null
   connectWallet: () => Promise<void>
   disconnectWallet: () => void
   switchNetwork: (chainId: number) => Promise<void>
@@ -36,6 +37,7 @@ export const Web3Provider = ({ children }: Web3ProviderProps) => {
   const [isConnected, setIsConnected] = useState(false)
   const [account, setAccount] = useState<string | null>(null)
   const [chainId, setChainId] = useState<number | null>(null)
+  const [walletType, setWalletType] = useState<'ethereum' | 'solana' | null>(null)
   const [balance, setBalance] = useState<string | null>(null)
   const [isLoading, setIsLoading] = useState(false)
   const [showWalletSelector, setShowWalletSelector] = useState(false)
@@ -48,10 +50,11 @@ export const Web3Provider = ({ children }: Web3ProviderProps) => {
         const savedChainId = localStorage.getItem('wallet_chainId')
         const savedBalance = localStorage.getItem('wallet_balance')
         const savedConnection = localStorage.getItem('wallet_connected')
+        const savedWalletType = localStorage.getItem('wallet_type') as 'ethereum' | 'solana' | null
 
         if (savedConnection === 'true' && savedAccount) {
-          // Check if wallet is still connected
-          if (typeof window.ethereum !== 'undefined') {
+          // Check if wallet is still connected based on wallet type
+          if (savedWalletType === 'ethereum' && typeof window.ethereum !== 'undefined') {
             try {
               const accounts = await window.ethereum.request({ method: 'eth_accounts' })
               const currentChainId = await window.ethereum.request({ method: 'eth_chainId' })
@@ -60,6 +63,7 @@ export const Web3Provider = ({ children }: Web3ProviderProps) => {
                 // Wallet is still connected, restore state
                 setAccount(savedAccount)
                 setChainId(savedChainId ? parseInt(savedChainId) : parseInt(currentChainId, 16))
+                setWalletType('ethereum')
                 setBalance(savedBalance)
                 setIsConnected(true)
                 
@@ -69,31 +73,45 @@ export const Web3Provider = ({ children }: Web3ProviderProps) => {
                 }
                 
                 // Show a subtle notification that wallet was restored
-                toast.info(`Wallet restored: ${savedAccount.slice(0, 6)}...${savedAccount.slice(-4)}`, {
+                toast.info(`Ethereum wallet restored: ${savedAccount.slice(0, 6)}...${savedAccount.slice(-4)}`, {
                   autoClose: 2000,
                   hideProgressBar: true
                 })
               } else {
                 // Wallet disconnected, clear localStorage
-                localStorage.removeItem('wallet_account')
-                localStorage.removeItem('wallet_chainId')
-                localStorage.removeItem('wallet_balance')
-                localStorage.removeItem('wallet_connected')
+                clearWalletStorage()
               }
             } catch (error) {
-              console.error('Error checking wallet connection:', error)
-              // Clear localStorage if there's an error
-              localStorage.removeItem('wallet_account')
-              localStorage.removeItem('wallet_chainId')
-              localStorage.removeItem('wallet_balance')
-              localStorage.removeItem('wallet_connected')
+              console.error('Error checking Ethereum wallet connection:', error)
+              clearWalletStorage()
+            }
+          } else if (savedWalletType === 'solana' && typeof (window as any).solana !== 'undefined') {
+            try {
+              const response = await (window as any).solana.connect({ onlyIfTrusted: true })
+              
+              if (response.publicKey && response.publicKey.toString() === savedAccount) {
+                // Solana wallet is still connected, restore state
+                setAccount(savedAccount)
+                setWalletType('solana')
+                setBalance(savedBalance)
+                setIsConnected(true)
+                
+                // Show a subtle notification that wallet was restored
+                toast.info(`Solana wallet restored: ${savedAccount.slice(0, 6)}...${savedAccount.slice(-4)}`, {
+                  autoClose: 2000,
+                  hideProgressBar: true
+                })
+              } else {
+                // Wallet disconnected, clear localStorage
+                clearWalletStorage()
+              }
+            } catch (error) {
+              console.error('Error checking Solana wallet connection:', error)
+              clearWalletStorage()
             }
           } else {
             // No wallet extension, clear localStorage
-            localStorage.removeItem('wallet_account')
-            localStorage.removeItem('wallet_chainId')
-            localStorage.removeItem('wallet_balance')
-            localStorage.removeItem('wallet_connected')
+            clearWalletStorage()
           }
         }
       } catch (error) {
@@ -104,6 +122,15 @@ export const Web3Provider = ({ children }: Web3ProviderProps) => {
     loadWalletState()
   }, [])
 
+  // Helper function to clear wallet storage
+  const clearWalletStorage = () => {
+    localStorage.removeItem('wallet_account')
+    localStorage.removeItem('wallet_chainId')
+    localStorage.removeItem('wallet_balance')
+    localStorage.removeItem('wallet_connected')
+    localStorage.removeItem('wallet_type')
+  }
+
   // Save wallet state to localStorage whenever it changes
   useEffect(() => {
     if (account && isConnected) {
@@ -111,13 +138,11 @@ export const Web3Provider = ({ children }: Web3ProviderProps) => {
       localStorage.setItem('wallet_chainId', chainId?.toString() || '')
       localStorage.setItem('wallet_balance', balance || '')
       localStorage.setItem('wallet_connected', 'true')
+      localStorage.setItem('wallet_type', walletType || '')
     } else {
-      localStorage.removeItem('wallet_account')
-      localStorage.removeItem('wallet_chainId')
-      localStorage.removeItem('wallet_balance')
-      localStorage.removeItem('wallet_connected')
+      clearWalletStorage()
     }
-  }, [account, chainId, balance, isConnected])
+  }, [account, chainId, balance, isConnected, walletType])
 
   const connectWallet = async () => {
     // Show wallet selector instead of directly connecting
@@ -141,6 +166,9 @@ export const Web3Provider = ({ children }: Web3ProviderProps) => {
           break
         case 'rainbow':
           await connectRainbow()
+          break
+        case 'phantom':
+          await connectPhantomWallet()
           break
         default:
           toast.error('Unsupported wallet type')
@@ -172,7 +200,7 @@ export const Web3Provider = ({ children }: Web3ProviderProps) => {
       })
 
       if (accounts.length > 0) {
-        await setWalletData(accounts[0])
+        await setWalletData(accounts[0], 'ethereum')
         toast.success('MetaMask connected successfully!')
       }
     } catch (error: any) {
@@ -200,7 +228,7 @@ export const Web3Provider = ({ children }: Web3ProviderProps) => {
       })
 
       if (accounts.length > 0) {
-        await setWalletData(accounts[0])
+        await setWalletData(accounts[0], 'ethereum')
         toast.success('Coinbase Wallet connected successfully!')
       }
     } catch (error: any) {
@@ -238,7 +266,7 @@ export const Web3Provider = ({ children }: Web3ProviderProps) => {
       })
 
       if (accounts.length > 0) {
-        await setWalletData(accounts[0])
+        await setWalletData(accounts[0], 'ethereum')
         toast.success('Rainbow Wallet connected successfully!')
       }
     } catch (error: any) {
@@ -252,22 +280,57 @@ export const Web3Provider = ({ children }: Web3ProviderProps) => {
     }
   }
 
-  const setWalletData = async (accountAddress: string) => {
+  const connectPhantomWallet = async () => {
+    try {
+      // Check if Phantom is installed
+      const isPhantomInstalled = typeof (window as any).solana !== 'undefined' && 
+        (window as any).solana.isPhantom === true
+      
+      if (!isPhantomInstalled) {
+        toast.error('Phantom wallet is not installed. Please install Phantom to continue.')
+        window.open('https://phantom.app/', '_blank')
+        return
+      }
+
+      // Request account access
+      const response = await (window as any).solana.connect()
+      
+      if (response.publicKey) {
+        const publicKey = response.publicKey.toString()
+        await setWalletData(publicKey, 'solana')
+        toast.success('Phantom wallet connected successfully!')
+      }
+    } catch (error: any) {
+      if (error.code === 4001) {
+        toast.error('User rejected the connection request')
+      } else {
+        toast.error('Failed to connect Phantom wallet')
+        console.error('Phantom wallet connection error:', error)
+      }
+      throw error
+    }
+  }
+
+  const setWalletData = async (accountAddress: string, type: 'ethereum' | 'solana' = 'ethereum') => {
     setAccount(accountAddress)
+    setWalletType(type)
     setIsConnected(true)
     
-    // Get chain ID
-    const chainId = await window.ethereum.request({
-      method: 'eth_chainId'
-    })
-    setChainId(parseInt(chainId, 16))
-
-    // Get balance
-    const balance = await window.ethereum.request({
-      method: 'eth_getBalance',
-      params: [accountAddress, 'latest']
-    })
-    setBalance((parseInt(balance, 16) / 1e18).toFixed(4))
+    if (type === 'ethereum') {
+      // Get chain ID for Ethereum
+      const chainId = await window.ethereum.request({
+        method: 'eth_chainId'
+      })
+      setChainId(parseInt(chainId, 16))
+      
+      // Update balance
+      await updateBalance(accountAddress)
+    } else if (type === 'solana') {
+      // For Solana, we don't have chain ID concept, set to null
+      setChainId(null)
+      // TODO: Implement Solana balance fetching
+      setBalance('0.0 SOL')
+    }
   }
 
   const updateBalance = async (accountAddress: string) => {
@@ -342,6 +405,7 @@ export const Web3Provider = ({ children }: Web3ProviderProps) => {
     isConnected,
     account,
     chainId,
+    walletType,
     connectWallet,
     disconnectWallet,
     switchNetwork,

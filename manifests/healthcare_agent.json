@@ -1,0 +1,46 @@
+{
+  "name": "Healthcare Assistant",
+  "description": "AI-powered medical diagnosis and treatment recommendations with MeTTa Knowledge Graph and ASI:One integration",
+  "address": "agent1qgkvje3s0e9vsu7s5dcxf8d8rrw2z3y77dcyzmzjk8s6p6n3ekwlxzjl3vl",
+  "version": "1.0.0",
+  "description": "AI-powered healthcare assistant with MeTTa Knowledge Graph integration",
+  "agent_address": "agent1qgkvje3s0e9vsu7s5dcxf8d8rrw2z3y77dcyzmzjk8s6p6n3ekwlxzjl3vl",
+  "endpoint": "http://localhost:8001/submit",
+  "port": 8001,
+  "capabilities": [
+    "Medical symptom analysis and treatment recommendations",
+    "Drug interaction checking and safety assessments", 
+    "Health information queries and medical guidance",
+    "Integration with MeTTa knowledge for medical data"
+  ],
+  "protocols": [
+    {
+      "name": "chat",
+      "version": "1.0.0",
+      "description": "ASI:One compatible chat protocol",
+      "enabled": true
+    }
+  ],
+  "knowledge_graph": {
+    "type": "MeTTa",
+    "integration": true,
+    "domains": ["healthcare", "medical", "pharmaceutical"]
+  },
+  "asi_integration": {
+    "asi_one": true,
+    "agentverse": true,
+    "chat_protocol": true
+  },
+  "use_cases": [
+    "AI-powered medical assistance",
+    "Symptom analysis and diagnosis support",
+    "Drug interaction checking",
+    "Health information queries"
+  ],
+  "tags": ["healthcare", "medical", "ai-assistant", "metta", "asi-alliance"],
+  "author": "ASI Autonomous Agents Team",
+  "license": "MIT",
+  "repository": "https://github.com/SemiuAdesina/asi-autonomous-agents",
+  "created_at": "2024-01-15T00:00:00Z",
+  "updated_at": "2024-01-15T00:00:00Z"
+}

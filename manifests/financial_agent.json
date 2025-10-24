@@ -1,0 +1,46 @@
+{
+  "name": "Financial Advisor",
+  "description": "DeFi protocol integration and investment strategies with advanced AI reasoning and MeTTa knowledge graphs",
+  "address": "agent1qtm6dj5n89vjda5adz223x7t7pdzle3rskugery36w4en3je67whkuke606",
+  "version": "1.0.0",
+  "description": "AI-powered financial analysis and investment recommendations with MeTTa Knowledge Graph integration",
+  "agent_address": "agent1q0mhyw50uglat30my4ecm93t9xnt0wfegddx9k3s8t0nqn5k42z6qjvd69g",
+  "endpoint": "http://localhost:8003/submit",
+  "port": 8003,
+  "capabilities": [
+    "Market analysis and investment insights",
+    "Portfolio optimization and risk assessment",
+    "DeFi protocol integration and yield farming opportunities",
+    "Real-time financial data analysis"
+  ],
+  "protocols": [
+    {
+      "name": "chat",
+      "version": "1.0.0",
+      "description": "ASI:One compatible chat protocol",
+      "enabled": true
+    }
+  ],
+  "knowledge_graph": {
+    "type": "MeTTa",
+    "integration": true,
+    "domains": ["finance", "defi", "investment", "cryptocurrency"]
+  },
+  "asi_integration": {
+    "asi_one": true,
+    "agentverse": true,
+    "chat_protocol": true
+  },
+  "use_cases": [
+    "DeFi protocol integration",
+    "Portfolio management and optimization",
+    "Investment analysis and recommendations",
+    "Risk assessment and management"
+  ],
+  "tags": ["finance", "defi", "investment", "ai-advisor", "metta", "asi-alliance"],
+  "author": "ASI Autonomous Agents Team",
+  "license": "MIT",
+  "repository": "https://github.com/SemiuAdesina/asi-autonomous-agents",
+  "created_at": "2024-01-15T00:00:00Z",
+  "updated_at": "2024-01-15T00:00:00Z"
+}

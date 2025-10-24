@@ -185,61 +185,61 @@ export default function Network() {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Header */}
         <motion.div 
-          className="text-center mb-16"
+          className="text-center mb-12 sm:mb-16"
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8 }}
         >
-          <h2 className="text-4xl font-bold text-white mb-4" style={{ fontFamily: 'Orbitron, monospace' }}>
+          <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold text-white mb-3 sm:mb-4" style={{ fontFamily: 'Orbitron, monospace' }}>
             Network Overview
           </h2>
-          <p className="text-xl text-gray-300 max-w-3xl mx-auto" style={{ fontFamily: 'Rajdhani, sans-serif' }}>
+          <p className="text-base sm:text-lg md:text-xl text-gray-300 max-w-3xl mx-auto px-4 sm:px-0" style={{ fontFamily: 'Rajdhani, sans-serif' }}>
             Real-time monitoring of the ASI Autonomous Agents Network infrastructure
           </p>
         </motion.div>
 
         {/* Network Stats */}
         <motion.div 
-          className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-12"
+          className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6 mb-8 sm:mb-12"
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8, delay: 0.2 }}
         >
-          <div className="bg-dark-800/50 rounded-lg p-6 border border-primary-500/20">
-            <div className="flex items-center justify-between mb-4">
-              <FontAwesomeIcon icon={faServer} className="w-8 h-8 text-primary-400" />
-              <span className="text-sm text-gray-400" style={{ fontFamily: 'Exo 2, sans-serif' }}>Total Nodes</span>
+          <div className="bg-dark-800/50 rounded-lg p-4 sm:p-6 border border-primary-500/20">
+            <div className="flex items-center justify-between mb-3 sm:mb-4">
+              <FontAwesomeIcon icon={faServer} className="w-6 h-6 sm:w-8 sm:h-8 text-primary-400" />
+              <span className="text-xs sm:text-sm text-gray-400" style={{ fontFamily: 'Exo 2, sans-serif' }}>Total Nodes</span>
             </div>
-            <div className="text-3xl font-bold text-white mb-2" style={{ fontFamily: 'Orbitron, monospace' }}>
+            <div className="text-2xl sm:text-3xl font-bold text-white mb-1 sm:mb-2" style={{ fontFamily: 'Orbitron, monospace' }}>
               {networkStats.totalNodes.toLocaleString()}
             </div>
-            <div className="text-sm text-green-400" style={{ fontFamily: 'Rajdhani, sans-serif' }}>
+            <div className="text-xs sm:text-sm text-green-400" style={{ fontFamily: 'Rajdhani, sans-serif' }}>
               {networkStats.activeNodes} active
             </div>
           </div>
 
-          <div className="bg-dark-800/50 rounded-lg p-6 border border-primary-500/20">
-            <div className="flex items-center justify-between mb-4">
-              <FontAwesomeIcon icon={faNetworkWired} className="w-8 h-8 text-orange-400" />
-              <span className="text-sm text-gray-400" style={{ fontFamily: 'Exo 2, sans-serif' }}>Active Agents</span>
+          <div className="bg-dark-800/50 rounded-lg p-4 sm:p-6 border border-primary-500/20">
+            <div className="flex items-center justify-between mb-3 sm:mb-4">
+              <FontAwesomeIcon icon={faNetworkWired} className="w-6 h-6 sm:w-8 sm:h-8 text-orange-400" />
+              <span className="text-xs sm:text-sm text-gray-400" style={{ fontFamily: 'Exo 2, sans-serif' }}>Active Agents</span>
             </div>
-            <div className="text-3xl font-bold text-white mb-2" style={{ fontFamily: 'Orbitron, monospace' }}>
+            <div className="text-2xl sm:text-3xl font-bold text-white mb-1 sm:mb-2" style={{ fontFamily: 'Orbitron, monospace' }}>
               {networkStats.totalAgents}
             </div>
-            <div className="text-sm text-blue-400" style={{ fontFamily: 'Rajdhani, sans-serif' }}>
+            <div className="text-xs sm:text-sm text-blue-400" style={{ fontFamily: 'Rajdhani, sans-serif' }}>
               Across {networkStats.totalNodes} nodes
             </div>
           </div>
 
-          <div className="bg-dark-800/50 rounded-lg p-6 border border-primary-500/20">
-            <div className="flex items-center justify-between mb-4">
-              <FontAwesomeIcon icon={faChartLine} className="w-8 h-8 text-green-400" />
-              <span className="text-sm text-gray-400" style={{ fontFamily: 'Exo 2, sans-serif' }}>Network Latency</span>
+          <div className="bg-dark-800/50 rounded-lg p-4 sm:p-6 border border-primary-500/20">
+            <div className="flex items-center justify-between mb-3 sm:mb-4">
+              <FontAwesomeIcon icon={faChartLine} className="w-6 h-6 sm:w-8 sm:h-8 text-green-400" />
+              <span className="text-xs sm:text-sm text-gray-400" style={{ fontFamily: 'Exo 2, sans-serif' }}>Network Latency</span>
             </div>
-            <div className="text-3xl font-bold text-white mb-2" style={{ fontFamily: 'Orbitron, monospace' }}>
+            <div className="text-2xl sm:text-3xl font-bold text-white mb-1 sm:mb-2" style={{ fontFamily: 'Orbitron, monospace' }}>
               {networkStats.networkLatency}ms
             </div>
-            <div className="text-sm text-yellow-400" style={{ fontFamily: 'Rajdhani, sans-serif' }}>
+            <div className="text-xs sm:text-sm text-yellow-400" style={{ fontFamily: 'Rajdhani, sans-serif' }}>
               {networkStats.throughput} TPS
             </div>
           </div>
@@ -247,20 +247,20 @@ export default function Network() {
 
         {/* Network Nodes */}
         <motion.div 
-          className="bg-dark-800/30 rounded-lg p-6 border border-primary-500/20"
+          className="bg-dark-800/30 rounded-lg p-4 sm:p-6 border border-primary-500/20"
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8, delay: 0.4 }}
         >
-          <h3 className="text-2xl font-bold text-white mb-6" style={{ fontFamily: 'Orbitron, monospace' }}>
+          <h3 className="text-xl sm:text-2xl font-bold text-white mb-4 sm:mb-6" style={{ fontFamily: 'Orbitron, monospace' }}>
             Network Nodes
           </h3>
           
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4">
             {networkNodes.map((node, index) => (
               <motion.div
                 key={node.id}
-                className={`p-4 rounded-lg border cursor-pointer transition-all duration-300 ${
+                className={`p-3 sm:p-4 rounded-lg border cursor-pointer transition-all duration-300 ${
                   selectedNode?.id === node.id 
                     ? 'border-primary-400 bg-primary-400/10' 
                     : 'border-gray-600 hover:border-primary-400/50 hover:bg-primary-400/5'
@@ -272,20 +272,20 @@ export default function Network() {
                 whileHover={{ scale: 1.02 }}
                 whileTap={{ scale: 0.98 }}
               >
-                <div className="flex items-center justify-between mb-3">
-                  <div className="flex items-center space-x-2">
+                <div className="flex items-center justify-between mb-2 sm:mb-3">
+                  <div className="flex items-center space-x-2 min-w-0 flex-1">
                     {getNodeTypeIcon(node.type)}
-                    <span className="font-medium text-white" style={{ fontFamily: 'Exo 2, sans-serif' }}>
+                    <span className="font-medium text-white text-sm sm:text-base truncate" style={{ fontFamily: 'Exo 2, sans-serif' }}>
                       {node.name}
                     </span>
                   </div>
                   {getStatusIcon(node.status)}
                 </div>
                 
-                <div className="space-y-2 text-sm">
+                <div className="space-y-1 sm:space-y-2 text-xs sm:text-sm">
                   <div className="flex justify-between">
                     <span className="text-gray-400" style={{ fontFamily: 'Rajdhani, sans-serif' }}>Location:</span>
-                    <span className="text-white" style={{ fontFamily: 'Rajdhani, sans-serif' }}>{node.location}</span>
+                    <span className="text-white truncate ml-2" style={{ fontFamily: 'Rajdhani, sans-serif' }}>{node.location}</span>
                   </div>
                   <div className="flex justify-between">
                     <span className="text-gray-400" style={{ fontFamily: 'Rajdhani, sans-serif' }}>Latency:</span>
@@ -308,52 +308,52 @@ export default function Network() {
         {/* Selected Node Details */}
         {selectedNode && (
           <motion.div 
-            className="mt-8 bg-dark-800/50 rounded-lg p-6 border border-primary-500/20"
+            className="mt-6 sm:mt-8 bg-dark-800/50 rounded-lg p-4 sm:p-6 border border-primary-500/20"
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5 }}
           >
-            <h4 className="text-xl font-bold text-white mb-4" style={{ fontFamily: 'Orbitron, monospace' }}>
+            <h4 className="text-lg sm:text-xl font-bold text-white mb-3 sm:mb-4" style={{ fontFamily: 'Orbitron, monospace' }}>
               Node Details: {selectedNode.name}
             </h4>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6">
               <div>
-                <h5 className="text-lg font-semibold text-primary-400 mb-3" style={{ fontFamily: 'Exo 2, sans-serif' }}>
+                <h5 className="text-base sm:text-lg font-semibold text-primary-400 mb-2 sm:mb-3" style={{ fontFamily: 'Exo 2, sans-serif' }}>
                   Performance Metrics
                 </h5>
-                <div className="space-y-2">
+                <div className="space-y-1 sm:space-y-2">
                   <div className="flex justify-between">
-                    <span className="text-gray-400" style={{ fontFamily: 'Rajdhani, sans-serif' }}>Status:</span>
-                    <span className={`capitalize ${selectedNode.status === 'online' ? 'text-green-400' : 'text-yellow-400'}`} style={{ fontFamily: 'Rajdhani, sans-serif' }}>
+                    <span className="text-gray-400 text-sm sm:text-base" style={{ fontFamily: 'Rajdhani, sans-serif' }}>Status:</span>
+                    <span className={`capitalize text-sm sm:text-base ${selectedNode.status === 'online' ? 'text-green-400' : 'text-yellow-400'}`} style={{ fontFamily: 'Rajdhani, sans-serif' }}>
                       {selectedNode.status}
                     </span>
                   </div>
                   <div className="flex justify-between">
-                    <span className="text-gray-400" style={{ fontFamily: 'Rajdhani, sans-serif' }}>Type:</span>
-                    <span className="text-white capitalize" style={{ fontFamily: 'Rajdhani, sans-serif' }}>{selectedNode.type}</span>
+                    <span className="text-gray-400 text-sm sm:text-base" style={{ fontFamily: 'Rajdhani, sans-serif' }}>Type:</span>
+                    <span className="text-white capitalize text-sm sm:text-base" style={{ fontFamily: 'Rajdhani, sans-serif' }}>{selectedNode.type}</span>
                   </div>
                   <div className="flex justify-between">
-                    <span className="text-gray-400" style={{ fontFamily: 'Rajdhani, sans-serif' }}>Location:</span>
-                    <span className="text-white" style={{ fontFamily: 'Rajdhani, sans-serif' }}>{selectedNode.location}</span>
+                    <span className="text-gray-400 text-sm sm:text-base" style={{ fontFamily: 'Rajdhani, sans-serif' }}>Location:</span>
+                    <span className="text-white text-sm sm:text-base" style={{ fontFamily: 'Rajdhani, sans-serif' }}>{selectedNode.location}</span>
                   </div>
                 </div>
               </div>
               <div>
-                <h5 className="text-lg font-semibold text-primary-400 mb-3" style={{ fontFamily: 'Exo 2, sans-serif' }}>
+                <h5 className="text-base sm:text-lg font-semibold text-primary-400 mb-2 sm:mb-3" style={{ fontFamily: 'Exo 2, sans-serif' }}>
                   Network Stats
                 </h5>
-                <div className="space-y-2">
+                <div className="space-y-1 sm:space-y-2">
                   <div className="flex justify-between">
-                    <span className="text-gray-400" style={{ fontFamily: 'Rajdhani, sans-serif' }}>Latency:</span>
-                    <span className="text-white" style={{ fontFamily: 'Rajdhani, sans-serif' }}>{selectedNode.latency}ms</span>
+                    <span className="text-gray-400 text-sm sm:text-base" style={{ fontFamily: 'Rajdhani, sans-serif' }}>Latency:</span>
+                    <span className="text-white text-sm sm:text-base" style={{ fontFamily: 'Rajdhani, sans-serif' }}>{selectedNode.latency}ms</span>
                   </div>
                   <div className="flex justify-between">
-                    <span className="text-gray-400" style={{ fontFamily: 'Rajdhani, sans-serif' }}>Uptime:</span>
-                    <span className="text-green-400" style={{ fontFamily: 'Rajdhani, sans-serif' }}>{selectedNode.uptime}%</span>
+                    <span className="text-gray-400 text-sm sm:text-base" style={{ fontFamily: 'Rajdhani, sans-serif' }}>Uptime:</span>
+                    <span className="text-green-400 text-sm sm:text-base" style={{ fontFamily: 'Rajdhani, sans-serif' }}>{selectedNode.uptime}%</span>
                   </div>
                   <div className="flex justify-between">
-                    <span className="text-gray-400" style={{ fontFamily: 'Rajdhani, sans-serif' }}>Connections:</span>
-                    <span className="text-white" style={{ fontFamily: 'Rajdhani, sans-serif' }}>{selectedNode.connections}</span>
+                    <span className="text-gray-400 text-sm sm:text-base" style={{ fontFamily: 'Rajdhani, sans-serif' }}>Connections:</span>
+                    <span className="text-white text-sm sm:text-base" style={{ fontFamily: 'Rajdhani, sans-serif' }}>{selectedNode.connections}</span>
                   </div>
                 </div>
               </div>

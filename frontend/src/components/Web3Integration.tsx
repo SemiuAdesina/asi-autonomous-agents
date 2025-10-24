@@ -79,10 +79,10 @@ const Web3Integration = () => {
       {showDashboard ? (
         <div>
           <div className="flex items-center justify-between mb-6">
-            <h2 className="text-2xl font-bold text-white font-orbitron">Portfolio Dashboard</h2>
+            <h2 className="text-lg sm:text-2xl font-bold text-white font-orbitron">Portfolio Dashboard</h2>
             <button
               onClick={() => setShowDashboard(false)}
-              className="text-gray-400 hover:text-white transition-colors"
+              className="text-gray-400 hover:text-white transition-colors text-sm sm:text-base"
             >
               ← Back to Wallet
             </button>
@@ -92,10 +92,10 @@ const Web3Integration = () => {
       ) : showDeFi ? (
         <div>
           <div className="flex items-center justify-between mb-6">
-            <h2 className="text-2xl font-bold text-white font-orbitron">DeFi Protocols</h2>
+            <h2 className="text-lg sm:text-2xl font-bold text-white font-orbitron">DeFi Protocols</h2>
             <button
               onClick={() => setShowDeFi(false)}
-              className="text-gray-400 hover:text-white transition-colors"
+              className="text-gray-400 hover:text-white transition-colors text-sm sm:text-base"
             >
               ← Back to Wallet
             </button>
@@ -103,23 +103,23 @@ const Web3Integration = () => {
           <DeFiProtocols />
         </div>
       ) : (
-        <div className="cyber-card p-6">
+        <div className="cyber-card p-4 sm:p-6">
           <div className="flex items-center justify-between mb-6">
-            <h3 className="text-xl font-semibold text-white font-orbitron">Web3 Integration</h3>
-            <FontAwesomeIcon icon={faEthereumBrand} className="w-6 h-6 text-primary-400" />
+            <h3 className="text-lg sm:text-xl font-semibold text-white font-orbitron">Web3 Integration</h3>
+            <FontAwesomeIcon icon={faEthereumBrand} className="w-5 h-5 sm:w-6 sm:h-6 text-primary-400" />
           </div>
 
           {!isConnected ? (
             <div className="text-center">
-              <FontAwesomeIcon icon={faWallet} className="w-16 h-16 text-gray-400 mb-4" />
-              <h4 className="text-lg font-medium text-white mb-2 font-exo">Connect Your Wallet</h4>
-              <p className="text-gray-300 mb-6 font-rajdhani">
+              <FontAwesomeIcon icon={faWallet} className="w-12 h-12 sm:w-16 sm:h-16 text-gray-400 mb-4" />
+              <h4 className="text-base sm:text-lg font-medium text-white mb-2 font-exo">Connect Your Wallet</h4>
+              <p className="text-gray-300 mb-6 font-rajdhani text-sm sm:text-base">
                 Connect your Web3 wallet to interact with DeFi protocols and manage your portfolio
               </p>
               <motion.button
                 onClick={connectWallet}
                 disabled={isLoading}
-                className="cyber-button"
+                className="cyber-button text-sm sm:text-base"
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
               >
@@ -129,14 +129,14 @@ const Web3Integration = () => {
           ) : (
             <div className="space-y-4">
               {/* Connection Status */}
-              <div className="flex items-center justify-between p-4 bg-dark-800/50 rounded-lg">
-                <div className="flex items-center space-x-3">
-                  <div className="w-3 h-3 bg-green-400 rounded-full animate-pulse" />
-                  <span className="text-white font-medium">Connected</span>
+              <div className="flex items-center justify-between p-3 sm:p-4 bg-dark-800/50 rounded-lg">
+                <div className="flex items-center space-x-2 sm:space-x-3">
+                  <div className="w-2 h-2 sm:w-3 sm:h-3 bg-green-400 rounded-full animate-pulse" />
+                  <span className="text-white font-medium text-sm sm:text-base">Connected</span>
                 </div>
                 <button
                   onClick={disconnectWallet}
-                  className="text-gray-400 hover:text-red-400 transition-colors"
+                  className="text-gray-400 hover:text-red-400 transition-colors text-xs sm:text-sm"
                 >
                   Disconnect
                 </button>
@@ -145,48 +145,48 @@ const Web3Integration = () => {
               {/* Account Info */}
               <div className="space-y-3">
                 <div className="flex items-center justify-between">
-                  <span className="text-gray-300">Account:</span>
-                  <span className="text-white font-mono text-sm">
+                  <span className="text-gray-300 text-sm sm:text-base">Account:</span>
+                  <span className="text-white font-mono text-xs sm:text-sm">
                     {account ? formatAddress(account) : 'N/A'}
                   </span>
                 </div>
                 
                 <div className="flex items-center justify-between">
-                  <span className="text-gray-300">Network:</span>
-                  <span className="text-white">{getNetworkName(chainId)}</span>
+                  <span className="text-gray-300 text-sm sm:text-base">Network:</span>
+                  <span className="text-white text-xs sm:text-sm">{getNetworkName(chainId)}</span>
                 </div>
                 
                 <div className="flex items-center justify-between">
-                  <span className="text-gray-300">Balance:</span>
+                  <span className="text-gray-300 text-sm sm:text-base">Balance:</span>
                   <div className="flex items-center space-x-2">
-                    <FontAwesomeIcon icon={faCoins} className="w-4 h-4 text-primary-400" />
-                    <span className="text-white">{balance ? `${balance} ETH` : 'N/A'}</span>
+                    <FontAwesomeIcon icon={faCoins} className="w-3 h-3 sm:w-4 sm:h-4 text-primary-400" />
+                    <span className="text-white text-xs sm:text-sm">{balance ? `${balance} ETH` : 'N/A'}</span>
                   </div>
                 </div>
               </div>
 
               {/* Quick Actions */}
-              <div className="grid grid-cols-2 gap-3 pt-4 border-t border-gray-700/50">
+              <div className="grid grid-cols-2 gap-2 sm:gap-3 pt-4 border-t border-gray-700/50">
                 <motion.button
-                  className="flex items-center justify-center space-x-2 p-3 bg-dark-800/50 hover:bg-primary-500/20 rounded-lg transition-colors disabled:opacity-50"
+                  className="flex items-center justify-center space-x-1 sm:space-x-2 p-2 sm:p-3 bg-dark-800/50 hover:bg-primary-500/20 rounded-lg transition-colors disabled:opacity-50"
                   whileHover={{ scale: 1.02 }}
                   whileTap={{ scale: 0.98 }}
                   onClick={handlePortfolioAnalysis}
                   disabled={isProcessing}
                 >
-                  <FontAwesomeIcon icon={faChartLine} className="w-4 h-4 text-primary-400" />
-                  <span className="text-sm text-white">{isProcessing ? 'Analyzing...' : 'Portfolio'}</span>
+                  <FontAwesomeIcon icon={faChartLine} className="w-3 h-3 sm:w-4 sm:h-4 text-primary-400" />
+                  <span className="text-xs sm:text-sm text-white">{isProcessing ? 'Analyzing...' : 'Portfolio'}</span>
                 </motion.button>
                 
                 <motion.button
-                  className="flex items-center justify-center space-x-2 p-3 bg-dark-800/50 hover:bg-primary-500/20 rounded-lg transition-colors disabled:opacity-50"
+                  className="flex items-center justify-center space-x-1 sm:space-x-2 p-2 sm:p-3 bg-dark-800/50 hover:bg-primary-500/20 rounded-lg transition-colors disabled:opacity-50"
                   whileHover={{ scale: 1.02 }}
                   whileTap={{ scale: 0.98 }}
                   onClick={handleDeFiProtocols}
                   disabled={isProcessing}
                 >
-                  <FontAwesomeIcon icon={faEthereumBrand} className="w-4 h-4 text-primary-400" />
-                  <span className="text-sm text-white">{isProcessing ? 'Loading...' : 'DeFi'}</span>
+                  <FontAwesomeIcon icon={faEthereumBrand} className="w-3 h-3 sm:w-4 sm:h-4 text-primary-400" />
+                  <span className="text-xs sm:text-sm text-white">{isProcessing ? 'Loading...' : 'DeFi'}</span>
                 </motion.button>
               </div>
             </div>
@@ -194,35 +194,35 @@ const Web3Integration = () => {
 
           {/* Demo Mode Notice */}
           {!isConnected && (
-            <div className="mt-6 p-4 bg-blue-500/10 border border-blue-500/30 rounded-lg">
+            <div className="mt-6 p-3 sm:p-4 bg-blue-500/10 border border-blue-500/30 rounded-lg">
               <div className="flex items-center space-x-2 mb-2">
-                <FontAwesomeIcon icon={faEthereumBrand} className="w-4 h-4 text-blue-400" />
-                <span className="text-blue-400 font-medium">Demo Mode Available</span>
+                <FontAwesomeIcon icon={faEthereumBrand} className="w-3 h-3 sm:w-4 sm:h-4 text-blue-400" />
+                <span className="text-blue-400 font-medium text-sm sm:text-base">Demo Mode Available</span>
               </div>
-              <p className="text-blue-300 text-sm mb-3">
+              <p className="text-blue-300 text-xs sm:text-sm mb-3">
                 You can explore portfolio analysis and DeFi protocols without connecting a wallet.
               </p>
-              <div className="grid grid-cols-2 gap-3">
+              <div className="grid grid-cols-2 gap-2 sm:gap-3">
                 <motion.button
-                  className="flex items-center justify-center space-x-2 p-3 bg-blue-500/20 hover:bg-blue-500/30 text-blue-300 hover:text-white rounded-lg transition-colors disabled:opacity-50"
+                  className="flex items-center justify-center space-x-1 sm:space-x-2 p-2 sm:p-3 bg-blue-500/20 hover:bg-blue-500/30 text-blue-300 hover:text-white rounded-lg transition-colors disabled:opacity-50"
                   whileHover={{ scale: 1.02 }}
                   whileTap={{ scale: 0.98 }}
                   onClick={handlePortfolioAnalysis}
                   disabled={isProcessing}
                 >
-                  <FontAwesomeIcon icon={faChartLine} className="w-4 h-4" />
-                  <span className="text-sm">{isProcessing ? 'Analyzing...' : 'Portfolio Demo'}</span>
+                  <FontAwesomeIcon icon={faChartLine} className="w-3 h-3 sm:w-4 sm:h-4" />
+                  <span className="text-xs sm:text-sm">{isProcessing ? 'Analyzing...' : 'Portfolio Demo'}</span>
                 </motion.button>
                 
                 <motion.button
-                  className="flex items-center justify-center space-x-2 p-3 bg-blue-500/20 hover:bg-blue-500/30 text-blue-300 hover:text-white rounded-lg transition-colors disabled:opacity-50"
+                  className="flex items-center justify-center space-x-1 sm:space-x-2 p-2 sm:p-3 bg-blue-500/20 hover:bg-blue-500/30 text-blue-300 hover:text-white rounded-lg transition-colors disabled:opacity-50"
                   whileHover={{ scale: 1.02 }}
                   whileTap={{ scale: 0.98 }}
                   onClick={handleDeFiProtocols}
                   disabled={isProcessing}
                 >
-                  <FontAwesomeIcon icon={faEthereumBrand} className="w-4 h-4" />
-                  <span className="text-sm">{isProcessing ? 'Loading...' : 'DeFi Demo'}</span>
+                  <FontAwesomeIcon icon={faEthereumBrand} className="w-3 h-3 sm:w-4 sm:h-4" />
+                  <span className="text-xs sm:text-sm">{isProcessing ? 'Loading...' : 'DeFi Demo'}</span>
                 </motion.button>
               </div>
             </div>

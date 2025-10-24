@@ -87,10 +87,62 @@ def get_domain_knowledge(domain_name):
     except Exception as e:
         return jsonify({'error': f'Failed to get domain knowledge: {str(e)}'}), 500
 
+@knowledge_bp.route('/concept', methods=['POST'])
+@jwt_required()
+def add_concept():
+    """Add new concept to the knowledge graph"""
+    data = request.get_json()
+    
+    if not data or not data.get('concept'):
+        return jsonify({'error': 'Concept is required'}), 400
+    
+    concept = data['concept']
+    definition = data.get('definition', '')
+    domain = data.get('domain', 'general')
+    confidence_score = data.get('confidence_score', 0.8)
+    relationships = data.get('relationships', {})
+    source = data.get('source', 'manual')
+    
+    try:
+        # Add to MeTTa Knowledge Graph
+        metta_success = knowledge_graph.add_concept(concept, {
+            'definition': definition,
+            'domain': domain,
+            'confidence_score': confidence_score,
+            'relationships': relationships
+        })
+        
+        # Add to local knowledge base
+        local_knowledge = KnowledgeGraph(
+            concept=concept,
+            definition=definition,
+            domain=domain,
+            relationships=relationships,
+            source=source,
+            confidence_score=confidence_score
+        )
+        
+        db.session.add(local_knowledge)
+        db.session.commit()
+        
+        return jsonify({
+            'message': 'Concept added successfully',
+            'concept': concept,
+            'definition': definition,
+            'domain': domain,
+            'metta_success': metta_success,
+            'local_id': local_knowledge.id,
+            'timestamp': datetime.utcnow().isoformat()
+        }), 201
+        
+    except Exception as e:
+        db.session.rollback()
+        return jsonify({'error': f'Failed to add concept: {str(e)}'}), 500
+
 @knowledge_bp.route('/add', methods=['POST'])
 @jwt_required()
 def add_knowledge():
-    """Add new knowledge to the graph"""
+    """Add new knowledge to the graph (legacy endpoint)"""
     data = request.get_json()
     
     if not data or not data.get('concept'):
@@ -179,3 +231,120 @@ def search_knowledge():
         
     except Exception as e:
         return jsonify({'error': f'Search failed: {str(e)}'}), 500
+        
+@knowledge_bp.route('/concepts', methods=['GET'])
+@jwt_required()
+def get_concepts():
+    """Get all concepts from the knowledge graph"""
+    try:
+        page = int(request.args.get('page', 1))
+        per_page = int(request.args.get('per_page', 20))
+        domain = request.args.get('domain', None)
+        
+        query = KnowledgeGraph.query
+        if domain:
+            query = query.filter_by(domain=domain)
+        
+        concepts = query.paginate(
+            page=page, 
+            per_page=per_page, 
+            error_out=False
+        )
+        
+        return jsonify({
+            'concepts': [{
+                'id': concept.id,
+                'concept': concept.concept,
+                'definition': concept.definition,
+                'domain': concept.domain,
+                'confidence_score': concept.confidence_score,
+                'source': concept.source,
+                'created_at': concept.created_at.isoformat(),
+                'updated_at': concept.updated_at.isoformat()
+            } for concept in concepts.items],
+            'pagination': {
+                'page': page,
+                'per_page': per_page,
+                'total': concepts.total,
+                'pages': concepts.pages,
+                'has_next': concepts.has_next,
+                'has_prev': concepts.has_prev
+            },
+            'timestamp': datetime.utcnow().isoformat()
+        }), 200
+        
+    except Exception as e:
+        return jsonify({'error': f'Failed to get concepts: {str(e)}'}), 500
+
+@knowledge_bp.route('/concept/<int:concept_id>', methods=['PUT'])
+@jwt_required()
+def update_concept(concept_id):
+    """Update a concept in the knowledge graph"""
+    data = request.get_json()
+    
+    if not data:
+        return jsonify({'error': 'No data provided'}), 400
+    
+    try:
+        concept = KnowledgeGraph.query.get(concept_id)
+        if not concept:
+            return jsonify({'error': 'Concept not found'}), 404
+        
+        # Update fields if provided
+        if 'concept' in data:
+            concept.concept = data['concept']
+        if 'definition' in data:
+            concept.definition = data['definition']
+        if 'domain' in data:
+            concept.domain = data['domain']
+        if 'confidence_score' in data:
+            concept.confidence_score = data['confidence_score']
+        if 'relationships' in data:
+            concept.relationships = data['relationships']
+        if 'source' in data:
+            concept.source = data['source']
+        
+        concept.updated_at = datetime.utcnow()
+        
+        db.session.commit()
+        
+        return jsonify({
+            'message': 'Concept updated successfully',
+            'concept': {
+                'id': concept.id,
+                'concept': concept.concept,
+                'definition': concept.definition,
+                'domain': concept.domain,
+                'confidence_score': concept.confidence_score,
+                'source': concept.source,
+                'updated_at': concept.updated_at.isoformat()
+            },
+            'timestamp': datetime.utcnow().isoformat()
+        }), 200
+        
+    except Exception as e:
+        db.session.rollback()
+        return jsonify({'error': f'Failed to update concept: {str(e)}'}), 500
+
+@knowledge_bp.route('/concept/<int:concept_id>', methods=['DELETE'])
+@jwt_required()
+def delete_concept(concept_id):
+    """Delete a concept from the knowledge graph"""
+    try:
+        concept = KnowledgeGraph.query.get(concept_id)
+        if not concept:
+            return jsonify({'error': 'Concept not found'}), 404
+        
+        concept_name = concept.concept
+        db.session.delete(concept)
+        db.session.commit()
+        
+        return jsonify({
+            'message': 'Concept deleted successfully',
+            'concept_name': concept_name,
+            'timestamp': datetime.utcnow().isoformat()
+        }), 200
+        
+    except Exception as e:
+        db.session.rollback()
+        return jsonify({'error': f'Failed to delete concept: {str(e)}'}), 500

@@ -7,6 +7,7 @@ import uuid
 agents_bp = Blueprint('agents', __name__)
 
 @agents_bp.route('/', methods=['GET', 'POST'])
+@agents_bp.route('', methods=['GET', 'POST'])
 def agents():
     """Get all available agents or create a new agent"""
     if request.method == 'GET':
@@ -110,7 +111,7 @@ def connect_agent():
     session_id = str(uuid.uuid4())
     session = AgentSession(
         agent_id=agent.id,
-        user_id=user_id,
+        user_id=int(user_id),
         session_id=session_id,
         status='active'
     )
@@ -137,7 +138,7 @@ def disconnect_agent():
     
     session = AgentSession.query.filter_by(
         session_id=data['session_id'],
-        user_id=user_id,
+        user_id=int(user_id),
         status='active'
     ).first()
     
@@ -199,7 +200,7 @@ def deploy_agent():
         description=data.get('description'),
         capabilities=data.get('capabilities', []),
         agent_type=data.get('agent_type', 'general'),
-        owner_id=user_id,
+        owner_id=int(user_id),
         agent_metadata=data.get('metadata', {})
     )
     

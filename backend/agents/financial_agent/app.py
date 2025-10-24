@@ -7,19 +7,43 @@ Based on ASI Alliance Render deployment guide
 from datetime import datetime
 from uuid import uuid4
 import os
+from typing import List
 from dotenv import load_dotenv
 from openai import OpenAI
-from uagents import Context, Protocol, Agent
-from uagents_core.contrib.protocols.chat import (
-    ChatAcknowledgement,
-    ChatMessage,
-    EndSessionContent,
-    TextContent,
-    chat_protocol_spec,
-)
+from uagents import Context, Protocol, Agent, Model
+from pydantic import Field
 
 # Load environment variables
 load_dotenv()
+
+# Define Chat Protocol models
+class TextContent(Model):
+    type: str = "text"
+    text: str
+
+class ChatMessage(Model):
+    timestamp: datetime
+    msg_id: str
+    content: List[TextContent]
+
+class ChatResponse(Model):
+    timestamp: datetime
+    msg_id: str
+    content: List[TextContent]
+    agent_name: str = "Financial Advisor"
+
+class StartSessionContent(Model):
+    type: str = "start_session"
+    message: str = "Hello! I'm your Financial Advisor. How can I help you with your financial needs today?"
+
+class EndSessionContent(Model):
+    type: str = "end_session"
+    message: str = "Thank you for using Financial Advisor. Make wise investments!"
+
+class ChatAcknowledgement(Model):
+    timestamp: datetime
+    msg_id: str
+    status: str = "acknowledged"
 
 # Initialize ASI:One client
 client = OpenAI(
@@ -35,8 +59,8 @@ agent = Agent(
     mailbox=True,  # Enable mailbox for Agentverse
 )
 
-# Initialize chat protocol
-protocol = Protocol(spec=chat_protocol_spec)
+# Initialize the chat protocol
+protocol = Protocol("chat", version="1.0.0")
 
 @protocol.on_message(ChatMessage)
 async def handle_message(ctx: Context, sender: str, msg: ChatMessage):

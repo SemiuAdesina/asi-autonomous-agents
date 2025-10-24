@@ -4,6 +4,10 @@ const nextConfig = {
   swcMinify: true,
   // Optimize fonts
   optimizeFonts: true,
+  // Disable Next.js development indicator completely
+  devIndicators: {
+    buildActivity: false,
+  },
   // Enable Web3-friendly features
   webpack: (config) => {
     config.resolve.fallback = {

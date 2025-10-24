@@ -12,6 +12,7 @@ class User(db.Model):
     id = Column(Integer, primary_key=True)
     username = Column(String(80), unique=True, nullable=False)
     email = Column(String(120), unique=True, nullable=False)
+    password_hash = Column(String(128), nullable=False)
     wallet_address = Column(String(42), unique=True, nullable=True)
     created_at = Column(DateTime, default=datetime.utcnow)
     is_active = Column(Boolean, default=True)
@@ -48,7 +49,7 @@ class Message(db.Model):
     user_id = Column(Integer, ForeignKey('users.id'), nullable=True)
     timestamp = Column(DateTime, default=datetime.utcnow)
     message_type = Column(String(20), default='text')  # text, image, file, command
-    agent_metadata = Column(JSON, nullable=True)
+    message_metadata = Column(JSON, nullable=True)  # Changed from metadata to message_metadata
 
 class KnowledgeGraph(db.Model):
     __tablename__ = 'knowledge_graph'
@@ -56,6 +57,7 @@ class KnowledgeGraph(db.Model):
     id = Column(Integer, primary_key=True)
     concept = Column(String(200), nullable=False)
     definition = Column(Text, nullable=True)
+    domain = Column(String(100), nullable=True, default='general')
     relationships = Column(JSON, nullable=True)
     source = Column(String(100), nullable=True)  # metta, manual, imported
     confidence_score = Column(Integer, default=0)

@@ -3,10 +3,8 @@
 import { motion } from 'framer-motion'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faArrowRight, faZap, faBrain, faNetworkWired, faShield } from '@fortawesome/free-solid-svg-icons'
-import { useMobileMenu } from '../contexts/MobileMenuContext'
 
 const Hero = () => {
-  const { isMobileMenuOpen } = useMobileMenu()
   const features = [
     { icon: faBrain, text: 'Autonomous Decision Making' },
     { icon: faNetworkWired, text: 'Decentralized Communication' },
@@ -16,11 +14,7 @@ const Hero = () => {
 
   return (
     <motion.section 
-      className="relative min-h-screen flex items-center justify-center overflow-hidden"
-      animate={{ 
-        paddingTop: isMobileMenuOpen ? '12rem' : '4rem',
-        transition: { duration: 0.3, ease: 'easeInOut' }
-      }}
+      className="relative min-h-[45vh] flex items-center justify-center overflow-hidden pt-8 sm:pt-12"
     >
       {/* Background Effects */}
       <div className="absolute inset-0 bg-gradient-to-br from-dark-900 via-dark-800 to-dark-900" />
@@ -37,19 +31,41 @@ const Hero = () => {
           transition={{ duration: 0.8 }}
         >
           <motion.h1 
-            className="text-5xl md:text-7xl font-bold mb-6"
+            className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl xl:text-7xl font-bold mb-1 sm:mb-2"
             style={{ fontFamily: 'Orbitron, monospace' }}
-            initial={{ opacity: 0, scale: 0.8 }}
+            initial={{ opacity: 0, scale: 0.9 }}
             animate={{ opacity: 1, scale: 1 }}
-            transition={{ duration: 1, delay: 0.2 }}
+            transition={{ duration: 0.6, delay: 0.2 }}
           >
-            <span className="glow-text" style={{ fontFamily: 'Orbitron, monospace' }}>ASI Autonomous</span>
+            <motion.span 
+              className="glow-text" 
+              style={{ fontFamily: 'Orbitron, monospace' }}
+              initial={{ opacity: 0, x: -30 }}
+              animate={{ 
+                opacity: 1, 
+                x: 0
+              }}
+              transition={{ 
+                duration: 0.6, 
+                delay: 0.3
+              }}
+            >
+              ASI Autonomous
+            </motion.span>
             <br />
-            <span className="text-white" style={{ fontFamily: 'Orbitron, monospace' }}>Agents Platform</span>
+            <motion.span 
+              className="text-white font-bold" 
+              style={{ fontFamily: 'Orbitron, monospace' }}
+              initial={{ opacity: 0, x: 30 }}
+              animate={{ opacity: 1, x: 0 }}
+              transition={{ duration: 0.6, delay: 0.5 }}
+            >
+              Agents Platform
+            </motion.span>
           </motion.h1>
 
           <motion.p 
-            className="text-xl md:text-2xl text-gray-300 mb-8 max-w-3xl mx-auto leading-relaxed"
+            className="text-base sm:text-lg md:text-xl lg:text-2xl text-gray-200 mb-2 sm:mb-3 max-w-3xl mx-auto leading-relaxed px-4 sm:px-0 font-medium"
             style={{ fontFamily: 'Rajdhani, sans-serif' }}
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
@@ -60,24 +76,24 @@ const Hero = () => {
           </motion.p>
 
           <motion.div 
-            className="flex flex-col sm:flex-row gap-4 justify-center mb-12"
+            className="flex flex-col sm:flex-row gap-3 sm:gap-4 justify-center mb-3 sm:mb-4 px-4 sm:px-0"
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8, delay: 0.6 }}
           >
             <motion.button 
-              className="cyber-button group"
+              className="cyber-button group text-sm sm:text-base px-6 sm:px-8 py-3 sm:py-4"
               style={{ fontFamily: 'Exo 2, sans-serif' }}
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
               onClick={() => document.getElementById('agents')?.scrollIntoView({ behavior: 'smooth' })}
             >
               <span>Explore Agents</span>
-              <FontAwesomeIcon icon={faArrowRight} className="w-5 h-5 ml-2 group-hover:translate-x-1 transition-transform" />
+              <FontAwesomeIcon icon={faArrowRight} className="w-4 h-4 sm:w-5 sm:h-5 ml-2 group-hover:translate-x-1 transition-transform" />
             </motion.button>
             
             <motion.button 
-              className="px-8 py-3 border border-primary-500/50 text-primary-400 hover:bg-primary-500/10 rounded-lg transition-all duration-300"
+              className="px-6 sm:px-8 py-3 sm:py-4 border border-primary-500/50 text-primary-400 hover:bg-primary-500/10 rounded-lg transition-all duration-300 text-sm sm:text-base"
               style={{ fontFamily: 'Exo 2, sans-serif' }}
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
@@ -89,7 +105,7 @@ const Hero = () => {
 
           {/* Feature Grid */}
           <motion.div 
-            className="grid grid-cols-2 md:grid-cols-4 gap-6 max-w-4xl mx-auto"
+            className="grid grid-cols-2 md:grid-cols-4 gap-3 sm:gap-4 md:gap-6 max-w-4xl mx-auto px-4 sm:px-0"
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8, delay: 0.8 }}
@@ -97,14 +113,14 @@ const Hero = () => {
             {features.map((feature, index) => (
               <motion.div
                 key={index}
-                className="cyber-card p-6 text-center group hover:border-primary-500/50 transition-all duration-300"
+                className="cyber-card p-3 sm:p-4 md:p-6 text-center group hover:border-primary-500/50 transition-all duration-300"
                 whileHover={{ scale: 1.05, y: -5 }}
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.9 + index * 0.1 }}
               >
-                <FontAwesomeIcon icon={feature.icon} className="w-8 h-8 text-primary-400 mx-auto mb-3 group-hover:text-primary-300 transition-colors" />
-                <p className="text-sm text-gray-300 group-hover:text-white transition-colors" style={{ fontFamily: 'Rajdhani, sans-serif' }}>
+                <FontAwesomeIcon icon={feature.icon} className="w-6 h-6 sm:w-7 sm:h-7 md:w-8 md:h-8 text-primary-400 mx-auto mb-2 sm:mb-3 group-hover:text-primary-300 transition-colors" />
+                <p className="text-xs sm:text-sm text-gray-300 group-hover:text-white transition-colors leading-tight" style={{ fontFamily: 'Rajdhani, sans-serif' }}>
                   {feature.text}
                 </p>
               </motion.div>
@@ -115,18 +131,18 @@ const Hero = () => {
 
       {/* Scroll Indicator */}
       <motion.div 
-        className="absolute bottom-8 left-1/2 transform -translate-x-1/2"
+        className="absolute bottom-4 sm:bottom-8 left-1/2 transform -translate-x-1/2"
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         transition={{ delay: 1.5 }}
       >
         <motion.div
-          className="w-6 h-10 border-2 border-primary-500/50 rounded-full flex justify-center"
+          className="w-5 h-8 sm:w-6 sm:h-10 border-2 border-primary-500/50 rounded-full flex justify-center"
           animate={{ y: [0, 10, 0] }}
           transition={{ duration: 2, repeat: Infinity }}
         >
           <motion.div 
-            className="w-1 h-3 bg-primary-500 rounded-full mt-2"
+            className="w-1 h-2 sm:h-3 bg-primary-500 rounded-full mt-1 sm:mt-2"
             animate={{ y: [0, 12, 0] }}
             transition={{ duration: 2, repeat: Infinity }}
           />

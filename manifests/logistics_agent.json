@@ -1,0 +1,46 @@
+{
+  "name": "Logistics Coordinator",
+  "description": "Supply chain optimization and delivery management with enhanced AI capabilities and MeTTa knowledge graphs",
+  "address": "agent1q09g48srfjc74zzlr80ag93qaaev7ue9vhgl2u3jgykca0trwm2hxpw66jl",
+  "version": "1.0.0",
+  "description": "AI-powered supply chain optimization and delivery management with MeTTa Knowledge Graph integration",
+  "agent_address": "agent1qve8agrlc8yjqa3wqrz7cehwr2eh06yq4339afd0hhd0ec4g7vwyv5pw40u",
+  "endpoint": "http://localhost:8004/submit",
+  "port": 8004,
+  "capabilities": [
+    "Supply chain analysis and optimization",
+    "Route optimization and delivery tracking",
+    "Inventory management and demand forecasting",
+    "Cross-agent coordination for complex logistics tasks"
+  ],
+  "protocols": [
+    {
+      "name": "chat",
+      "version": "1.0.0",
+      "description": "ASI:One compatible chat protocol",
+      "enabled": true
+    }
+  ],
+  "knowledge_graph": {
+    "type": "MeTTa",
+    "integration": true,
+    "domains": ["logistics", "supply-chain", "transportation", "inventory"]
+  },
+  "asi_integration": {
+    "asi_one": true,
+    "agentverse": true,
+    "chat_protocol": true
+  },
+  "use_cases": [
+    "Supply chain optimization",
+    "Route planning and optimization",
+    "Inventory management",
+    "Delivery tracking and coordination"
+  ],
+  "tags": ["logistics", "supply-chain", "transportation", "ai-coordinator", "metta", "asi-alliance"],
+  "author": "ASI Autonomous Agents Team",
+  "license": "MIT",
+  "repository": "https://github.com/SemiuAdesina/asi-autonomous-agents",
+  "created_at": "2024-01-15T00:00:00Z",
+  "updated_at": "2024-01-15T00:00:00Z"
+}

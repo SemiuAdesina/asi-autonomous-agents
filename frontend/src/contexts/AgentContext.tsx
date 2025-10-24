@@ -1,9 +1,9 @@
 'use client'
 
-import { createContext, useContext, useState, useEffect, ReactNode } from 'react'
+import { createContext, useContext, useState, useEffect, ReactNode, useCallback } from 'react'
 import { toast } from 'react-toastify'
-import io, { Socket } from 'socket.io-client'
 import DirectAgentService from '../services/agentCommunication'
+import { useAuth } from './AuthContext'
 
 interface Agent {
   id: string
@@ -46,73 +46,85 @@ interface AgentProviderProps {
   children: ReactNode
 }
 
+const getDemoAgents = (): Agent[] => [
+  {
+    id: 'healthcare-agent',
+    name: 'Healthcare Assistant',
+    address: 'agent1qgkvje3s0e9vsu7s5dcxf8d8rrw2z3y77dcyzmzjk8s6p6n3ekwlxzjl3vl',
+    status: 'active',
+    capabilities: ['Medical Analysis', 'Symptom Checker', 'Treatment Planning', 'Drug Interaction Check', 'MeTTa Knowledge Graph', 'ASI:One Integration', 'Chat Protocol', 'Render-Optimized'],
+    lastSeen: new Date(),
+    description: 'AI-powered medical diagnosis with MeTTa Knowledge Graph, ASI:One integration, and Chat Protocol. Render-optimized for production deployment on port 8001.'
+  },
+  {
+    id: 'logistics-agent',
+    name: 'Logistics Coordinator',
+    address: 'agent1q09g48srfjc74zzlr80ag93qaaev7ue9vhgl2u3jgykca0trwm2hxpw66jl',
+    status: 'active',
+    capabilities: ['Route Optimization', 'Inventory Management', 'Delivery Tracking', 'Supply Chain Analysis', 'MeTTa Knowledge Graph', 'ASI:One Integration', 'Chat Protocol', 'Render-Optimized'],
+    lastSeen: new Date(),
+    description: 'Supply chain optimization with MeTTa Knowledge Graph, ASI:One integration, and Chat Protocol. Render-optimized for production deployment on port 8002.'
+  },
+  {
+    id: 'financial-agent',
+    name: 'Financial Advisor',
+    address: 'agent1qtm6dj5n89vjda5adz223x7t7pdzle3rskugery36w4en3je67whkuke606',
+    status: 'active',
+    capabilities: ['Portfolio Management', 'Risk Assessment', 'Investment Analysis', 'Market Analysis', 'MeTTa Knowledge Graph', 'ASI:One Integration', 'Chat Protocol', 'Render-Optimized'],
+    lastSeen: new Date(),
+    description: 'Advanced financial advisory with MeTTa Knowledge Graph, ASI:One integration, and Chat Protocol. Render-optimized for production deployment on port 8003.'
+  }
+]
+
 export const AgentProvider = ({ children }: AgentProviderProps) => {
-  const [agents, setAgents] = useState<Agent[]>([])
+  const { isAuthenticated, user } = useAuth()
+  const [agents, setAgents] = useState<Agent[]>(() => {
+    // Initialize with demo agents immediately
+    console.log('🚀 AgentProvider initializing with demo agents...')
+    const demoAgents = getDemoAgents()
+    console.log('📋 Initial demo agents:', demoAgents.length)
+    return demoAgents
+  })
   const [isDiscovering, setIsDiscovering] = useState(false)
   const [isSwitchingAgent, setIsSwitchingAgent] = useState(false)
   
   // Initialize direct agent communication service
   const [agentService] = useState(() => new DirectAgentService())
 
-  const discoverAgents = async () => {
+  const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5001'
+
+  const discoverAgents = useCallback(async () => {
+    console.log('🔍 Starting agent discovery...')
     setIsDiscovering(true)
     try {
-      // Simulate fetching agents from Fetch.ai Agentverse registry
-      const response = await fetch('/api/discover-agents')
-      if (response.ok) {
-        const discoveredAgents = await response.json()
-        setAgents(discoveredAgents)
-      } else {
-        // Fallback to demo agents if discovery fails
-        setAgents(getDemoAgents())
-      }
+      // For now, directly use demo agents since we have MeTTa-integrated agents running
+      console.log('Loading MeTTa-integrated agents...')
+      const demoAgents = getDemoAgents()
+      console.log('📋 Demo agents:', demoAgents)
+      console.log('📋 Demo agents length:', demoAgents.length)
+      setAgents(demoAgents)
+      console.log('✅ Agents state set, current agents length:', agents.length)
+      console.log('✅ Agents loaded:', demoAgents.length, 'agents')
     } catch (error) {
-      console.error('Agent discovery failed:', error)
+      console.error('❌ Agent discovery failed:', error)
       // Fallback to demo agents
-      setAgents(getDemoAgents())
+      const fallbackAgents = getDemoAgents()
+      setAgents(fallbackAgents)
+      console.log('🔄 Fallback agents loaded:', fallbackAgents.length, 'agents')
     } finally {
       setIsDiscovering(false)
+      console.log('🏁 Agent discovery completed')
     }
-  }
-
-  const getDemoAgents = (): Agent[] => [
-    {
-      id: 'healthcare-agent',
-      name: 'Healthcare Assistant',
-      address: 'agent1qgkvje3s0e9vsu7s5dcxf8d8rrw2z3y77dcyzmzjk8s6p6n3ekwlxzjl3vl',
-      status: 'active',
-      capabilities: ['Medical Analysis', 'Symptom Checker', 'Treatment Planning', 'Drug Interaction Check'],
-      lastSeen: new Date(),
-      description: 'AI-powered medical diagnosis and treatment recommendations with MeTTa Knowledge Graph integration'
-    },
-    {
-      id: 'logistics-agent',
-      name: 'Logistics Coordinator',
-      address: 'agent1qve8agrlc8yjqa3wqrz7cehwr2eh06yq4339afd0hhd0ec4g7vwyv5pw40u',
-      status: 'active',
-      capabilities: ['Route Optimization', 'Inventory Management', 'Delivery Tracking', 'Supply Chain Analysis'],
-      lastSeen: new Date(),
-      description: 'Supply chain optimization and delivery management'
-    },
-    {
-      id: 'financial-agent',
-      name: 'Financial Advisor',
-      address: 'agent1q0mhyw50uglat30my4ecm93t9xnt0wfegddx9k3s8t0nqn5k42z6qjvd69g',
-      status: 'active',
-      capabilities: ['Portfolio Management', 'Risk Assessment', 'DeFi Integration', 'Market Analysis'],
-      lastSeen: new Date(),
-      description: 'DeFi protocol integration and investment strategies'
-    }
-  ]
+  }, [])
 
   // Discover agents on component mount
   useEffect(() => {
+    console.log('🚀 AgentContext mounted, starting agent discovery...')
     discoverAgents()
-  }, [])
+  }, []) // Remove discoverAgents from dependency array to avoid infinite loops
   
   const [selectedAgent, setSelectedAgent] = useState<Agent | null>(null)
   const [isConnected, setIsConnected] = useState(false)
-  const [socket, setSocket] = useState<Socket | null>(null)
   const [messages, setMessages] = useState<Array<{
     id: string
     content: string
@@ -123,9 +135,9 @@ export const AgentProvider = ({ children }: AgentProviderProps) => {
   // Generate intelligent agent responses based on agent type and user message
   const generateAgentResponse = async (agent: Agent, message: string): Promise<string> => {
     const agentPrompts = {
-      'healthcare-agent': `You are a Healthcare Assistant AI. Respond to this healthcare-related query: "${message}". Provide helpful, accurate medical information while reminding users to consult healthcare professionals for serious concerns.`,
-      'logistics-agent': `You are a Logistics Coordinator AI. Respond to this logistics query: "${message}". Focus on supply chain optimization, route planning, inventory management, and delivery tracking solutions.`,
-      'financial-agent': `You are a Financial Advisor AI. Respond to this financial query: "${message}". Provide insights on portfolio management, DeFi protocols, risk assessment, and investment strategies.`
+      'healthcare-agent': `You are a Healthcare Assistant AI with MeTTa Knowledge Graph and ASI:One integration. Respond to this healthcare-related query: "${message}". Provide helpful, accurate medical information using advanced AI reasoning and knowledge graph insights while reminding users to consult healthcare professionals for serious concerns.`,
+      'logistics-agent': `You are a Logistics Coordinator AI with MeTTa Knowledge Graph and ASI:One integration. Respond to this logistics query: "${message}". Focus on supply chain optimization, route planning, inventory management, and delivery tracking solutions using enhanced AI capabilities and knowledge graph reasoning.`,
+      'financial-agent': `You are a Financial Advisor AI with MeTTa Knowledge Graph and ASI:One integration. Respond to this financial query: "${message}". Provide insights on portfolio management, DeFi protocols, risk assessment, and investment strategies using advanced AI reasoning and knowledge graph analysis.`
     }
 
     const prompt = agentPrompts[agent.id as keyof typeof agentPrompts] || 
@@ -181,6 +193,36 @@ export const AgentProvider = ({ children }: AgentProviderProps) => {
     return agentResponses[Math.floor(Math.random() * agentResponses.length)]
   }
 
+  const loadMessageHistory = async (agentId: string) => {
+    if (!isAuthenticated || !user) return
+
+    try {
+      const token = localStorage.getItem('auth_token')
+      const response = await fetch(`${API_BASE_URL}/api/messages/?agent_id=${agentId}`, {
+        headers: {
+          'Authorization': `Bearer ${token}`
+        }
+      })
+
+      if (response.ok) {
+        const data = await response.json()
+        const messageHistory = data.map((msg: any) => ({
+          id: msg.id.toString(),
+          content: msg.content,
+          sender: msg.sender_type === 'user' ? 'user' as const : 'agent' as const,
+          timestamp: new Date(msg.timestamp)
+        }))
+        
+        // Sort by timestamp and set messages
+        messageHistory.sort((a: any, b: any) => new Date(a.timestamp).getTime() - new Date(b.timestamp).getTime())
+        setMessages(messageHistory)
+        console.log(`Loaded ${messageHistory.length} messages from history`)
+      }
+    } catch (error) {
+      console.error('Failed to load message history:', error)
+    }
+  }
+
   const connectAgent = async (agentId: string) => {
     try {
       const agent = agents.find(a => a.id === agentId)
@@ -189,23 +231,9 @@ export const AgentProvider = ({ children }: AgentProviderProps) => {
         return
       }
 
-      console.log(`Attempting direct connection to agent: ${agent.name}`)
+      console.log(`🔗 Connecting to agent: ${agent.name}`)
       
-      // Try direct connection first
-      const directConnected = await agentService.connectToAgent(agentId)
-      
-      if (directConnected) {
-        console.log(`Direct connection to ${agent.name} successful`)
-        setSelectedAgent(agent)
-        setIsConnected(true)
-        toast.success(`Connected to ${agent.name} (Direct)`)
-        return
-      }
-      
-      // Fallback to backend connection
-      console.log(`Direct connection failed, trying backend connection`)
-      
-      // Check if already connected to this agent via backend
+      // Check if already connected to this agent
       if (isConnected && selectedAgent?.id === agentId) {
         toast.info(`Already connected to ${agent.name}`)
         return
@@ -214,33 +242,21 @@ export const AgentProvider = ({ children }: AgentProviderProps) => {
       // Disconnect from current agent if connected to a different one
       if (isConnected && selectedAgent?.id !== agentId) {
         setIsSwitchingAgent(true)
-        // Disconnect without showing notifications
-        if (socket) {
-          socket.disconnect()
-          setSocket(null)
-        }
-        setSelectedAgent(null)
-        setIsConnected(false)
-        setMessages([])
+        await disconnectAgent()
         await new Promise(resolve => setTimeout(resolve, 100))
       }
 
-      // Initialize WebSocket connection to backend
-      const newSocket = io('http://localhost:5001', {
-        transports: ['websocket', 'polling']
-      })
-
-      newSocket.on('connect', () => {
-        console.log('Connected to backend WebSocket')
+      // Use direct agent communication
+      console.log(`📡 Using direct agent communication for ${agent.name}`)
+      
+      // Connect to the agent using DirectAgentService
+      const connected = await agentService.connectToAgent(agentId)
+      
+      if (connected) {
+        console.log(`✅ Successfully connected to ${agent.name}`)
         setIsConnected(true)
         setSelectedAgent(agent)
-        setIsSwitchingAgent(false) // Reset switching flag after successful connection
-        
-        // Join agent room
-        newSocket.emit('join_agent', { agent_id: agentId })
-        
-        // Only show connection success notification
-        toast.success(`Connected to ${agent.name}`)
+        setIsSwitchingAgent(false)
         
         // Add welcome message
         setMessages([{
@@ -249,74 +265,18 @@ export const AgentProvider = ({ children }: AgentProviderProps) => {
           sender: 'agent',
           timestamp: new Date()
         }])
-      })
-
-      newSocket.on('disconnect', (reason) => {
-        console.log('Disconnected from backend WebSocket:', reason)
-        setIsConnected(false)
-        // Only show connection lost if we're not switching agents and it's not a manual disconnect
-        if (!isSwitchingAgent && reason !== 'io client disconnect') {
-          toast.error('Connection lost')
-        }
-      })
-
-      newSocket.on('agent_response', (data) => {
-        console.log('Received agent response:', data)
-        const agentMessage = {
-          id: Date.now().toString(),
-          content: data.message,
-          sender: 'agent' as const,
-          timestamp: new Date(data.timestamp)
-        }
-        setMessages(prev => [...prev, agentMessage])
-      })
-
-      newSocket.on('status', (data) => {
-        console.log('Status update:', data)
-        // Don't show toast for status updates to avoid duplicate notifications
-        // toast.info(data.message)
-      })
-
-      newSocket.on('connect_error', (error) => {
-        console.log('WebSocket connection error:', error)
-        setIsSwitchingAgent(false) // Reset switching flag on error
-        // Fallback to simulated connection if backend is not available
-        setIsConnected(true)
-        setSelectedAgent(agent)
-        toast.success(`${agent.name} connected (Demo Mode)`)
         
-        // Add welcome message
-        setMessages([{
-          id: Date.now().toString(),
-          content: `Hello! I'm ${agent.name}. I'm running in demo mode. How can I assist you today?`,
-          sender: 'agent',
-          timestamp: new Date()
-        }])
-      })
-
-      setSocket(newSocket)
-      
-      // Connection timeout
-      let connectionEstablished = false
-      const connectionTimeout = setTimeout(() => {
-        if (!connectionEstablished) {
-          setIsSwitchingAgent(false)
-          toast.error('Connection timeout - please try again')
-        }
-      }, 10000)
-      
-      // Clear timeout on successful connection
-      newSocket.on('connect', () => {
-        connectionEstablished = true
-        clearTimeout(connectionTimeout)
-      })
-      
-      // Safety timeout to reset switching flag
-      setTimeout(() => {
+        toast.success(`Connected to ${agent.name}. Click the chat icon in the header to start chatting!`, {
+          autoClose: 5000,
+          hideProgressBar: false,
+        })
+      } else {
+        console.log(`❌ Failed to connect to ${agent.name}`)
         setIsSwitchingAgent(false)
-      }, 5000)
+        toast.error(`Failed to connect to ${agent.name}. Please try again.`)
+      }
     } catch (error) {
-      setIsSwitchingAgent(false) // Reset switching flag on error
+      setIsSwitchingAgent(false)
       toast.error('Failed to connect to agent')
       console.error('Connection error:', error)
     }
@@ -328,17 +288,10 @@ export const AgentProvider = ({ children }: AgentProviderProps) => {
       await agentService.disconnectFromAgent(selectedAgent.id)
     }
     
-    // Disconnect from backend WebSocket
-    if (socket) {
-      socket.disconnect()
-      setSocket(null)
-    }
-    
     setSelectedAgent(null)
     setIsConnected(false)
     setMessages([])
-    // Don't show disconnect notification when switching agents
-    // toast.info('Disconnected from agent')
+    setIsSwitchingAgent(false)
   }
 
   const sendMessage = async (message: string) => {
@@ -357,39 +310,44 @@ export const AgentProvider = ({ children }: AgentProviderProps) => {
     setMessages(prev => [...prev, userMessage])
 
     try {
-      if (socket && socket.connected) {
-        // Send message via WebSocket
-        socket.emit('send_message', {
-          agent_id: selectedAgent.id,
-          message: message
-        })
+      console.log(`📤 Sending message to ${selectedAgent.name}: ${message}`)
+      
+      // Use direct agent communication for MeTTa-integrated agents
+      const response = await agentService.sendMessage(selectedAgent.id, message)
+      
+      if (response) {
+        console.log(`📥 Received response from ${selectedAgent.name}:`, response)
+        
+        const agentMessage = {
+          id: (Date.now() + 1).toString(),
+          content: response,
+          sender: 'agent' as const,
+          timestamp: new Date()
+        }
+        setMessages(prev => [...prev, agentMessage])
       } else {
-        // Generate intelligent response based on agent type and message
-        setTimeout(async () => {
-          try {
-            const agentResponse = await generateAgentResponse(selectedAgent, message)
-            const response = {
-              id: (Date.now() + 1).toString(),
-              content: agentResponse,
-              sender: 'agent' as const,
-              timestamp: new Date()
-            }
-            setMessages(prev => [...prev, response])
-          } catch (error) {
-            // Fallback to basic response if AI generation fails
-            const fallbackResponse = {
-              id: (Date.now() + 1).toString(),
-              content: `I understand your message: "${message}". I'm processing this request and will provide detailed assistance shortly.`,
-              sender: 'agent' as const,
-              timestamp: new Date()
-            }
-            setMessages(prev => [...prev, fallbackResponse])
-          }
-        }, 1000 + Math.random() * 2000) // Random delay between 1-3 seconds
+        console.log('No response received from agent')
+        // Fallback to basic response
+        const fallbackResponse = {
+          id: (Date.now() + 1).toString(),
+          content: `I understand your message: "${message}". I'm processing this request and will provide detailed assistance shortly.`,
+          sender: 'agent' as const,
+          timestamp: new Date()
+        }
+        setMessages(prev => [...prev, fallbackResponse])
       }
     } catch (error) {
-      toast.error('Failed to send message')
       console.error('Message error:', error)
+      toast.error('Failed to send message')
+      
+      // Fallback to basic response
+      const fallbackResponse = {
+        id: (Date.now() + 1).toString(),
+        content: `I understand your message: "${message}". I'm processing this request and will provide detailed assistance shortly.`,
+        sender: 'agent' as const,
+        timestamp: new Date()
+      }
+      setMessages(prev => [...prev, fallbackResponse])
     }
   }
 
@@ -404,12 +362,8 @@ export const AgentProvider = ({ children }: AgentProviderProps) => {
 
     return () => {
       clearInterval(interval)
-      // Cleanup WebSocket connection
-      if (socket) {
-        socket.disconnect()
-      }
     }
-  }, [socket])
+  }, [])
 
   const value: AgentContextType = {
     agents,
