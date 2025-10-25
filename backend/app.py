@@ -876,8 +876,24 @@ def internal_error(error):
     return jsonify({'error': 'Internal server error'}), 500
 
 if __name__ == '__main__':
-    with app.app_context():
-        db.create_all()
+    # Initialize database with retry logic
+    max_retries = 5
+    retry_delay = 10  # seconds
+    
+    for attempt in range(max_retries):
+        try:
+            with app.app_context():
+                db.create_all()
+            print("✅ Database initialized successfully")
+            break
+        except Exception as e:
+            print(f"❌ Database initialization attempt {attempt + 1}/{max_retries} failed: {e}")
+            if attempt < max_retries - 1:
+                print(f"⏳ Retrying in {retry_delay} seconds...")
+                import time
+                time.sleep(retry_delay)
+            else:
+                print("❌ Failed to initialize database after all retries. Starting app anyway...")
     
     # Run the application
     socketio.run(app, debug=True, host='0.0.0.0', port=5001)

@@ -45,11 +45,15 @@ class ChatAcknowledgement(Model):
     msg_id: str
     status: str = "acknowledged"
 
-# Initialize ASI:One client
-client = OpenAI(
-    base_url='https://api.asi1.ai/v1',
-    api_key=os.getenv("ASI_ONE_API_KEY"),  
-)
+# Initialize ASI:One client (lazy initialization)
+def get_asi_client():
+    api_key = os.getenv("ASI_ONE_API_KEY")
+    if not api_key:
+        raise ValueError("ASI_ONE_API_KEY environment variable is required")
+    return OpenAI(
+        base_url='https://api.asi1.ai/v1',
+        api_key=api_key,
+    )
 
 # Initialize agent with mailbox for Agentverse connection
 agent = Agent(
@@ -83,6 +87,7 @@ async def handle_message(ctx: Context, sender: str, msg: ChatMessage):
     
     try:
         # Query ASI:One for medical assistance
+        client = get_asi_client()
         r = client.chat.completions.create(
             model="asi1-mini",
             messages=[
