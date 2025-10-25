@@ -1,0 +1,34 @@
+# Logistics Agent Configuration for Render
+# Service Name: asi-logistics-agent
+# Type: Background Worker
+# Plan: Free
+
+name: asi-logistics-agent
+type: worker
+runtime: python
+plan: free
+
+# Build Configuration
+buildCommand: |
+  cd backend/agents/logistics_agent
+  pip install -r requirements.txt
+
+# Start Command
+startCommand: |
+  cd backend/agents/logistics_agent
+  python app.py
+
+# Environment Variables
+envVars:
+  - key: AGENT_NAME
+    value: logistics-agent
+  - key: AGENT_PORT
+    value: "8002"
+  - key: ASI_ONE_API_KEY
+    sync: false
+  - key: METTA_SERVER_URL
+    value: https://asi-metta-server.onrender.com
+
+# Auto Deploy
+autoDeploy: true
+branch: main

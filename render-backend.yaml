@@ -1,0 +1,46 @@
+# Backend Service Configuration for Render
+# Service Name: asi-backend
+# Type: Web Service
+# Plan: Free
+
+name: asi-backend
+type: web
+runtime: python
+plan: free
+
+# Build Configuration
+buildCommand: |
+  cd backend
+  python -m pip install --upgrade pip
+  pip install -r requirements.txt
+
+# Start Command
+startCommand: |
+  cd backend
+  python app.py
+
+# Environment Variables
+envVars:
+  - key: FLASK_ENV
+    value: production
+  - key: FLASK_DEBUG
+    value: "False"
+  - key: SECRET_KEY
+    generateValue: true
+  - key: JWT_SECRET_KEY
+    generateValue: true
+  - key: DATABASE_URL
+    value: postgresql://asi_user:changeme@asi-database:5432/asi_agents
+  - key: ASI_ONE_API_KEY
+    sync: false
+  - key: METTA_SERVER_URL
+    value: https://asi-metta-server.onrender.com
+  - key: REDIS_URL
+    value: redis://localhost:6379
+
+# Health Check
+healthCheckPath: /health
+
+# Auto Deploy
+autoDeploy: true
+branch: main

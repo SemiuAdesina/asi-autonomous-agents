@@ -54,6 +54,11 @@ const AgentGrid = () => {
             Meet our intelligent agents, each specialized in different domains and 
             capable of autonomous decision-making across decentralized systems.
           </p>
+          {agents.length > 0 && (
+            <p className="text-sm text-gray-400 mt-2" style={{ fontFamily: 'Rajdhani, sans-serif' }}>
+              Last updated: {agents[0]?.lastSeen ? new Date(agents[0].lastSeen).toLocaleTimeString() : 'Just now'}
+            </p>
+          )}
         </motion.div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6 lg:gap-8">

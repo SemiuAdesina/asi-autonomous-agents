@@ -97,20 +97,45 @@ export const AgentProvider = ({ children }: AgentProviderProps) => {
     console.log('🔍 Starting agent discovery...')
     setIsDiscovering(true)
     try {
-      // For now, directly use demo agents since we have MeTTa-integrated agents running
-      console.log('Loading MeTTa-integrated agents...')
-      const demoAgents = getDemoAgents()
-      console.log('📋 Demo agents:', demoAgents)
-      console.log('📋 Demo agents length:', demoAgents.length)
-      setAgents(demoAgents)
-      console.log('✅ Agents state set, current agents length:', agents.length)
-      console.log('✅ Agents loaded:', demoAgents.length, 'agents')
+      // Try to fetch fresh agent data from the backend API
+      console.log('🌐 Fetching agents from backend API...')
+      const response = await fetch('/api/coordinator/agents', {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+        }
+      })
+
+      if (response.ok) {
+        const backendAgents = await response.json()
+        console.log('📡 Backend agents received:', backendAgents)
+        
+        // Transform backend agent data to match our Agent interface
+        const transformedAgents: Agent[] = backendAgents.map((agent: any) => ({
+          id: agent.id,
+          name: agent.name,
+          address: agent.address,
+          status: agent.status === 'running' ? 'active' : 'inactive',
+          capabilities: agent.capabilities || [],
+          lastSeen: new Date(agent.lastPing || Date.now()),
+          description: `${agent.name} with MeTTa Knowledge Graph, ASI:One integration, and Chat Protocol. Render-optimized for production deployment on port ${agent.port}.`
+        }))
+        
+        console.log('🔄 Transformed agents:', transformedAgents)
+        setAgents(transformedAgents)
+        console.log('✅ Fresh agents loaded from backend:', transformedAgents.length, 'agents')
+        toast.success(`Refreshed! Found ${transformedAgents.length} active agents`)
+      } else {
+        throw new Error(`Backend API error: ${response.status}`)
+      }
     } catch (error) {
       console.error('❌ Agent discovery failed:', error)
       // Fallback to demo agents
+      console.log('🔄 Falling back to demo agents...')
       const fallbackAgents = getDemoAgents()
       setAgents(fallbackAgents)
       console.log('🔄 Fallback agents loaded:', fallbackAgents.length, 'agents')
+      toast.warning('Using cached agent data - backend unavailable')
     } finally {
       setIsDiscovering(false)
       console.log('🏁 Agent discovery completed')

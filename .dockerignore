@@ -1,0 +1,44 @@
+# Docker ignore file for PostgreSQL service
+# This prevents unnecessary files from being copied into the Docker image
+
+# Git files
+.git
+.gitignore
+
+# Documentation
+*.md
+README*
+
+# IDE files
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+logs/
+
+# Temporary files
+*.tmp
+*.temp
+
+# Node modules (if any)
+node_modules/
+
+# Python cache (if any)
+__pycache__/
+*.pyc
+*.pyo
+
+# Other Docker files
+Dockerfile*
+docker-compose*
+
+# Render specific files
+render*.yaml
+RENDER_*

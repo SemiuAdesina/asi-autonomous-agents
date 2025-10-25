@@ -57,8 +57,8 @@ class DirectAgentService {
 
       console.log(`Connecting to Render-optimized agent ${agentId} via backend API`)
       
-      // For Render-optimized agents, we connect through the backend API
-      // The agents are running as pure uAgents with mailbox enabled
+      // For Render-optimized agents, we connect through the frontend API
+      // The frontend API routes will proxy to the backend
       const response = await fetch('/api/coordinator/agents', {
         method: 'GET',
         headers: {
@@ -92,8 +92,8 @@ class DirectAgentService {
     try {
       console.log(`Sending message to Render-optimized agent ${agentId} via backend API`)
       
-      // For Render-optimized agents, send messages through the backend API
-      // The backend will route messages to the appropriate agent via Agentverse
+      // For Render-optimized agents, send messages through the frontend API
+      // The frontend API routes will proxy to the backend
       const response = await fetch('/api/generate-response', {
         method: 'POST',
         headers: {
@@ -212,7 +212,7 @@ export const sendMessageToAgent = async (agentId: string, message: string) => {
 
 export const discoverAgents = async () => {
   try {
-    const response = await fetch('/api/discover-agents')
+      const response = await fetch('/api/discover-agents')
     if (!response.ok) {
       throw new Error(`Failed to discover agents: ${response.status}`)
     }

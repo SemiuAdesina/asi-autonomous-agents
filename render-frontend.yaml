@@ -1,0 +1,27 @@
+# Frontend Service Configuration for Render
+# Service Name: asi-frontend
+# Type: Static Site
+# Plan: Free
+
+name: asi-frontend
+type: static
+plan: free
+
+# Build Configuration
+buildCommand: |
+  cd frontend
+  npm install
+  npm run build
+
+# Environment Variables
+envVars:
+  - key: NODE_ENV
+    value: production
+  - key: NEXT_PUBLIC_BACKEND_URL
+    value: https://asi-backend.onrender.com
+  - key: NEXT_PUBLIC_API_URL
+    value: https://asi-backend.onrender.com/api
+
+# Auto Deploy
+autoDeploy: true
+branch: main

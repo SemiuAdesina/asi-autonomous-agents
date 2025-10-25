@@ -469,9 +469,9 @@ def get_coordinator_agents():
                 "id": "healthcare-agent",
                 "name": "Healthcare Assistant",
                 "address": "agent1qgkvje3s0e9vsu7s5dcxf8d8rrw2z3y77dcyzmzjk8s6p6n3ekwlxzjl3vl",
-                "port": 8002,
+                "port": 8001,
                 "status": "running",
-                "capabilities": ["medical_consultation", "health_check", "symptom_analysis"],
+                "capabilities": ["medical_consultation", "health_check", "symptom_analysis", "MeTTa Knowledge Graph", "ASI:One Integration", "Chat Protocol"],
                 "routingRules": [
                     {"id": "rule-1", "condition": "financial_query", "targetAgent": "financial-agent", "priority": 1, "enabled": True},
                     {"id": "rule-2", "condition": "logistics_query", "targetAgent": "logistics-agent", "priority": 2, "enabled": True}
@@ -484,13 +484,28 @@ def get_coordinator_agents():
                 "name": "Financial Advisor",
                 "address": "agent1qtm6dj5n89vjda5adz223x7t7pdzle3rskugery36w4en3je67whkuke606",
                 "port": 8003,
-                "status": "stopped",
-                "capabilities": ["financial_consultation", "market_analysis", "investment_advice"],
+                "status": "running",
+                "capabilities": ["financial_consultation", "market_analysis", "investment_advice", "MeTTa Knowledge Graph", "ASI:One Integration", "Chat Protocol"],
                 "routingRules": [
-                    {"id": "rule-3", "condition": "health_query", "targetAgent": "healthcare-agent", "priority": 1, "enabled": True}
+                    {"id": "rule-3", "condition": "health_query", "targetAgent": "healthcare-agent", "priority": 1, "enabled": True},
+                    {"id": "rule-4", "condition": "logistics_query", "targetAgent": "logistics-agent", "priority": 2, "enabled": True}
                 ],
-                "healthScore": 0,
-                "lastPing": "2024-10-18T15:45:00Z"
+                "healthScore": 90,
+                "lastPing": "2024-10-19T10:30:00Z"
+            },
+            {
+                "id": "logistics-agent",
+                "name": "Logistics Coordinator",
+                "address": "agent1q09g48srfjc74zzlr80ag93qaaev7ue9vhgl2u3jgykca0trwm2hxpw66jl",
+                "port": 8002,
+                "status": "running",
+                "capabilities": ["route_optimization", "inventory_management", "delivery_tracking", "supply_chain_analysis", "MeTTa Knowledge Graph", "ASI:One Integration", "Chat Protocol"],
+                "routingRules": [
+                    {"id": "rule-5", "condition": "health_query", "targetAgent": "healthcare-agent", "priority": 1, "enabled": True},
+                    {"id": "rule-6", "condition": "financial_query", "targetAgent": "financial-agent", "priority": 2, "enabled": True}
+                ],
+                "healthScore": 88,
+                "lastPing": "2024-10-19T10:30:00Z"
             }
         ]
         

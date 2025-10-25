@@ -1,0 +1,126 @@
+services:
+  # PostgreSQL Database
+  - type: web
+    name: asi-database
+    runtime: docker
+    plan: free
+    dockerfilePath: ./Dockerfile.postgres
+    envVars:
+      - key: POSTGRES_DB
+        value: asi_agents
+      - key: POSTGRES_USER
+        value: asi_user
+      - key: POSTGRES_PASSWORD
+        generateValue: true
+    healthCheckPath: /health
+
+  # Backend Service
+  - type: web
+    name: asi-backend
+    runtime: python
+    plan: free
+    buildCommand: |
+      cd backend
+      python -m pip install --upgrade pip
+      pip install -r requirements.txt
+    startCommand: |
+      cd backend
+      python app.py
+    envVars:
+      - key: FLASK_ENV
+        value: production
+      - key: FLASK_DEBUG
+        value: "False"
+      - key: SECRET_KEY
+        generateValue: true
+      - key: JWT_SECRET_KEY
+        generateValue: true
+      - key: DATABASE_URL
+        value: postgresql://asi_user:changeme@asi-database:5432/asi_agents
+      - key: ASI_ONE_API_KEY
+        sync: false
+      - key: METTA_SERVER_URL
+        value: https://asi-metta-server.onrender.com
+      - key: REDIS_URL
+        value: redis://localhost:6379
+    healthCheckPath: /health
+
+  # MeTTa Server Service
+  - type: web
+    name: asi-metta-server
+    runtime: python
+    plan: free
+    buildCommand: |
+      pip install fastapi uvicorn
+    startCommand: |
+      cd backend
+      python metta_server.py
+    envVars:
+      - key: METTA_SERVER_HOST
+        value: 0.0.0.0
+      - key: METTA_SERVER_PORT
+        value: "8000"
+    healthCheckPath: /health
+
+  # Healthcare Agent Service
+  - type: worker
+    name: asi-healthcare-agent
+    runtime: python
+    plan: free
+    buildCommand: |
+      cd backend/agents/healthcare_agent
+      pip install -r requirements.txt
+    startCommand: |
+      cd backend/agents/healthcare_agent
+      python app.py
+    envVars:
+      - key: AGENT_NAME
+        value: healthcare-agent
+      - key: AGENT_PORT
+        value: "8001"
+      - key: ASI_ONE_API_KEY
+        sync: false
+      - key: METTA_SERVER_URL
+        value: https://asi-metta-server.onrender.com
+
+  # Financial Agent Service
+  - type: worker
+    name: asi-financial-agent
+    runtime: python
+    plan: free
+    buildCommand: |
+      cd backend/agents/financial_agent
+      pip install -r requirements.txt
+    startCommand: |
+      cd backend/agents/financial_agent
+      python app.py
+    envVars:
+      - key: AGENT_NAME
+        value: financial-agent
+      - key: AGENT_PORT
+        value: "8003"
+      - key: ASI_ONE_API_KEY
+        sync: false
+      - key: METTA_SERVER_URL
+        value: https://asi-metta-server.onrender.com
+
+  # Logistics Agent Service
+  - type: worker
+    name: asi-logistics-agent
+    runtime: python
+    plan: free
+    buildCommand: |
+      cd backend/agents/logistics_agent
+      pip install -r requirements.txt
+    startCommand: |
+      cd backend/agents/logistics_agent
+      python app.py
+    envVars:
+      - key: AGENT_NAME
+        value: logistics-agent
+      - key: AGENT_PORT
+        value: "8002"
+      - key: ASI_ONE_API_KEY
+        sync: false
+      - key: METTA_SERVER_URL
+        value: https://asi-metta-server.onrender.com

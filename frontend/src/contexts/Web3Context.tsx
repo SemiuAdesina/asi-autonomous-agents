@@ -317,6 +317,14 @@ export const Web3Provider = ({ children }: Web3ProviderProps) => {
     setIsConnected(true)
     
     if (type === 'ethereum') {
+      // Check if ethereum is available
+      if (typeof window.ethereum === 'undefined') {
+        console.warn('MetaMask not available, skipping chain ID and balance update')
+        setChainId(null)
+        setBalance('0.0 ETH')
+        return
+      }
+
       // Get chain ID for Ethereum
       const chainId = await window.ethereum.request({
         method: 'eth_chainId'
@@ -335,6 +343,13 @@ export const Web3Provider = ({ children }: Web3ProviderProps) => {
 
   const updateBalance = async (accountAddress: string) => {
     try {
+      // Check if ethereum is available
+      if (typeof window.ethereum === 'undefined') {
+        console.warn('MetaMask not available, skipping balance update')
+        setBalance('0.0 ETH')
+        return
+      }
+
       const balance = await window.ethereum.request({
         method: 'eth_getBalance',
         params: [accountAddress, 'latest']
@@ -342,6 +357,7 @@ export const Web3Provider = ({ children }: Web3ProviderProps) => {
       setBalance((parseInt(balance, 16) / 1e18).toFixed(4))
     } catch (error) {
       console.error('Error updating balance:', error)
+      setBalance('0.0 ETH')
     }
   }
 

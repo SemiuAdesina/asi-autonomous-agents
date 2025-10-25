@@ -16,14 +16,26 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
   }
 
   try {
-    // Real agent discovery from Fetch.ai Agentverse registry
-    // Connected to the Fetch.ai network via ASI Alliance
-    const discoveredAgents: Agent[] = await discoverRealAgents()
+    // Call the backend API to get real agent data
+    const backendUrl = process.env.BACKEND_URL || 'http://localhost:5001'
+    const response = await fetch(`${backendUrl}/api/coordinator/agents`, {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+      }
+    })
     
-    res.status(200).json(discoveredAgents)
+    if (!response.ok) {
+      throw new Error(`Backend API error: ${response.status}`)
+    }
+    
+    const agents = await response.json()
+    res.status(200).json(agents)
   } catch (error) {
     console.error('Agent discovery error:', error)
-    res.status(500).json({ error: 'Failed to discover agents' })
+    // Fallback to mock data if backend is not available
+    const mockAgents = await discoverRealAgents()
+    res.status(200).json(mockAgents)
   }
 }
 

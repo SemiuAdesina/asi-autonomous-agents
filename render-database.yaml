@@ -1,0 +1,10 @@
+# PostgreSQL Database Configuration for Render
+# Service Name: asi-database
+# Type: PostgreSQL Service
+# Plan: Free
+
+name: asi-database
+type: pserv
+plan: free
+autoDeploy: true
+branch: main
