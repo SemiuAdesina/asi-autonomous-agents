@@ -14,7 +14,7 @@ services:
         generateValue: true
     healthCheckPath: /health
     autoDeploy: true
-    branch: main
+    branch: master
 
   # Backend Service
   - type: web
@@ -47,7 +47,7 @@ services:
         value: redis://localhost:6379
     healthCheckPath: /health
     autoDeploy: true
-    branch: main
+    branch: master
 
   # MeTTa Server Service
   - type: web
@@ -66,7 +66,7 @@ services:
         value: "8000"
     healthCheckPath: /health
     autoDeploy: true
-    branch: main
+    branch: master
 
   # Healthcare Agent Service
   - type: web
@@ -90,7 +90,7 @@ services:
         value: https://asi-metta-server.onrender.com
     healthCheckPath: /health
     autoDeploy: true
-    branch: main
+    branch: master
 
   # Financial Agent Service
   - type: web
@@ -114,7 +114,7 @@ services:
         value: https://asi-metta-server.onrender.com
     healthCheckPath: /health
     autoDeploy: true
-    branch: main
+    branch: master
 
   # Logistics Agent Service
   - type: web
@@ -138,4 +138,4 @@ services:
         value: https://asi-metta-server.onrender.com
     healthCheckPath: /health
     autoDeploy: true
-    branch: main
+    branch: master
