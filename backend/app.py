@@ -909,10 +909,10 @@ if __name__ == '__main__':
     print(f"🚀 Starting backend on port {port}")
     
     if os.getenv('PORT'):
-        # Production mode - use Gunicorn-compatible settings
+        # Production mode - use standard Flask for Render compatibility
         print("🔧 Running in production mode")
-        socketio.run(app, debug=False, host='0.0.0.0', port=int(port), allow_unsafe_werkzeug=True)
+        app.run(debug=False, host='0.0.0.0', port=int(port))
     else:
-        # Development mode
+        # Development mode - use SocketIO for local development
         print("🔧 Running in development mode")
         socketio.run(app, debug=True, host='0.0.0.0', port=int(port))
