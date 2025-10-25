@@ -43,8 +43,12 @@ services:
         sync: false
       - key: METTA_SERVER_URL
         value: https://asi-metta-server.onrender.com
+      - key: METTA_ENDPOINT
+        value: https://asi-metta-server.onrender.com
       - key: REDIS_URL
         value: redis://localhost:6379
+      - key: PORT
+        value: "5001"
     healthCheckPath: /health
     autoDeploy: true
     branch: master

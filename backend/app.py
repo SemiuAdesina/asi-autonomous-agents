@@ -896,4 +896,10 @@ if __name__ == '__main__':
                 print("❌ Failed to initialize database after all retries. Starting app anyway...")
     
     # Run the application
-    socketio.run(app, debug=True, host='0.0.0.0', port=5001)
+    # Check if we're in production (Render sets PORT environment variable)
+    if os.getenv('PORT'):
+        # Production mode - use Gunicorn-compatible settings
+        socketio.run(app, debug=False, host='0.0.0.0', port=int(os.getenv('PORT')), allow_unsafe_werkzeug=True)
+    else:
+        # Development mode
+        socketio.run(app, debug=True, host='0.0.0.0', port=5001)
