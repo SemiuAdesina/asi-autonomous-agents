@@ -13,6 +13,8 @@ services:
       - key: POSTGRES_PASSWORD
         generateValue: true
     healthCheckPath: /health
+    autoDeploy: true
+    branch: main
 
   # Backend Service
   - type: web
@@ -44,6 +46,8 @@ services:
       - key: REDIS_URL
         value: redis://localhost:6379
     healthCheckPath: /health
+    autoDeploy: true
+    branch: main
 
   # MeTTa Server Service
   - type: web
@@ -61,9 +65,11 @@ services:
       - key: METTA_SERVER_PORT
         value: "8000"
     healthCheckPath: /health
+    autoDeploy: true
+    branch: main
 
   # Healthcare Agent Service
-  - type: worker
+  - type: web
     name: asi-healthcare-agent
     runtime: python
     plan: free
@@ -82,9 +88,12 @@ services:
         sync: false
       - key: METTA_SERVER_URL
         value: https://asi-metta-server.onrender.com
+    healthCheckPath: /health
+    autoDeploy: true
+    branch: main
 
   # Financial Agent Service
-  - type: worker
+  - type: web
     name: asi-financial-agent
     runtime: python
     plan: free
@@ -103,9 +112,12 @@ services:
         sync: false
       - key: METTA_SERVER_URL
         value: https://asi-metta-server.onrender.com
+    healthCheckPath: /health
+    autoDeploy: true
+    branch: main
 
   # Logistics Agent Service
-  - type: worker
+  - type: web
     name: asi-logistics-agent
     runtime: python
     plan: free
@@ -124,3 +136,6 @@ services:
         sync: false
       - key: METTA_SERVER_URL
         value: https://asi-metta-server.onrender.com
+    healthCheckPath: /health
+    autoDeploy: true
+    branch: main

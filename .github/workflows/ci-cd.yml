@@ -101,7 +101,7 @@ jobs:
         name: backend-coverage
     
     - name: Upload test results
-      uses: actions/upload-artifact@v3
+      uses: actions/upload-artifact@v4
       if: always()
       with:
         name: backend-test-results-${{ matrix.python-version }}
@@ -154,7 +154,7 @@ jobs:
       run: npm audit --audit-level=moderate
     
     - name: Upload frontend test results
-      uses: actions/upload-artifact@v3
+      uses: actions/upload-artifact@v4
       if: always()
       with:
         name: frontend-test-results-${{ matrix.node-version }}
@@ -259,7 +259,7 @@ jobs:
         locust -f tests/performance/locustfile.py --headless -u 100 -r 10 -t 60s --html performance-report.html
     
     - name: Upload performance results
-      uses: actions/upload-artifact@v3
+      uses: actions/upload-artifact@v4
       with:
         name: performance-results
         path: backend/performance-report.html
