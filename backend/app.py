@@ -876,30 +876,43 @@ def internal_error(error):
     return jsonify({'error': 'Internal server error'}), 500
 
 if __name__ == '__main__':
-    # Initialize database with retry logic
-    max_retries = 5
-    retry_delay = 10  # seconds
+    # Initialize database with retry logic (non-blocking)
+    def init_database():
+        max_retries = 3  # Reduced retries for faster startup
+        retry_delay = 5  # Reduced delay
+        
+        for attempt in range(max_retries):
+            try:
+                with app.app_context():
+                    db.create_all()
+                print("✅ Database initialized successfully")
+                return True
+            except Exception as e:
+                print(f"❌ Database initialization attempt {attempt + 1}/{max_retries} failed: {e}")
+                if attempt < max_retries - 1:
+                    print(f"⏳ Retrying in {retry_delay} seconds...")
+                    import time
+                    time.sleep(retry_delay)
+                else:
+                    print("❌ Failed to initialize database after all retries. Starting app anyway...")
+                    return False
     
-    for attempt in range(max_retries):
-        try:
-            with app.app_context():
-                db.create_all()
-            print("✅ Database initialized successfully")
-            break
-        except Exception as e:
-            print(f"❌ Database initialization attempt {attempt + 1}/{max_retries} failed: {e}")
-            if attempt < max_retries - 1:
-                print(f"⏳ Retrying in {retry_delay} seconds...")
-                import time
-                time.sleep(retry_delay)
-            else:
-                print("❌ Failed to initialize database after all retries. Starting app anyway...")
+    # Start database initialization in background
+    import threading
+    db_thread = threading.Thread(target=init_database)
+    db_thread.daemon = True
+    db_thread.start()
     
     # Run the application
     # Check if we're in production (Render sets PORT environment variable)
+    port = os.getenv('PORT', 5001)
+    print(f"🚀 Starting backend on port {port}")
+    
     if os.getenv('PORT'):
         # Production mode - use Gunicorn-compatible settings
-        socketio.run(app, debug=False, host='0.0.0.0', port=int(os.getenv('PORT')), allow_unsafe_werkzeug=True)
+        print("🔧 Running in production mode")
+        socketio.run(app, debug=False, host='0.0.0.0', port=int(port), allow_unsafe_werkzeug=True)
     else:
         # Development mode
-        socketio.run(app, debug=True, host='0.0.0.0', port=5001)
+        print("🔧 Running in development mode")
+        socketio.run(app, debug=True, host='0.0.0.0', port=int(port))
