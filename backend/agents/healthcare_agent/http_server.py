@@ -16,16 +16,28 @@ load_dotenv(os.path.join(os.path.dirname(__file__), '..', '..', '.env'))
 # Add the current directory to Python path
 sys.path.append(os.path.dirname(__file__))
 
-# Import MeTTa components
-from utils import process_query
-from medicalrag import MedicalRAG
-from knowledge import medical_metta
-from asi_one_integration import asi_one
-from analytics import analytics
-
-# Initialize components
-rag = MedicalRAG(medical_metta)
-llm = asi_one
+# Import MeTTa components with error handling
+try:
+    from utils import process_query
+    from medicalrag import MedicalRAG
+    from knowledge import medical_metta
+    from asi_one_integration import asi_one
+    from analytics import analytics
+    
+    # Initialize components
+    rag = MedicalRAG(medical_metta)
+    llm = asi_one
+    print("✅ All healthcare agent modules loaded successfully")
+except Exception as e:
+    print(f"❌ Error loading healthcare agent modules: {e}")
+    import traceback
+    traceback.print_exc()
+    # Create minimal fallback
+    class MockLLM:
+        def generate_response(self, query, context):
+            return "I apologize, but I'm experiencing technical difficulties."
+    llm = MockLLM()
+    rag = None
 
 app = Flask(__name__)
 
@@ -54,7 +66,10 @@ def chat_endpoint():
         
         # Process the message using MeTTa and ASI:One
         start_time = datetime.now()
-        response = process_query(message, rag, llm)
+        if rag is None:
+            response = "I apologize, but I'm experiencing technical difficulties. Please try again later."
+        else:
+            response = process_query(message, rag, llm)
         end_time = datetime.now()
         
         response_time_ms = int((end_time - start_time).total_seconds() * 1000)

@@ -58,11 +58,37 @@ class ASIOneIntegration:
     
     def generate_response(self, query: str, context: Dict[str, Any]) -> str:
         """
-        Generate response using ASI:One API
+        Generate response using OpenAI API
         """
         try:
-            # For demo purposes, we'll generate responses locally
-            # In production, this would call the ASI:One API
+            # Use OpenAI for response generation
+            openai_key = os.getenv('OPENAI_API_KEY')
+            if openai_key:
+                import openai
+                client = openai.OpenAI(api_key=openai_key)
+                
+                intent = context.get('intent', 'general')
+                
+                # Build context for OpenAI
+                system_prompt = "You are a helpful AI healthcare assistant. Provide accurate medical information, symptom analysis, and general health guidance. Always recommend consulting with healthcare professionals for serious medical concerns. Be empathetic and professional in your responses."
+                
+                user_prompt = query
+                if intent == 'symptom':
+                    user_prompt = f"User is experiencing: {query}. Please provide helpful medical information about this symptom."
+                
+                r = client.chat.completions.create(
+                    model="gpt-4o-mini",
+                    messages=[
+                        {"role": "system", "content": system_prompt},
+                        {"role": "user", "content": user_prompt}
+                    ],
+                    max_tokens=500,
+                    temperature=0.7
+                )
+                
+                return r.choices[0].message.content
+            
+            # Fallback to local generation if no OpenAI key
             intent = context.get('intent', 'general')
             
             if intent == 'symptom':
