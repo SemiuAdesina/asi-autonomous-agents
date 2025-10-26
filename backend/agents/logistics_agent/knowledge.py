@@ -1,67 +1,28 @@
 #!/usr/bin/env python3
 """
-MeTTa Knowledge Graph Initialization for Logistics Agent - Following Official Workshop Structure
-Based on the Fetch.ai Innovation Lab examples
+MeTTa Knowledge Graph Initialization for Logistics Agent - Real Integration
 """
 
-# Import our workshop-compatible MeTTa implementation
-from workshop_metta import workshop_metta
+import sys
+import os
+sys.path.append(os.path.join(os.path.dirname(__file__), '..', '..', 'knowledge'))
+
+from metta_kg.integration import MeTTaKnowledgeGraph
 from typing import Dict, List, Any, Optional
 import logging
 
 logger = logging.getLogger(__name__)
 
-# Use our workshop-compatible MeTTa instance
-logistics_metta = workshop_metta
-
-class LogisticsKnowledgeGraph:
-    """Logistics Knowledge Graph using workshop-compatible MeTTa"""
-    
-    def __init__(self):
-        self.metta = logistics_metta
-        self._initialize_logistics_knowledge()
-    
-    def _initialize_logistics_knowledge(self):
-        """Initialize logistics knowledge base"""
-        try:
-            # Add logistics concepts to MeTTa
-            logistics_concepts = [
-                "route_optimization",
-                "inventory_management",
-                "delivery_tracking",
-                "supply_chain_analysis",
-                "warehouse_management",
-                "transportation_planning",
-                "cost_optimization",
-                "demand_forecasting",
-                "supplier_management",
-                "logistics_automation",
-                "last_mile_delivery",
-                "freight_management"
-            ]
-            
-            for concept in logistics_concepts:
-                self.metta.add_atom("logistics_concept", concept, f"Logistics concept: {concept}")
-            
-            logger.info("Logistics knowledge base initialized successfully")
-            
-        except Exception as e:
-            logger.error(f"Error initializing logistics knowledge: {e}")
-    
-    def query(self, query: str) -> Dict[str, Any]:
-        """Query the logistics knowledge graph"""
-        try:
-            return self.metta.run(query)
-        except Exception as e:
-            logger.error(f"Error querying logistics knowledge: {e}")
-            return {"error": str(e)}
-    
-    def match(self, relation: str, subject: str) -> List[str]:
-        """Pattern matching for logistics knowledge"""
-        try:
-            return self.metta.match(relation, subject)
-        except Exception as e:
-            logger.error(f"Error matching logistics knowledge: {e}")
-            return []
+# Initialize real MeTTa Knowledge Graph
+try:
+    import os
+    metta_url = os.getenv('METTA_SERVER_URL') or os.getenv('METTA_ENDPOINT', 'http://localhost:8080')
+    logistics_metta = MeTTaKnowledgeGraph(metta_url)
+    logger.info(f"✅ Connected to real MeTTa Knowledge Graph server at {metta_url}")
+except Exception as e:
+    logger.warning(f"Failed to connect to MeTTa server: {e}")
+    # Fallback to mock implementation
+    logistics_metta = MeTTaKnowledgeGraph()  # Uses mock responses
+    logger.info("✅ Using MeTTa Knowledge Graph with mock responses")
 
 print("✅ MeTTa Logistics Knowledge Graph initialized successfully")

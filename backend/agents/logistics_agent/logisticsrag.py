@@ -1,10 +1,13 @@
 #!/usr/bin/env python3
 """
-Logistics RAG System - Following Official Workshop Structure
-Based on the Fetch.ai Innovation Lab examples
+Logistics RAG System - Using Real MeTTa Integration
 """
 
-from workshop_metta import WorkshopMeTTa
+import sys
+import os
+sys.path.append(os.path.join(os.path.dirname(__file__), '..', '..', 'knowledge'))
+
+from metta_kg.integration import MeTTaKnowledgeGraph
 from typing import Dict, List, Any, Optional
 import logging
 
@@ -13,92 +16,83 @@ logger = logging.getLogger(__name__)
 class LogisticsRAG:
     """
     Logistics RAG (Retrieval-Augmented Generation) system
-    Following the workshop examples for logistics knowledge retrieval
+    Uses real MeTTa Knowledge Graph integration
     """
     
-    def __init__(self, metta_instance: WorkshopMeTTa):
+    def __init__(self, metta_instance: MeTTaKnowledgeGraph):
         self.metta = metta_instance
     
     def query_transport_method(self, product_type: str) -> List[str]:
-        """
-        Query optimal transport method for product type using MeTTa pattern matching
-        """
-        query_str = f'!(match &self (product_route {product_type} $method) $method)'
-        results = self.metta.run(query_str)
-        return [str(r[0]) for r in results] if results else []
+        """Query optimal transport method for product type"""
+        try:
+            concept = self.metta.query_concept(product_type)
+            if concept:
+                return [concept.get('name', product_type)]
+            return []
+        except Exception as e:
+            logger.error(f"Error querying transport method: {e}")
+            return []
     
     def get_warehouse_capabilities(self, warehouse_type: str) -> List[str]:
-        """
-        Get warehouse capabilities using MeTTa pattern matching
-        """
-        query_str = f'!(match &self (warehouse_type {warehouse_type} $capabilities) $capabilities)'
-        results = self.metta.run(query_str)
-        return [str(r[0]) for r in results] if results else []
+        """Get warehouse capabilities"""
+        try:
+            relationships = self.metta.find_relationships(warehouse_type)
+            capabilities = []
+            for rel in relationships:
+                if 'related' in rel:
+                    capabilities.append(rel['related'].get('name', ''))
+            return capabilities
+        except Exception as e:
+            logger.error(f"Error getting warehouse capabilities: {e}")
+            return []
     
     def get_risk_mitigation(self, risk_type: str) -> List[str]:
-        """
-        Get risk mitigation strategies using MeTTa pattern matching
-        """
-        query_str = f'!(match &self (risk_mitigation {risk_type} $strategy) $strategy)'
-        results = self.metta.run(query_str)
-        return [str(r[0]) for r in results] if results else []
+        """Get risk mitigation strategies"""
+        try:
+            relationships = self.metta.find_relationships(risk_type)
+            strategies = []
+            for rel in relationships:
+                if 'related' in rel:
+                    strategies.append(rel['related'].get('name', ''))
+            return strategies
+        except Exception as e:
+            logger.error(f"Error getting risk mitigation: {e}")
+            return []
     
     def get_optimization_factors(self, optimization_type: str) -> List[str]:
-        """
-        Get optimization factors using MeTTa pattern matching
-        """
-        query_str = f'!(match &self (optimization_factor {optimization_type} $factors) $factors)'
-        results = self.metta.run(query_str)
-        return [str(r[0]) for r in results] if results else []
+        """Get optimization factors"""
+        try:
+            relationships = self.metta.find_relationships(optimization_type)
+            factors = []
+            for rel in relationships:
+                if 'related' in rel:
+                    factors.append(rel['related'].get('name', ''))
+            return factors
+        except Exception as e:
+            logger.error(f"Error getting optimization factors: {e}")
+            return []
     
     def get_transport_details(self, method: str) -> List[str]:
-        """
-        Get transport method details using MeTTa pattern matching
-        """
-        query_str = f'!(match &self (transport_method {method} $details) $details)'
-        results = self.metta.run(query_str)
-        return [str(r[0]) for r in results] if results else []
-    
-    def add_knowledge(self, category: str, key: str, value: str):
-        """
-        Dynamically add new knowledge to the MeTTa graph.
-        """
-        self.metta.add_atom(category, key, value)
-        logger.info(f"Added knowledge: {category}, {key}, {value}")
-
-    def query_knowledge(self, query: str) -> Dict[str, Any]:
-        """
-        General knowledge query method for the RAG system
-        """
+        """Get transport method details"""
         try:
-            # Parse the query and determine the best method to call
-            query_lower = query.lower()
-            
-            # Route optimization queries
-            if "route" in query_lower or "optimization" in query_lower:
-                return {"results": [{"description": "Route optimization strategies available", "source": "metta"}]}
-            
-            # Inventory management queries
-            elif "inventory" in query_lower or "warehouse" in query_lower:
-                return {"results": [{"description": "Warehouse management and inventory tracking solutions", "source": "metta"}]}
-            
-            # Delivery tracking queries
-            elif "delivery" in query_lower or "tracking" in query_lower:
-                return {"results": [{"description": "Delivery tracking and monitoring systems", "source": "metta"}]}
-            
-            # Supply chain queries
-            elif "supply chain" in query_lower or "supplier" in query_lower:
-                return {"results": [{"description": "Supply chain analysis and supplier management", "source": "metta"}]}
-            
-            # Cost optimization queries
-            elif "cost" in query_lower and "optimization" in query_lower:
-                return {"results": [{"description": "Cost optimization strategies for logistics operations", "source": "metta"}]}
+            concept = self.metta.query_concept(method)
+            if concept:
+                return [str(concept)]
+            return []
+        except Exception as e:
+            logger.error(f"Error getting transport details: {e}")
+            return []
+    
+    def query_knowledge(self, query: str) -> Dict[str, Any]:
+        """General knowledge query method"""
+        try:
+            # Use MeTTa query concept
+            concept = self.metta.query_concept(query)
+            if concept:
+                return {"results": [{"description": str(concept), "source": "metta"}]}
             
             # Default fallback
             return {"results": [{"description": "General logistics and supply chain advice available", "source": "metta"}]}
-            
         except Exception as e:
             logger.error(f"Error in query_knowledge: {e}")
             return {"results": []}
-
-print("✅ Logistics RAG System initialized successfully")
