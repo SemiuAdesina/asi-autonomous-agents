@@ -98,3 +98,11 @@ class MedicalRAG:
         except Exception as e:
             logger.error(f"Error querying general knowledge for {query}: {e}")
             return []
+    
+    def add_knowledge(self, category: str, key: str, value: str, source: str = "user"):
+        """Add knowledge to the MeTTa knowledge graph"""
+        try:
+            self.metta.add_concept(key, {category: value, "source": source})
+            logger.info(f"Added knowledge: {category}, {key}, {value}")
+        except Exception as e:
+            logger.error(f"Error adding knowledge: {e}")
