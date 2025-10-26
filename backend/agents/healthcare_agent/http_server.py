@@ -42,7 +42,7 @@ except Exception as e:
 app = Flask(__name__)
 
 # Enable CORS for frontend communication
-CORS(app, origins=['http://localhost:3000', 'http://localhost:3004', 'http://localhost:3005'], 
+CORS(app, origins=['http://localhost:3000', 'http://localhost:3004', 'http://localhost:3005', 'https://asi-frontend.onrender.com'], 
      methods=['GET', 'POST', 'OPTIONS'],
      allow_headers=['Content-Type', 'Authorization'])
 
