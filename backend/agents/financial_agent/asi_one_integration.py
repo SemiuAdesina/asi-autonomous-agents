@@ -64,7 +64,7 @@ class ASIOneIntegration:
     
     def generate_response(self, query: str, context: Dict[str, Any] = None) -> str:
         """
-        Generate intelligent response using ASI:One
+        Generate intelligent response using OpenAI as fallback
         
         Args:
             query: User query
@@ -74,6 +74,35 @@ class ASIOneIntegration:
             Generated response string
         """
         try:
+            # Try OpenAI first if available
+            openai_key = os.getenv('OPENAI_API_KEY')
+            if openai_key:
+                import openai
+                client = openai.OpenAI(api_key=openai_key)
+                
+                context_str = ""
+                if context:
+                    context_str = f"\n\nContext from knowledge graph: {json.dumps(context, indent=2)}"
+                
+                response = client.chat.completions.create(
+                    model="gpt-4o-mini",
+                    messages=[
+                        {
+                            "role": "system",
+                            "content": "You are a knowledgeable Financial Advisor AI agent. Provide helpful financial advice. Always recommend consulting financial advisors for major decisions. Be professional and informative."
+                        },
+                        {
+                            "role": "user",
+                            "content": f"User Query: {query}{context_str}\n\nProvide helpful financial advice:"
+                        }
+                    ],
+                    max_tokens=500,
+                    temperature=0.7
+                )
+                
+                return response.choices[0].message.content
+            
+            # Fallback to ASI:One
             context_str = ""
             if context:
                 context_str = f"Context from knowledge graph: {json.dumps(context, indent=2)}"
