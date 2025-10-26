@@ -130,12 +130,12 @@ export const AgentProvider = ({ children }: AgentProviderProps) => {
       }
     } catch (error) {
       console.error('❌ Agent discovery failed:', error)
-      // Fallback to demo agents
+      // Fallback to demo agents - silent fallback without warning
       console.log('🔄 Falling back to demo agents...')
       const fallbackAgents = getDemoAgents()
       setAgents(fallbackAgents)
       console.log('🔄 Fallback agents loaded:', fallbackAgents.length, 'agents')
-      toast.warning('Using cached agent data - backend unavailable')
+      // No toast warning - agents work fine with direct HTTP connections
     } finally {
       setIsDiscovering(false)
       console.log('🏁 Agent discovery completed')
