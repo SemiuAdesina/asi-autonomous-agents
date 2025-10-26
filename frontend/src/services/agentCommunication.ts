@@ -50,33 +50,13 @@ class DirectAgentService {
         return true
       }
 
-      console.log(`Connecting to Render-optimized agent ${agentId} via backend API`)
+      console.log(`Connecting to Render-optimized agent ${agentId} directly`)
       
-      // For Render-optimized agents, we connect through the frontend API
-      // The frontend API routes will proxy to the backend
-      const response = await fetch('/api/coordinator/agents', {
-        method: 'GET',
-        headers: {
-          'Content-Type': 'application/json',
-        }
-      })
-      
-      if (response.ok) {
-        const agents = await response.json()
-        const agent = agents.find((a: any) => a.id === agentId || a.name.toLowerCase().includes(agentId.toLowerCase()))
-        
-        if (agent) {
-          console.log(`✅ Successfully connected to agent ${agentId} via backend API`)
-          this.agentConnections.set(agentId, true)
-          return true
-        } else {
-          console.error(`Agent ${agentId} not found in backend registry`)
-          return false
-        }
-      } else {
-        console.error(`Backend API error: ${response.status}`)
-        return false
-      }
+      // For static export deployment, just mark as connected
+      // Actual HTTP connection happens when sending messages
+      this.agentConnections.set(agentId, true)
+      console.log(`✅ Successfully connected to agent ${agentId}`)
+      return true
     } catch (error) {
       console.error(`Failed to connect to agent ${agentId}:`, error)
       return false

@@ -39,7 +39,9 @@ const RealtimeManager = () => {
   const pingIntervalRef = useRef<NodeJS.Timeout | null>(null)
 
   useEffect(() => {
-    initializeSocket()
+    // Disable WebSocket for static export deployment
+    // WebSockets require server support which isn't available with static sites
+    console.log('WebSocket disabled for static site deployment')
     return () => {
       cleanup()
     }
