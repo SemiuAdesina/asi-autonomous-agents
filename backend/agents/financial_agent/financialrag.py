@@ -253,6 +253,29 @@ class FinancialRAG:
             logger.error(f"Error querying knowledge: {e}")
             return {"error": str(e)}
     
+    def get_prevention(self, topic: str) -> List[str]:
+        """Get prevention strategies for financial topic"""
+        try:
+            # Use query_knowledge for prevention-related queries
+            results = self.query_knowledge(f"prevention {topic}")
+            if results.get('intent') != 'general':
+                return [str(results)]
+            return []
+        except Exception as e:
+            logger.error(f"Error getting prevention for {topic}: {e}")
+            return []
+    
+    def query_general(self, query: str) -> List[str]:
+        """General financial knowledge query"""
+        try:
+            results = self.query_knowledge(query)
+            if results.get('intent') != 'general':
+                return [str(results)]
+            return []
+        except Exception as e:
+            logger.error(f"Error querying general knowledge for {query}: {e}")
+            return []
+    
     def add_knowledge(self, category: str, key: str, value: str, source: str = "user"):
         """
         Dynamically add knowledge to the MeTTa knowledge graph
