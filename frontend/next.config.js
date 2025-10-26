@@ -1,6 +1,7 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   reactStrictMode: true,
+  output: 'standalone',
   // Enable Web3-friendly features
   webpack: (config) => {
     config.resolve.fallback = {
