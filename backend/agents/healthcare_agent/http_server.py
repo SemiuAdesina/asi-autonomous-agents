@@ -142,9 +142,11 @@ def rate_interaction():
         return jsonify({'error': str(e)}), 500
 
 if __name__ == "__main__":
-    print("🌐 Starting Healthcare Agent HTTP Server on port 8002")
+    # Use PORT environment variable or default to 8002
+    port = int(os.getenv('PORT', 8002))
+    print(f"🌐 Starting Healthcare Agent HTTP Server on port {port}")
     print("✅ MeTTa Knowledge Graph integration enabled")
     print("✅ ASI:One integration enabled")
     print("🚀 Ready to receive frontend requests!")
     
-    app.run(host='0.0.0.0', port=8002, debug=False)
+    app.run(host='0.0.0.0', port=port, debug=False)

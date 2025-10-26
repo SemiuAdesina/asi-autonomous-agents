@@ -160,11 +160,13 @@ def rate_interaction():
         return jsonify({"error": str(e)}), 500
 
 if __name__ == "__main__":
-    print("Starting Financial Advisor HTTP Server...")
+    # Use PORT environment variable or default to 8003
+    port = int(os.getenv('PORT', 8003))
+    print(f"Starting Financial Advisor HTTP Server on port {port}...")
     print("Available endpoints:")
     print("  GET  /health - Health check")
     print("  POST /chat - Chat with Financial Advisor")
     print("  GET  /analytics - Get analytics data")
     print("  POST /analytics/rate - Rate interaction")
     
-    app.run(host='0.0.0.0', port=8003, debug=True)
+    app.run(host='0.0.0.0', port=port, debug=False)
