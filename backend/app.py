@@ -1,19 +1,35 @@
-from flask import Flask, request, jsonify
-from flask_cors import CORS
-from flask_sqlalchemy import SQLAlchemy
-from flask_migrate import Migrate
-from flask_socketio import SocketIO, emit, join_room
-from flask_jwt_extended import JWTManager
-from flask_limiter import Limiter
-from flask_limiter.util import get_remote_address
-from celery import Celery
+#!/usr/bin/env python3
+"""
+ASI Autonomous Agents Backend
+Main Flask application with error handling for Render deployment
+"""
+
+import sys
 import os
-import requests
-from datetime import datetime
-from dotenv import load_dotenv
-from utils.rate_limiting import create_rate_limiter, rate_limit_handler
-from utils.security import SecurityMiddleware
-from utils.logging import RequestLogger, logger, monitor
+
+# Add error handling for imports
+try:
+    from flask import Flask, request, jsonify
+    from flask_cors import CORS
+    from flask_sqlalchemy import SQLAlchemy
+    from flask_migrate import Migrate
+    from flask_socketio import SocketIO, emit, join_room
+    from flask_jwt_extended import JWTManager
+    from flask_limiter import Limiter
+    from flask_limiter.util import get_remote_address
+    from celery import Celery
+    import requests
+    from datetime import datetime
+    from dotenv import load_dotenv
+    from utils.rate_limiting import create_rate_limiter, rate_limit_handler
+    from utils.security import SecurityMiddleware
+    from utils.logging import RequestLogger, logger, monitor
+    print("✅ All imports successful")
+except Exception as e:
+    print(f"❌ Import error: {e}")
+    import traceback
+    traceback.print_exc()
+    sys.exit(1)
 
 # Load environment variables
 load_dotenv()
@@ -22,9 +38,11 @@ load_dotenv()
 os.environ['NO_PROXY'] = 'localhost,127.0.0.1'
 
 # Initialize Flask app
+print("🔧 Initializing Flask app...")
 app = Flask(__name__)
 
 # Configuration
+print("🔧 Loading configuration...")
 app.config['SECRET_KEY'] = os.getenv('SECRET_KEY', 'dev-secret-key')
 app.config['SQLALCHEMY_DATABASE_URI'] = os.getenv('DATABASE_URL', 'postgresql+psycopg://asi_user:asi_password_2024@localhost:5432/asi_agents')
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
@@ -38,8 +56,10 @@ app.config['JWT_SECRET_KEY'] = os.getenv('JWT_SECRET_KEY', 'jwt-secret-string')
 app.config['JWT_ACCESS_TOKEN_EXPIRES'] = False
 
 # Initialize extensions
+print("🔧 Initializing database...")
 from models import db
 db.init_app(app)
+print("✅ Database initialized")
 migrate = Migrate(app, db)
 jwt = JWTManager(app)
 socketio = SocketIO(app, cors_allowed_origins="*")
@@ -67,9 +87,12 @@ celery.conf.update(app.config)
 from models import Agent, Message, User, KnowledgeGraph
 
 # Import routes
+print("🔧 Importing routes...")
 from routes import auth_bp, agents_bp, messages_bp, knowledge_bp, health_bp, multisig_bp, audit_bp, sessions_bp, transactions_bp, generate_bp
+print("✅ Routes imported")
 
 # Register blueprints
+print("🔧 Registering blueprints...")
 app.register_blueprint(auth_bp, url_prefix='/api/auth')
 app.register_blueprint(agents_bp, url_prefix='/api/agents')
 app.register_blueprint(messages_bp, url_prefix='/api/messages')
@@ -80,8 +103,10 @@ app.register_blueprint(audit_bp, url_prefix='/api/audit')
 app.register_blueprint(sessions_bp, url_prefix='/api/sessions')
 app.register_blueprint(transactions_bp, url_prefix='/api/transactions')
 app.register_blueprint(generate_bp, url_prefix='/api')
+print("✅ All blueprints registered")
 
 # Socket.IO events
+print("🔧 Setting up Socket.IO events...")
 @socketio.on('connect')
 def handle_connect():
     print('Client connected')
