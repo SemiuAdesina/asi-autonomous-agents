@@ -1,7 +1,10 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   reactStrictMode: true,
-  output: 'standalone',
+  output: 'export',
+  images: {
+    unoptimized: true
+  },
   // Enable Web3-friendly features
   webpack: (config) => {
     config.resolve.fallback = {
