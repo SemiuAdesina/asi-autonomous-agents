@@ -25,26 +25,21 @@ class DirectAgentService {
   private agentUrls: Map<string, string> = new Map()
 
   constructor() {
-    // Map agent IDs to their ports (HTTP endpoints) - Updated for Render-optimized agents
-    this.agentPorts.set('fetch-healthcare-001', 8001)  // Render-optimized Healthcare Agent
-    this.agentPorts.set('fetch-logistics-002', 8002)    // Render-optimized Logistics Agent  
-    this.agentPorts.set('fetch-finance-003', 8003)     // Render-optimized Financial Agent
-    this.agentPorts.set('fetch-education-004', 8004)
-    this.agentPorts.set('fetch-system-005', 8005)
-    this.agentPorts.set('fetch-research-006', 8006)
-    
-    // Map agent names to their IDs for easier lookup - Updated for Render deployment
-    this.agentPorts.set('healthcare-agent', 8001)  // Render-optimized Healthcare Agent
-    this.agentPorts.set('logistics-agent', 8002)   // Render-optimized Logistics Agent
-    this.agentPorts.set('financial-agent', 8003)   // Render-optimized Financial Agent
-    this.agentPorts.set('education-agent', 8004)
-    this.agentPorts.set('system-agent', 8005)
-    this.agentPorts.set('research-agent', 8006)
-
     // Map agent IDs to Render URLs for production deployment
-    this.agentUrls.set('healthcare-agent', process.env.NEXT_PUBLIC_HEALTHCARE_AGENT_URL || 'http://localhost:8001')
-    this.agentUrls.set('logistics-agent', process.env.NEXT_PUBLIC_LOGISTICS_AGENT_URL || 'http://localhost:8002')
-    this.agentUrls.set('financial-agent', process.env.NEXT_PUBLIC_FINANCIAL_AGENT_URL || 'http://localhost:8003')
+    // Only the three deployed agents: Healthcare, Financial, and Logistics
+    const healthcareUrl = process.env.NEXT_PUBLIC_HEALTHCARE_AGENT_URL || 'https://asi-healthcare-agent1.onrender.com'
+    const logisticsUrl = process.env.NEXT_PUBLIC_LOGISTICS_AGENT_URL || 'https://asi-logistics-agent3.onrender.com'
+    const financialUrl = process.env.NEXT_PUBLIC_FINANCIAL_AGENT_URL || 'https://asi-financial-agent2.onrender.com'
+    
+    // Map agent IDs to URLs
+    this.agentUrls.set('fetch-healthcare-001', healthcareUrl)
+    this.agentUrls.set('fetch-logistics-002', logisticsUrl)
+    this.agentUrls.set('fetch-finance-003', financialUrl)
+    
+    // Map agent names to their IDs for easier lookup
+    this.agentUrls.set('healthcare-agent', healthcareUrl)
+    this.agentUrls.set('logistics-agent', logisticsUrl)
+    this.agentUrls.set('financial-agent', financialUrl)
   }
 
   async connectToAgent(agentId: string): Promise<boolean> {
@@ -90,31 +85,40 @@ class DirectAgentService {
 
   async sendMessage(agentId: string, message: string): Promise<string> {
     try {
-      console.log(`Sending message to Render-optimized agent ${agentId} via backend API`)
+      console.log(`📤 Sending message to Render-optimized agent ${agentId}`)
       
-      // For Render-optimized agents, send messages through the frontend API
-      // The frontend API routes will proxy to the backend
-      const response = await fetch('/api/generate-response', {
+      // Get the agent URL
+      const agentUrl = this.agentUrls.get(agentId) || this.agentUrls.get(`fetch-${agentId}`)
+      
+      if (!agentUrl) {
+        console.error(`❌ Agent URL not found for ${agentId}`)
+        throw new Error(`Agent URL not configured for ${agentId}`)
+      }
+      
+      console.log(`🌐 Calling agent endpoint: ${agentUrl}/chat`)
+      
+      // Call the agent's HTTP endpoint directly
+      const response = await fetch(`${agentUrl}/chat`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({
-          prompt: message,
-          agentType: agentId,
-          timestamp: new Date().toISOString()
-        })
+        body: JSON.stringify({ message })
       })
 
-      if (response.ok) {
-        const data = await response.json()
-        return data.response || data.message || 'Agent responded successfully'
-      } else {
-        console.error(`Backend API error for agent ${agentId}: ${response.status}`)
-        throw new Error(`Backend API error: ${response.status}`)
+      if (!response.ok) {
+        console.error(`❌ Agent API error for ${agentId}: ${response.status}`)
+        const errorText = await response.text()
+        console.error(`Error details: ${errorText}`)
+        throw new Error(`Agent API error: ${response.status} - ${errorText}`)
       }
+
+      const data = await response.json()
+      console.log(`✅ Received response from ${agentId}:`, data.response)
+      
+      return data.response || data.message || 'Agent responded successfully'
     } catch (error) {
-      console.error(`Error sending message to agent ${agentId}:`, error)
+      console.error(`❌ Error sending message to agent ${agentId}:`, error)
       throw error
     }
   }
