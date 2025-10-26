@@ -56,7 +56,8 @@ def health_check():
     
     # MeTTa Knowledge Graph health check
     try:
-        metta_endpoint = os.getenv('METTA_ENDPOINT', 'http://localhost:8080')
+        # Check METTA_SERVER_URL first, then METTA_ENDPOINT, then default
+        metta_endpoint = os.getenv('METTA_SERVER_URL') or os.getenv('METTA_ENDPOINT', 'http://localhost:8080')
         # Ensure localhost requests bypass proxy
         os.environ['NO_PROXY'] = 'localhost,127.0.0.1'
         response = requests.get(f"{metta_endpoint}/health", timeout=5)
