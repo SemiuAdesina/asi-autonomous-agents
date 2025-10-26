@@ -74,3 +74,27 @@ class MedicalRAG:
         except Exception as e:
             logger.error(f"Error checking drug interaction: {e}")
             return "Error checking interaction"
+    
+    def get_prevention(self, condition: str) -> List[str]:
+        """Get prevention tips for a condition using MeTTa"""
+        try:
+            relationships = self.metta.find_relationships(condition)
+            prevention_tips = []
+            for rel in relationships:
+                if 'related' in rel:
+                    prevention_tips.append(rel['related'].get('name', ''))
+            return prevention_tips
+        except Exception as e:
+            logger.error(f"Error getting prevention for {condition}: {e}")
+            return []
+    
+    def query_general(self, query: str) -> List[str]:
+        """General health knowledge query using MeTTa"""
+        try:
+            concept = self.metta.query_concept(query)
+            if concept:
+                return [str(concept)]
+            return []
+        except Exception as e:
+            logger.error(f"Error querying general knowledge for {query}: {e}")
+            return []
