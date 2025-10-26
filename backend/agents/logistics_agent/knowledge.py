@@ -25,4 +25,24 @@ except Exception as e:
     logistics_metta = MeTTaKnowledgeGraph()  # Uses mock responses
     logger.info("✅ Using MeTTa Knowledge Graph with mock responses")
 
+class LogisticsKnowledgeGraph:
+    """Logistics Knowledge Graph using real MeTTa integration"""
+    
+    def __init__(self):
+        self.metta = logistics_metta
+    
+    def query(self, query: str) -> Dict[str, Any]:
+        """Query the logistics knowledge graph"""
+        try:
+            # Use semantic search from MeTTa
+            results = self.metta.semantic_search(query, limit=10)
+            return {
+                "query": query,
+                "results": results,
+                "count": len(results)
+            }
+        except Exception as e:
+            logger.error(f"Error querying logistics knowledge: {e}")
+            return {"error": str(e)}
+
 print("✅ MeTTa Logistics Knowledge Graph initialized successfully")
