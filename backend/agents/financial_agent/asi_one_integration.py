@@ -62,7 +62,7 @@ class ASIOneIntegration:
             logger.error(f"Error classifying intent: {e}")
             return 'general', query.lower()
     
-    def generate_response(self, query: str, context: Dict[str, Any] = None) -> str:
+    async def generate_response(self, query: str, context: Dict[str, Any] = None) -> str:
         """
         Generate intelligent response using OpenAI as fallback
         
