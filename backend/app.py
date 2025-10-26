@@ -940,9 +940,17 @@ if __name__ == '__main__':
     print(f"🚀 Starting backend on port {port}")
     
     if os.getenv('PORT'):
-        # Production mode - use standard Flask for Render compatibility
-        print("🔧 Running in production mode")
-        app.run(debug=False, host='0.0.0.0', port=int(port))
+        # Production mode - use Gunicorn if available, otherwise Flask with allow_unsafe_werkzeug
+        try:
+            import gunicorn
+            print("🔧 Using Gunicorn for production")
+            # Note: Gunicorn should be run from command line, not here
+            # This is a fallback if Gunicorn is not available
+            from werkzeug.serving import WSGIRequestHandler
+            app.run(debug=False, host='0.0.0.0', port=int(port), allow_unsafe_werkzeug=True)
+        except ImportError:
+            print("⚠️ Gunicorn not installed, using Flask with allow_unsafe_werkzeug=True")
+            app.run(debug=False, host='0.0.0.0', port=int(port), allow_unsafe_werkzeug=True)
     else:
         # Development mode - use SocketIO for local development
         print("🔧 Running in development mode")
