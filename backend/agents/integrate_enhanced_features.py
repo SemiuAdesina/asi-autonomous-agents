@@ -13,14 +13,14 @@ def integrate_enhanced_features():
     
     agents_dir = Path(__file__).parent
     
-    print("🚀 Integrating Enhanced Features into ASI Autonomous Agents")
+    print(" Integrating Enhanced Features into ASI Autonomous Agents")
     print("=" * 60)
     
     # List of agents to enhance
     agents = ["healthcare_agent", "financial_agent", "logistics_agent"]
     
     for agent_name in agents:
-        print(f"\n📋 Processing {agent_name}...")
+        print(f"\n Processing {agent_name}...")
         
         agent_dir = agents_dir / agent_name
         
@@ -36,21 +36,21 @@ def integrate_enhanced_features():
             
             if original_main.exists():
                 shutil.copy2(original_main, backup_main)
-                print(f"  ✅ Backed up original main.py to main_backup.py")
+                print(f"   Backed up original main.py to main_backup.py")
             
             # Replace main.py with enhanced version
             shutil.copy2(enhanced_main, original_main)
-            print(f"  ✅ Updated {agent_name} with enhanced features")
+            print(f"   Updated {agent_name} with enhanced features")
             
             # Check requirements
             requirements_enhanced = agent_dir / "requirements_enhanced.txt"
             if requirements_enhanced.exists():
-                print(f"  ✅ Enhanced requirements available: requirements_enhanced.txt")
+                print(f"   Enhanced requirements available: requirements_enhanced.txt")
             
         else:
-            print(f"  ❌ Enhanced files not found for {agent_name}")
+            print(f"   Enhanced files not found for {agent_name}")
     
-    print(f"\n🎯 Integration Summary:")
+    print(f"\n Integration Summary:")
     print(f"  - Enhanced ASI:One API integration")
     print(f"  - Advanced MeTTa Knowledge Graph with space-based architecture")
     print(f"  - Complete Chat Protocol implementation")
@@ -58,13 +58,13 @@ def integrate_enhanced_features():
     print(f"  - Dynamic learning system")
     print(f"  - Proper Agentverse registration")
     
-    print(f"\n📝 Next Steps:")
+    print(f"\n Next Steps:")
     print(f"  1. Set up ASI:One API key in .env file")
     print(f"  2. Install enhanced requirements: pip install -r requirements_enhanced.txt")
     print(f"  3. Start agents with: python main.py")
     print(f"  4. Test enhanced features")
     
-    print(f"\n🔧 Environment Setup:")
+    print(f"\n Environment Setup:")
     print(f"  Copy env_template.txt to .env and add your API keys:")
     print(f"  ASI_ONE_API_KEY=your_asi_one_api_key_here")
     print(f"  OPENAI_API_KEY=your_openai_api_key_here")

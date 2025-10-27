@@ -2,17 +2,17 @@
 
 Complete guide for deploying ASI Alliance hackathon agents to Render and connecting them to Agentverse.
 
-## 🎯 Overview
+##  Overview
 
 This project provides **three specialized AI agents** optimized for Render deployment:
 
-1. **🏥 Healthcare Assistant** - Medical consultation and health guidance
-2. **💰 Financial Advisor** - Investment strategies and DeFi insights  
-3. **🚚 Logistics Coordinator** - Supply chain management and optimization
+1. ** Healthcare Assistant** - Medical consultation and health guidance
+2. ** Financial Advisor** - Investment strategies and DeFi insights  
+3. ** Logistics Coordinator** - Supply chain management and optimization
 
 Each agent uses **ASI:One** for advanced AI reasoning and connects to **Agentverse** via mailbox.
 
-## 📁 Project Structure
+##  Project Structure
 
 ```
 asi-autonomous-agents/
@@ -35,7 +35,7 @@ asi-autonomous-agents/
 │           └── README.md          # Deployment guide
 ```
 
-## 🚀 Render Deployment Steps
+##  Render Deployment Steps
 
 ### Prerequisites
 
@@ -107,7 +107,7 @@ Repeat Step 2 with:
    - Send messages to each agent
    - Verify responses from ASI:One
 
-## 🎯 Agent Capabilities
+##  Agent Capabilities
 
 ### Healthcare Assistant
 - **Medical Consultation**: Symptom analysis, health guidance
@@ -127,7 +127,7 @@ Repeat Step 2 with:
 - **Inventory Management**: Stock optimization
 - **Delivery Tracking**: Real-time monitoring
 
-## 🔧 Technical Details
+##  Technical Details
 
 ### Dependencies
 Each agent uses minimal dependencies:
@@ -174,7 +174,7 @@ python-dotenv>=1.0.0
    - Check `.env` file is not committed to repository
    - Verify API key format and permissions
 
-## 📊 Monitoring
+##  Monitoring
 
 ### Render Dashboard
 - **Logs**: Real-time application logs
@@ -186,13 +186,13 @@ python-dotenv>=1.0.0
 - **Message Count**: Chat interactions
 - **Performance**: Response times and success rates
 
-## 🎉 Success Criteria
+##  Success Criteria
 
-✅ **All three agents deployed on Render**  
-✅ **Agents connected to Agentverse via mailbox**  
-✅ **Chat functionality working with ASI:One**  
-✅ **Agents discoverable and responsive**  
-✅ **Professional medical, financial, and logistics guidance**
+ **All three agents deployed on Render**  
+ **Agents connected to Agentverse via mailbox**  
+ **Chat functionality working with ASI:One**  
+ **Agents discoverable and responsive**  
+ **Professional medical, financial, and logistics guidance**
 
 ## 📚 Additional Resources
 

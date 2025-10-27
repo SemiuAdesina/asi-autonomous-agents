@@ -121,7 +121,7 @@ class ASIOneIntegration:
                 return None
             
             print(f"🔑 Making ASI:One API call with key: {self.api_key[:10]}...")
-            print(f"🌐 API URL: {self.base_url}/chat/completions")
+            print(f" API URL: {self.base_url}/chat/completions")
             
             payload = {
                 "prompt": prompt,
@@ -129,7 +129,7 @@ class ASIOneIntegration:
                 "temperature": 0.7
             }
             
-            print(f"📤 Sending payload: {payload}")
+            print(f" Sending payload: {payload}")
             
             response = requests.post(
                 f"{self.base_url}/chat/completions",
@@ -138,8 +138,8 @@ class ASIOneIntegration:
                 timeout=30
             )
             
-            print(f"📥 Response status: {response.status_code}")
-            print(f"📥 Response content: {response.text[:200]}...")
+            print(f" Response status: {response.status_code}")
+            print(f" Response content: {response.text[:200]}...")
             
             if response.status_code == 200:
                 data = response.json()

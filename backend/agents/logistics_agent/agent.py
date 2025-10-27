@@ -119,20 +119,20 @@ async def handle_chat_message(ctx: Context, sender: str, msg: ChatMessage):
         response = create_response(response_text, msg.msg_id)
         await ctx.send(sender, response)
         
-        print(f"📤 Sent logistics response to {sender}: {response_text[:100]}...")
+        print(f" Sent logistics response to {sender}: {response_text[:100]}...")
         
     except Exception as e:
         error_response = f"I apologize, but I encountered an error processing your logistics query: {str(e)}"
         response = create_response(error_response, msg.msg_id)
         await ctx.send(sender, response)
-        print(f"❌ Error handling logistics message: {e}")
+        print(f" Error handling logistics message: {e}")
 
 @chat_proto.on_message(model=StartSessionContent, replies={ChatResponse})
 async def handle_start_session(ctx: Context, sender: str, msg: StartSessionContent):
     """Handle session start"""
     response = create_response(msg.message, str(uuid4()))
     await ctx.send(sender, response)
-    print(f"🚀 Started logistics session with {sender}")
+    print(f" Started logistics session with {sender}")
 
 @chat_proto.on_message(model=EndSessionContent, replies={ChatResponse})
 async def handle_end_session(ctx: Context, sender: str, msg: EndSessionContent):
@@ -187,7 +187,7 @@ logistics_agent.include(chat_proto, publish_manifest=True)
 @logistics_agent.on_interval(period=1.0)
 async def send_initial_message(ctx: Context):
     """Send initial message when agent starts"""
-    print("🚀 Starting Logistics Coordinator Agent")
+    print(" Starting Logistics Coordinator Agent")
     print(f"Agent Address: {logistics_agent.address}")
     print(f"Agent Name: {logistics_agent.name}")
     print("Publishing manifest to Agentverse...")

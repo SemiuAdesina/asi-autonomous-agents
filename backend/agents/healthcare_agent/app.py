@@ -103,10 +103,10 @@ async def handle_message(ctx: Context, sender: str, msg: ChatMessage):
         )
         response = str(r.choices[0].message.content)
         
-        ctx.logger.info(f"✅ Processed medical query: {text[:50]}...")
+        ctx.logger.info(f" Processed medical query: {text[:50]}...")
         
     except Exception as e:
-        ctx.logger.exception(f"❌ Error querying ASI:One: {e}")
+        ctx.logger.exception(f" Error querying ASI:One: {e}")
         response = "I'm experiencing technical difficulties. Please try again later or consult with a healthcare professional."
 
     # Send response with end session
@@ -122,15 +122,15 @@ async def handle_message(ctx: Context, sender: str, msg: ChatMessage):
 @protocol.on_message(ChatAcknowledgement)
 async def handle_ack(ctx: Context, sender: str, msg: ChatAcknowledgement):
     """Handle chat acknowledgements"""
-    ctx.logger.info(f"✅ Message acknowledged by {sender}")
+    ctx.logger.info(f" Message acknowledged by {sender}")
 
 # Include protocol with manifest publishing
 agent.include(protocol, publish_manifest=True)
 
 if __name__ == "__main__":
-    print("🏥 Starting ASI Healthcare Assistant...")
+    print(" Starting ASI Healthcare Assistant...")
     print("📧 Mailbox enabled for Agentverse connection")
-    print("🤖 ASI:One integration active")
+    print(" ASI:One integration active")
     print("=" * 50)
     
     agent.run()

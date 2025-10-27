@@ -201,4 +201,4 @@ def extract_sources(knowledge_results: dict) -> List[str]:
         print(f"Error extracting sources: {e}")
         return ["MeTTa Knowledge Graph"]
 
-print("✅ Financial Advisor Utilities with Intent Classification initialized successfully")
+print(" Financial Advisor Utilities with Intent Classification initialized successfully")

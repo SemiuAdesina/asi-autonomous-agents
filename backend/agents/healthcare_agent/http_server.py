@@ -27,9 +27,9 @@ try:
     # Initialize components
     rag = MedicalRAG(medical_metta)
     llm = asi_one
-    print("✅ All healthcare agent modules loaded successfully")
+    print(" All healthcare agent modules loaded successfully")
 except Exception as e:
-    print(f"❌ Error loading healthcare agent modules: {e}")
+    print(f" Error loading healthcare agent modules: {e}")
     import traceback
     traceback.print_exc()
     # Create minimal fallback
@@ -56,7 +56,7 @@ def chat_endpoint():
         if not message:
             return jsonify({'error': 'No message provided'}), 400
         
-        print(f"📱 Frontend message received: {message}")
+        print(f" Frontend message received: {message}")
         
         # Debug: Check if API key is loaded
         api_key = os.getenv('ASI_ONE_API_KEY')
@@ -94,7 +94,7 @@ def chat_endpoint():
         })
         
     except Exception as e:
-        print(f"❌ Error in chat endpoint: {e}")
+        print(f" Error in chat endpoint: {e}")
         return jsonify({'error': str(e)}), 500
 
 @app.route('/health', methods=['GET'])
@@ -159,9 +159,9 @@ def rate_interaction():
 if __name__ == "__main__":
     # Use PORT environment variable or default to 8002
     port = int(os.getenv('PORT', 8002))
-    print(f"🌐 Starting Healthcare Agent HTTP Server on port {port}")
-    print("✅ MeTTa Knowledge Graph integration enabled")
-    print("✅ ASI:One integration enabled")
-    print("🚀 Ready to receive frontend requests!")
+    print(f" Starting Healthcare Agent HTTP Server on port {port}")
+    print(" MeTTa Knowledge Graph integration enabled")
+    print(" ASI:One integration enabled")
+    print(" Ready to receive frontend requests!")
     
     app.run(host='0.0.0.0', port=port, debug=False)

@@ -194,24 +194,24 @@ def register_all_agents():
         }
     ]
     
-    print("🚀 Registering ASI Agents with Agentverse")
+    print(" Registering ASI Agents with Agentverse")
     print("=" * 50)
     
     success_count = 0
     for agent in agents:
-        print(f"\n📝 Registering {agent['name']}...")
+        print(f"\n Registering {agent['name']}...")
         if registrar.register_agent(agent):
             success_count += 1
-            print(f"✅ {agent['name']} registered successfully")
+            print(f" {agent['name']} registered successfully")
         else:
-            print(f"❌ Failed to register {agent['name']}")
+            print(f" Failed to register {agent['name']}")
     
-    print(f"\n📊 Registration Summary:")
-    print(f"✅ Successfully registered: {success_count}/{len(agents)} agents")
-    print(f"❌ Failed registrations: {len(agents) - success_count}/{len(agents)} agents")
+    print(f"\n Registration Summary:")
+    print(f" Successfully registered: {success_count}/{len(agents)} agents")
+    print(f" Failed registrations: {len(agents) - success_count}/{len(agents)} agents")
     
     # Show registered agents
-    print(f"\n📋 Registered Agents:")
+    print(f"\n Registered Agents:")
     registered_agents = registrar.get_registered_agents()
     for agent in registered_agents:
         print(f"  • {agent['name']} ({agent['status']}) - {agent['address']}")
@@ -219,14 +219,14 @@ def register_all_agents():
     return success_count == len(agents)
 
 if __name__ == "__main__":
-    print("🤖 ASI Agentverse Registration Tool")
+    print(" ASI Agentverse Registration Tool")
     print("Following Fetch.ai Innovation Lab workshop examples")
     
     success = register_all_agents()
     
     if success:
-        print("\n🎉 All agents registered successfully!")
+        print("\n All agents registered successfully!")
         print("Your agents are now discoverable on Agentverse")
     else:
-        print("\n⚠️ Some agents failed to register")
+        print("\n Some agents failed to register")
         print("Check the logs above for details")

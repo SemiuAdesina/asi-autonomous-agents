@@ -28,7 +28,7 @@ class ASIOneIntegration:
         if not self.api_key:
             raise ValueError("ASI_ONE_API_KEY environment variable is required")
         
-        print("✅ ASI:One Integration initialized")
+        print(" ASI:One Integration initialized")
     
     def classify_intent(self, text: str) -> Tuple[str, str]:
         """
@@ -99,12 +99,12 @@ class ASIOneIntegration:
                 response = f"Based on your symptom '{symptom}', here's what I found:\n\n"
                 
                 if diseases:
-                    response += f"🔍 **Potential Conditions:** {', '.join(diseases)}\n\n"
+                    response += f" **Potential Conditions:** {', '.join(diseases)}\n\n"
                 
                 if treatments:
                     response += f"💊 **Recommended Treatments:** {', '.join(treatments)}\n\n"
                 
-                response += "⚠️ **Important:** This is for informational purposes only. Please consult with a healthcare professional for proper diagnosis and treatment."
+                response += " **Important:** This is for informational purposes only. Please consult with a healthcare professional for proper diagnosis and treatment."
                 
                 return response
                 
@@ -119,9 +119,9 @@ class ASIOneIntegration:
                     response += f"💊 **Treatments:** {', '.join(treatments)}\n\n"
                 
                 if side_effects:
-                    response += f"⚠️ **Potential Side Effects:** {', '.join(side_effects)}\n\n"
+                    response += f" **Potential Side Effects:** {', '.join(side_effects)}\n\n"
                 
-                response += "📋 **Note:** Always follow your healthcare provider's instructions and dosage recommendations."
+                response += " **Note:** Always follow your healthcare provider's instructions and dosage recommendations."
                 
                 return response
                 
@@ -129,10 +129,10 @@ class ASIOneIntegration:
                 interaction = context.get('interaction', 'No specific interaction found')
                 drugs = context.get('drugs', ['the medications'])
                 
-                response = f"🔍 **Drug Interaction Analysis:**\n\n"
+                response = f" **Drug Interaction Analysis:**\n\n"
                 response += f"**Medications:** {', '.join(drugs)}\n\n"
                 response += f"**Interaction:** {interaction}\n\n"
-                response += "⚠️ **Important:** Always inform your healthcare provider about all medications you're taking."
+                response += " **Important:** Always inform your healthcare provider about all medications you're taking."
                 
                 return response
                 
@@ -146,13 +146,13 @@ class ASIOneIntegration:
                     for i, tip in enumerate(prevention_tips, 1):
                         response += f"{i}. {tip.replace('_', ' ').title()}\n"
                 
-                response += "\n💡 **Remember:** Prevention is the best medicine!"
+                response += "\n **Remember:** Prevention is the best medicine!"
                 
                 return response
                 
             else:
                 # General response
-                response = f"🤖 **Healthcare Assistant Response:**\n\n"
+                response = f" **Healthcare Assistant Response:**\n\n"
                 response += f"I understand you're asking about: '{query}'\n\n"
                 response += "I'm here to help with healthcare information. You can ask me about:\n"
                 response += "• Symptoms and potential conditions\n"
@@ -196,7 +196,7 @@ def process_query(query: str, rag, llm: ASIOneIntegration) -> str:
             if diseases:
                 treatments = rag.get_treatment(diseases[0])
             
-            print(f"🔍 Symptom analysis - Symptom: {symptom}, Diseases: {diseases}, Treatments: {treatments}")
+            print(f" Symptom analysis - Symptom: {symptom}, Diseases: {diseases}, Treatments: {treatments}")
             
             context.update({
                 'symptom': symptom,
@@ -251,7 +251,7 @@ def process_query(query: str, rag, llm: ASIOneIntegration) -> str:
         if intent == 'general' and not context.get('general_info'):
             rag.add_knowledge("general_query", query.lower().replace(" ", "_"), "User asked about this topic", "user")
         
-        print(f"✅ Query processed successfully")
+        print(f" Query processed successfully")
         return response
         
     except Exception as e:
@@ -297,4 +297,4 @@ def extract_topic_from_query(query: str) -> str:
         return "migraine"
     return "general_health"
 
-print("✅ Utils module initialized successfully")
+print(" Utils module initialized successfully")

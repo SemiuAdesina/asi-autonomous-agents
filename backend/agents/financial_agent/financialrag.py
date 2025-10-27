@@ -25,7 +25,7 @@ class FinancialRAG:
         """
         try:
             investments = self.metta.query_risk_profile(risk_type)
-            print(f"🔍 MeTTa Query: Risk profile '{risk_type}' → Investments: {investments}")
+            print(f" MeTTa Query: Risk profile '{risk_type}' → Investments: {investments}")
             return investments
         except Exception as e:
             logger.error(f"Error querying risk profile {risk_type}: {e}")
@@ -37,7 +37,7 @@ class FinancialRAG:
         """
         try:
             returns = self.metta.get_expected_return(investment)
-            print(f"🔍 MeTTa Query: Expected return for '{investment}' → {returns}")
+            print(f" MeTTa Query: Expected return for '{investment}' → {returns}")
             return returns
         except Exception as e:
             logger.error(f"Error getting expected return for {investment}: {e}")
@@ -49,7 +49,7 @@ class FinancialRAG:
         """
         try:
             risks = self.metta.get_risk_level(investment)
-            print(f"🔍 MeTTa Query: Risk level for '{investment}' → {risks}")
+            print(f" MeTTa Query: Risk level for '{investment}' → {risks}")
             return risks
         except Exception as e:
             logger.error(f"Error getting risk level for {investment}: {e}")
@@ -61,7 +61,7 @@ class FinancialRAG:
         """
         try:
             allocation = self.metta.get_age_allocation(age_group)
-            print(f"🔍 MeTTa Query: Age allocation for '{age_group}' → {allocation}")
+            print(f" MeTTa Query: Age allocation for '{age_group}' → {allocation}")
             return allocation
         except Exception as e:
             logger.error(f"Error getting age allocation for {age_group}: {e}")
@@ -73,7 +73,7 @@ class FinancialRAG:
         """
         try:
             strategy = self.metta.get_goal_strategy(goal)
-            print(f"🔍 MeTTa Query: Goal strategy for '{goal}' → {strategy}")
+            print(f" MeTTa Query: Goal strategy for '{goal}' → {strategy}")
             return strategy
         except Exception as e:
             logger.error(f"Error getting goal strategy for {goal}: {e}")
@@ -85,7 +85,7 @@ class FinancialRAG:
         """
         try:
             stocks = self.metta.get_sector_stocks(sector)
-            print(f"🔍 MeTTa Query: Sector stocks for '{sector}' → {stocks}")
+            print(f" MeTTa Query: Sector stocks for '{sector}' → {stocks}")
             return stocks
         except Exception as e:
             logger.error(f"Error getting sector stocks for {sector}: {e}")
@@ -287,4 +287,4 @@ class FinancialRAG:
         except Exception as e:
             logger.error(f"Error adding knowledge {category}_{key}: {e}")
 
-print("✅ Financial RAG System with MeTTa integration initialized successfully")
+print(" Financial RAG System with MeTTa integration initialized successfully")

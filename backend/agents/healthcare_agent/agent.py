@@ -104,20 +104,20 @@ async def handle_message(ctx: Context, sender: str, msg: ChatMessage):
         response = create_response(response_text, msg.msg_id)
         await ctx.send(sender, response)
         
-        print(f"📤 Sent response to {sender}: {response_text[:100]}...")
+        print(f" Sent response to {sender}: {response_text[:100]}...")
         
     except Exception as e:
         error_response = f"I apologize, but I encountered an error processing your message: {str(e)}"
         response = create_response(error_response, msg.msg_id)
         await ctx.send(sender, response)
-        print(f"❌ Error handling message: {e}")
+        print(f" Error handling message: {e}")
 
 @chat_proto.on_message(model=StartSessionContent, replies={ChatResponse})
 async def handle_start_session(ctx: Context, sender: str, msg: StartSessionContent):
     """Handle session start"""
     response = create_response(msg.message, str(uuid4()))
     await ctx.send(sender, response)
-    print(f"🚀 Started session with {sender}")
+    print(f" Started session with {sender}")
 
 @chat_proto.on_message(model=EndSessionContent, replies={ChatResponse})
 async def handle_end_session(ctx: Context, sender: str, msg: EndSessionContent):
@@ -133,7 +133,7 @@ healthcare_agent.include(chat_proto, publish_manifest=True)
 @healthcare_agent.on_interval(period=1.0)
 async def send_initial_message(ctx: Context):
     """Send initial message when agent starts"""
-    print("🚀 Starting Healthcare Agent")
+    print(" Starting Healthcare Agent")
     print(f"Agent Address: {healthcare_agent.address}")
     print(f"Agent Name: {healthcare_agent.name}")
     print("Publishing manifest to Agentverse...")
@@ -157,7 +157,7 @@ def chat_endpoint():
         if not message:
             return jsonify({'error': 'No message provided'}), 400
         
-        print(f"📱 Frontend message received: {message}")
+        print(f" Frontend message received: {message}")
         
         # Process the message using MeTTa and ASI:One
         response = process_query(message)
@@ -172,7 +172,7 @@ def chat_endpoint():
         })
         
     except Exception as e:
-        print(f"❌ Error in chat endpoint: {e}")
+        print(f" Error in chat endpoint: {e}")
         return jsonify({'error': str(e)}), 500
 
 @app.route('/health', methods=['GET'])
@@ -192,7 +192,7 @@ if __name__ == "__main__":
     flask_thread.daemon = True
     flask_thread.start()
     
-    print("🌐 Flask HTTP endpoints available on port 8002")
+    print(" Flask HTTP endpoints available on port 8002")
     
     # Fund the agent if needed
     fund_agent_if_low(healthcare_agent.wallet.address())

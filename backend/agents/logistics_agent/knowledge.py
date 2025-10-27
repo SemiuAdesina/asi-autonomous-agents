@@ -18,12 +18,12 @@ try:
     import os
     metta_url = os.getenv('METTA_SERVER_URL') or os.getenv('METTA_ENDPOINT', 'http://localhost:8080')
     logistics_metta = MeTTaKnowledgeGraph(metta_url)
-    logger.info(f"✅ Connected to real MeTTa Knowledge Graph server at {metta_url}")
+    logger.info(f" Connected to real MeTTa Knowledge Graph server at {metta_url}")
 except Exception as e:
     logger.warning(f"Failed to connect to MeTTa server: {e}")
     # Fallback to mock implementation
     logistics_metta = MeTTaKnowledgeGraph()  # Uses mock responses
-    logger.info("✅ Using MeTTa Knowledge Graph with mock responses")
+    logger.info(" Using MeTTa Knowledge Graph with mock responses")
 
 class LogisticsKnowledgeGraph:
     """Logistics Knowledge Graph using real MeTTa integration"""
@@ -45,4 +45,4 @@ class LogisticsKnowledgeGraph:
             logger.error(f"Error querying logistics knowledge: {e}")
             return {"error": str(e)}
 
-print("✅ MeTTa Logistics Knowledge Graph initialized successfully")
+print(" MeTTa Logistics Knowledge Graph initialized successfully")

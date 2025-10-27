@@ -541,9 +541,9 @@ try:
     test_response = requests.get(f"{metta_url}/health", timeout=5)
     if test_response.status_code == 200:
         knowledge_graph = MeTTaKnowledgeGraph(metta_url)
-        print(f"✅ Connected to MeTTa Knowledge Graph Server at {metta_url}")
+        print(f" Connected to MeTTa Knowledge Graph Server at {metta_url}")
     else:
         raise ConnectionError("MeTTa server not responding")
 except Exception as e:
-    print(f"⚠️ MeTTa server not available ({e}), using enhanced mock responses")
+    print(f" MeTTa server not available ({e}), using enhanced mock responses")
     knowledge_graph = MeTTaKnowledgeGraph()  # Use enhanced mock instance

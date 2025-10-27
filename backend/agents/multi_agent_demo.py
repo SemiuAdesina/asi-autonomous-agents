@@ -109,13 +109,13 @@ async def alice_handle_message(ctx: Context, sender: str, msg: ChatMessage):
         response = create_response(response_text, msg.msg_id, "Alice")
         await ctx.send(sender, response)
         
-        print(f"📤 Alice sent response to {sender}: {response_text[:50]}...")
+        print(f" Alice sent response to {sender}: {response_text[:50]}...")
         
     except Exception as e:
         error_response = f"Alice: I encountered an error: {str(e)}"
         response = create_response(error_response, msg.msg_id, "Alice")
         await ctx.send(sender, response)
-        print(f"❌ Alice error: {e}")
+        print(f" Alice error: {e}")
 
 # Adrian's message handler
 @chat_proto.on_message(model=ChatMessage, replies={ChatResponse})
@@ -147,13 +147,13 @@ async def adrian_handle_message(ctx: Context, sender: str, msg: ChatMessage):
         response = create_response(response_text, msg.msg_id, "Adrian")
         await ctx.send(sender, response)
         
-        print(f"📤 Adrian sent response to {sender}: {response_text[:50]}...")
+        print(f" Adrian sent response to {sender}: {response_text[:50]}...")
         
     except Exception as e:
         error_response = f"Adrian: I encountered an error: {str(e)}"
         response = create_response(error_response, msg.msg_id, "Adrian")
         await ctx.send(sender, response)
-        print(f"❌ Adrian error: {e}")
+        print(f" Adrian error: {e}")
 
 # Add protocol to agents
 alice.include(chat_proto)
@@ -174,7 +174,7 @@ async def alice_startup(ctx: Context):
     )
     
     await ctx.send(adrian.address, initial_msg)
-    print("📤 Alice sent initial message to Adrian")
+    print(" Alice sent initial message to Adrian")
 
 @adrian.on_event("startup")
 async def adrian_startup(ctx: Context):
@@ -190,12 +190,12 @@ async def adrian_startup(ctx: Context):
     )
     
     await ctx.send(alice.address, initial_msg)
-    print("📤 Adrian sent initial message to Alice")
+    print(" Adrian sent initial message to Alice")
 
 # Demo function to simulate user interaction
 async def demo_multi_agent_communication():
     """Demo function showing Alice and Adrian communication"""
-    print("\n🚀 Starting Multi-Agent Communication Demo")
+    print("\n Starting Multi-Agent Communication Demo")
     print("=" * 50)
     
     # Start both agents
@@ -204,23 +204,23 @@ async def demo_multi_agent_communication():
     # This would normally be done with agent.run() but for demo purposes
     # we'll simulate the communication
     
-    print("\n📱 Demo: User asks Alice about health insurance")
+    print("\n Demo: User asks Alice about health insurance")
     print("Alice: I can help with medical questions. For 'health insurance', let me check my knowledge base...")
     print("Alice: Based on my medical knowledge, I recommend consulting a healthcare professional.")
     
-    print("\n📱 Demo: User asks Adrian about investment")
+    print("\n Demo: User asks Adrian about investment")
     print("Adrian: I can help with financial questions. For 'investment advice', I recommend diversifying your portfolio and considering risk management strategies.")
     
-    print("\n📱 Demo: Cross-agent communication")
+    print("\n Demo: Cross-agent communication")
     print("User: I have a headache and want to invest in healthcare stocks")
     print("Alice: I received 'I have a headache and want to invest in healthcare stocks'. This seems like a financial question. Let me forward this to Adrian...")
     print("Adrian: I received 'I have a headache and want to invest in healthcare stocks'. This seems like a medical question. Let me forward this to Alice...")
     
-    print("\n✅ Multi-Agent Communication Demo completed!")
+    print("\n Multi-Agent Communication Demo completed!")
     print("=" * 50)
 
 if __name__ == "__main__":
-    print("🤖 Multi-Agent Communication System")
+    print(" Multi-Agent Communication System")
     print("Alice (Healthcare) + Adrian (Financial)")
     print("Following Fetch.ai Innovation Lab workshop examples")
     

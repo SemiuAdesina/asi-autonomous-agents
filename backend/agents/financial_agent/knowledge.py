@@ -19,12 +19,12 @@ try:
     import os
     metta_url = os.getenv('METTA_SERVER_URL') or os.getenv('METTA_ENDPOINT', 'http://localhost:8080')
     financial_metta = MeTTaKnowledgeGraph(metta_url)
-    logger.info(f"✅ Connected to real MeTTa Knowledge Graph server at {metta_url}")
+    logger.info(f" Connected to real MeTTa Knowledge Graph server at {metta_url}")
 except Exception as e:
     logger.warning(f"Failed to connect to MeTTa server: {e}")
     # Fallback to mock implementation
     financial_metta = MeTTaKnowledgeGraph()  # Uses mock responses
-    logger.info("✅ Using MeTTa Knowledge Graph with mock responses")
+    logger.info(" Using MeTTa Knowledge Graph with mock responses")
 
 class FinancialKnowledgeGraph:
     """Financial Knowledge Graph using real MeTTa integration"""
@@ -174,7 +174,7 @@ class FinancialKnowledgeGraph:
                     "category": "investment_education"
                 })
             
-            logger.info("✅ Financial knowledge base initialized with comprehensive data")
+            logger.info(" Financial knowledge base initialized with comprehensive data")
             
         except Exception as e:
             logger.error(f"Error initializing financial knowledge: {e}")
@@ -193,7 +193,7 @@ class FinancialKnowledgeGraph:
                     if investment:
                         investments.append(investment)
             
-            logger.info(f"🔍 MeTTa Query: Risk profile '{risk_type}' → {investments}")
+            logger.info(f" MeTTa Query: Risk profile '{risk_type}' → {investments}")
             return investments
         except Exception as e:
             logger.error(f"Error querying risk profile {risk_type}: {e}")
@@ -214,7 +214,7 @@ class FinancialKnowledgeGraph:
                     if return_val and return_val not in returns:
                         returns.append(return_val)
             
-            logger.info(f"🔍 MeTTa Query: Expected return for '{investment}' → {returns}")
+            logger.info(f" MeTTa Query: Expected return for '{investment}' → {returns}")
             return returns
         except Exception as e:
             logger.error(f"Error getting expected return for {investment}: {e}")
@@ -235,7 +235,7 @@ class FinancialKnowledgeGraph:
                     if risk_val and risk_val not in risks:
                         risks.append(risk_val)
             
-            logger.info(f"🔍 MeTTa Query: Risk level for '{investment}' → {risks}")
+            logger.info(f" MeTTa Query: Risk level for '{investment}' → {risks}")
             return risks
         except Exception as e:
             logger.error(f"Error getting risk level for {investment}: {e}")
@@ -253,7 +253,7 @@ class FinancialKnowledgeGraph:
                     if allocation:
                         allocations.append(allocation)
             
-            logger.info(f"🔍 MeTTa Query: Age allocation for '{age_group}' → {allocations}")
+            logger.info(f" MeTTa Query: Age allocation for '{age_group}' → {allocations}")
             return allocations
         except Exception as e:
             logger.error(f"Error getting age allocation for {age_group}: {e}")
@@ -271,7 +271,7 @@ class FinancialKnowledgeGraph:
                     if strategy:
                         strategies.append(strategy)
             
-            logger.info(f"🔍 MeTTa Query: Goal strategy for '{goal}' → {strategies}")
+            logger.info(f" MeTTa Query: Goal strategy for '{goal}' → {strategies}")
             return strategies
         except Exception as e:
             logger.error(f"Error getting goal strategy for {goal}: {e}")
@@ -289,7 +289,7 @@ class FinancialKnowledgeGraph:
                     if stock_list:
                         stocks.append(stock_list)
             
-            logger.info(f"🔍 MeTTa Query: Sector stocks for '{sector}' → {stocks}")
+            logger.info(f" MeTTa Query: Sector stocks for '{sector}' → {stocks}")
             return stocks
         except Exception as e:
             logger.error(f"Error getting sector stocks for {sector}: {e}")
@@ -324,4 +324,4 @@ class FinancialKnowledgeGraph:
             logger.error(f"Error querying financial knowledge: {e}")
             return {"error": str(e)}
 
-print("✅ MeTTa Financial Knowledge Graph initialized successfully")
+print(" MeTTa Financial Knowledge Graph initialized successfully")

@@ -24,9 +24,9 @@ try:
     from utils.rate_limiting import create_rate_limiter, rate_limit_handler
     from utils.security import SecurityMiddleware
     from utils.logging import RequestLogger, logger, monitor
-    print("✅ All imports successful")
+    print(" All imports successful")
 except Exception as e:
-    print(f"❌ Import error: {e}")
+    print(f" Import error: {e}")
     import traceback
     traceback.print_exc()
     sys.exit(1)
@@ -38,11 +38,11 @@ load_dotenv()
 os.environ['NO_PROXY'] = 'localhost,127.0.0.1'
 
 # Initialize Flask app
-print("🔧 Initializing Flask app...")
+print(" Initializing Flask app...")
 app = Flask(__name__)
 
 # Configuration
-print("🔧 Loading configuration...")
+print(" Loading configuration...")
 app.config['SECRET_KEY'] = os.getenv('SECRET_KEY', 'dev-secret-key')
 # Database configuration - using SQLite for Render simplicity
 database_url = os.getenv('DATABASE_URL')
@@ -62,10 +62,10 @@ app.config['JWT_SECRET_KEY'] = os.getenv('JWT_SECRET_KEY', 'jwt-secret-string')
 app.config['JWT_ACCESS_TOKEN_EXPIRES'] = False
 
 # Initialize extensions
-print("🔧 Initializing database...")
+print(" Initializing database...")
 from models import db
 db.init_app(app)
-print("✅ Database initialized")
+print(" Database initialized")
 migrate = Migrate(app, db)
 jwt = JWTManager(app)
 socketio = SocketIO(app, cors_allowed_origins="*")
@@ -93,12 +93,12 @@ celery.conf.update(app.config)
 from models import Agent, Message, User, KnowledgeGraph
 
 # Import routes
-print("🔧 Importing routes...")
+print(" Importing routes...")
 from routes import auth_bp, agents_bp, messages_bp, knowledge_bp, health_bp, multisig_bp, audit_bp, sessions_bp, transactions_bp, generate_bp
-print("✅ Routes imported")
+print(" Routes imported")
 
 # Register blueprints
-print("🔧 Registering blueprints...")
+print(" Registering blueprints...")
 app.register_blueprint(auth_bp, url_prefix='/api/auth')
 app.register_blueprint(agents_bp, url_prefix='/api/agents')
 app.register_blueprint(messages_bp, url_prefix='/api/messages')
@@ -109,10 +109,10 @@ app.register_blueprint(audit_bp, url_prefix='/api/audit')
 app.register_blueprint(sessions_bp, url_prefix='/api/sessions')
 app.register_blueprint(transactions_bp, url_prefix='/api/transactions')
 app.register_blueprint(generate_bp, url_prefix='/api')
-print("✅ All blueprints registered")
+print(" All blueprints registered")
 
 # Socket.IO events
-print("🔧 Setting up Socket.IO events...")
+print(" Setting up Socket.IO events...")
 @socketio.on('connect')
 def handle_connect():
     print('Client connected')
@@ -916,16 +916,16 @@ if __name__ == '__main__':
             try:
                 with app.app_context():
                     db.create_all()
-                print("✅ Database initialized successfully")
+                print(" Database initialized successfully")
                 return True
             except Exception as e:
-                print(f"❌ Database initialization attempt {attempt + 1}/{max_retries} failed: {e}")
+                print(f" Database initialization attempt {attempt + 1}/{max_retries} failed: {e}")
                 if attempt < max_retries - 1:
                     print(f"⏳ Retrying in {retry_delay} seconds...")
                     import time
                     time.sleep(retry_delay)
                 else:
-                    print("❌ Failed to initialize database after all retries. Starting app anyway...")
+                    print(" Failed to initialize database after all retries. Starting app anyway...")
                     return False
     
     # Start database initialization in background
@@ -937,13 +937,13 @@ if __name__ == '__main__':
     # Run the application
     # Check if we're in production (Render sets PORT environment variable)
     port = os.getenv('PORT', 5001)
-    print(f"🚀 Starting backend on port {port}")
+    print(f" Starting backend on port {port}")
     
     if os.getenv('PORT'):
         # Production mode - Flask development server warning is expected on Render free tier
-        print("🔧 Running in production mode (Flask dev server warning is normal on Render free tier)")
+        print(" Running in production mode (Flask dev server warning is normal on Render free tier)")
         app.run(debug=False, host='0.0.0.0', port=int(port))
     else:
         # Development mode - use SocketIO for local development
-        print("🔧 Running in development mode")
+        print(" Running in development mode")
         socketio.run(app, debug=True, host='0.0.0.0', port=int(port))

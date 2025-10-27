@@ -19,11 +19,11 @@ try:
     import os
     metta_url = os.getenv('METTA_SERVER_URL') or os.getenv('METTA_ENDPOINT', 'http://localhost:8080')
     medical_metta = MeTTaKnowledgeGraph(metta_url)
-    logger.info(f"✅ Connected to real MeTTa Knowledge Graph server at {metta_url}")
+    logger.info(f" Connected to real MeTTa Knowledge Graph server at {metta_url}")
 except Exception as e:
     logger.warning(f"Failed to connect to MeTTa server: {e}")
     # Fallback to mock implementation
     medical_metta = MeTTaKnowledgeGraph()  # Uses mock responses
-    logger.info("✅ Using MeTTa Knowledge Graph with mock responses")
+    logger.info(" Using MeTTa Knowledge Graph with mock responses")
 
-print("✅ MeTTa Medical Knowledge Graph initialized successfully")
+print(" MeTTa Medical Knowledge Graph initialized successfully")
