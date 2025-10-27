@@ -102,9 +102,50 @@ const MeTTaQueryInterface = () => {
       if (response.ok) {
         toast.success('MeTTa query executed successfully')
         setQuery('')
-        // Update concepts if new ones were discovered
-        if (result.concepts) {
-          setConcepts(prev => [...prev, ...result.concepts])
+        
+        // Extract concepts from the result and add them to the concepts list
+        const extractedConcepts: MeTTaConcept[] = []
+        
+        // Check for concepts in result
+        if (result.concepts && result.concepts.length > 0) {
+          result.concepts.forEach((concept: any) => {
+            extractedConcepts.push({
+              id: Date.now() + Math.random().toString(),
+              name: concept.name || 'Unknown Concept',
+              definition: concept.definition || '',
+              domain: concept.domain || 'general',
+              confidence: concept.confidence || 0.8,
+              relationships: concept.relationships || []
+            })
+          })
+        }
+        
+        // Also extract from raw_result.results if available
+        if (result.raw_result && result.raw_result.results) {
+          result.raw_result.results.forEach((item: any) => {
+            if (item.entity) {
+              extractedConcepts.push({
+                id: Date.now() + Math.random().toString(),
+                name: item.entity,
+                definition: item.target || item.metadata?.source || '',
+                domain: 'general',
+                confidence: item.confidence || 0.5,
+                relationships: []
+              })
+            }
+          })
+        }
+        
+        // Add extracted concepts to the list
+        if (extractedConcepts.length > 0) {
+          setConcepts(prev => {
+            // Avoid duplicates by checking names
+            const newConcepts = extractedConcepts.filter(
+              newConcept => !prev.some(existing => existing.name === newConcept.name)
+            )
+            return [...prev, ...newConcepts]
+          })
+          toast.success(`Added ${extractedConcepts.length} new concept(s)`)
         }
       } else {
         toast.error('MeTTa query failed')
