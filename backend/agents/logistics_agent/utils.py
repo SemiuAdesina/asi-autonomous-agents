@@ -66,9 +66,40 @@ async def classify_logistics_intent(query: str, llm) -> str:
         return "general_logistics"
 
 async def generate_logistics_response(query: str, intent: str, knowledge_results: dict, llm) -> str:
-    """Generate a logistics response using ASI:One"""
+    """Generate a logistics response using OpenAI"""
+    import os
     
-    # Build context from knowledge results
+    # Try OpenAI first
+    openai_key = os.getenv('OPENAI_API_KEY')
+    if openai_key:
+        import openai
+        client = openai.OpenAI(api_key=openai_key)
+        
+        # Build context from knowledge results
+        context = ""
+        if knowledge_results and 'results' in knowledge_results:
+            for result in knowledge_results['results']:
+                context += f"- {result.get('description', '')}\n"
+        
+        response = client.chat.completions.create(
+            model="gpt-4o-mini",
+            messages=[
+                {
+                    "role": "system",
+                    "content": "You are a knowledgeable Logistics Coordinator AI agent. Provide helpful logistics and supply chain advice. Always recommend consulting logistics experts for complex operations. Be professional and informative."
+                },
+                {
+                    "role": "user",
+                    "content": f"Query: {query}\nIntent: {intent}\n\nContext: {context}\n\nProvide comprehensive logistics analysis:"
+                }
+            ],
+            max_tokens=500,
+            temperature=0.7
+        )
+        
+        return response.choices[0].message.content
+    
+    # Fallback to ASI:One
     context = ""
     if knowledge_results and 'results' in knowledge_results:
         for result in knowledge_results['results']:
@@ -94,7 +125,7 @@ async def generate_logistics_response(query: str, intent: str, knowledge_results
     """
     
     try:
-        response = llm.generate_response(response_prompt)
+        response = await llm.generate_response(response_prompt)
         return response
     except Exception as e:
         return f"I apologize, but I'm having trouble generating a response right now. Please try again later. Error: {str(e)}"
