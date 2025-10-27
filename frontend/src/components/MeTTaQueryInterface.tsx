@@ -42,7 +42,8 @@ const MeTTaQueryInterface = () => {
 
   const loadConcepts = async () => {
     try {
-      const response = await fetch('/api/knowledge/concepts?domain=metta')
+      const backendUrl = process.env.NEXT_PUBLIC_API_URL || 'https://asi-backend-new.onrender.com'
+      const response = await fetch(`${backendUrl}/api/knowledge/concepts?domain=metta`)
       if (response.ok) {
         const data = await response.json()
         setConcepts(data.concepts || [])
@@ -60,8 +61,9 @@ const MeTTaQueryInterface = () => {
 
     setIsLoading(true)
     try {
-      // Call MeTTa Knowledge Graph directly
-      const response = await fetch('/api/knowledge/metta-query', {
+      // Call MeTTa Knowledge Graph directly via backend
+      const backendUrl = process.env.NEXT_PUBLIC_API_URL || 'https://asi-backend-new.onrender.com'
+      const response = await fetch(`${backendUrl}/api/knowledge/metta-query`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

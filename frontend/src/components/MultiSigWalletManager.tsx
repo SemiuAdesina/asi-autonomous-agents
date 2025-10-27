@@ -141,7 +141,8 @@ const MultiSigWalletManager = () => {
     try {
       setIsLoading(true)
       
-      const response = await fetch('/api/multisig/transaction', {
+      const backendUrl = process.env.NEXT_PUBLIC_API_URL || 'https://asi-backend-new.onrender.com'
+      const response = await fetch(`${backendUrl}/api/multisig/transaction`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -175,7 +176,8 @@ const MultiSigWalletManager = () => {
 
   const loadTransactions = async (multisigAddress: string) => {
     try {
-      const response = await fetch(`/api/multisig/wallet/${multisigAddress}/history`, {
+      const backendUrl = process.env.NEXT_PUBLIC_API_URL || 'https://asi-backend-new.onrender.com'
+      const response = await fetch(`${backendUrl}/api/multisig/wallet/${multisigAddress}/history`, {
         headers: {
           'Authorization': `Bearer ${token}`
         }
@@ -192,7 +194,8 @@ const MultiSigWalletManager = () => {
 
   const approveTransaction = async (transactionId: string) => {
     try {
-      const response = await fetch(`/api/multisig/transaction/${transactionId}/approve`, {
+      const backendUrl = process.env.NEXT_PUBLIC_API_URL || 'https://asi-backend-new.onrender.com'
+      const response = await fetch(`${backendUrl}/api/multisig/transaction/${transactionId}/approve`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -219,7 +222,8 @@ const MultiSigWalletManager = () => {
 
   const rejectTransaction = async (transactionId: string) => {
     try {
-      const response = await fetch(`/api/multisig/transaction/${transactionId}/reject`, {
+      const backendUrl = process.env.NEXT_PUBLIC_API_URL || 'https://asi-backend-new.onrender.com'
+      const response = await fetch(`${backendUrl}/api/multisig/transaction/${transactionId}/reject`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
