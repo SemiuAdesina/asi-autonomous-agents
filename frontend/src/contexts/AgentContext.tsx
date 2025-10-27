@@ -1,6 +1,6 @@
 'use client'
 
-import { createContext, useContext, useState, useEffect, ReactNode, useCallback } from 'react'
+import { createContext, useContext, useState, useEffect, ReactNode, useCallback, useRef } from 'react'
 import { toast } from 'react-toastify'
 import DirectAgentService from '../services/agentCommunication'
 import { useAuth } from './AuthContext'
@@ -88,6 +88,9 @@ export const AgentProvider = ({ children }: AgentProviderProps) => {
   const [isDiscovering, setIsDiscovering] = useState(false)
   const [isSwitchingAgent, setIsSwitchingAgent] = useState(false)
   
+  // Track if discovery has been attempted to prevent multiple calls
+  const hasAttemptedDiscovery = useRef(false)
+  
   // Initialize direct agent communication service
   const [agentService] = useState(() => new DirectAgentService())
 
@@ -97,15 +100,22 @@ export const AgentProvider = ({ children }: AgentProviderProps) => {
     console.log('🔍 Starting agent discovery...')
     setIsDiscovering(true)
     try {
-      // Try to fetch fresh agent data from the backend API
+      // Try to fetch fresh agent data from the backend API with timeout
       console.log('🌐 Fetching agents from backend API...')
       const backendUrl = process.env.NEXT_PUBLIC_API_URL || 'https://asi-backend-new.onrender.com'
+      
+      const controller = new AbortController()
+      const timeoutId = setTimeout(() => controller.abort(), 5000) // 5 second timeout
+      
       const response = await fetch(`${backendUrl}/api/coordinator/agents`, {
         method: 'GET',
         headers: {
           'Content-Type': 'application/json',
-        }
+        },
+        signal: controller.signal
       })
+      
+      clearTimeout(timeoutId)
 
       if (response.ok) {
         const backendAgents = await response.json()
@@ -129,8 +139,14 @@ export const AgentProvider = ({ children }: AgentProviderProps) => {
       } else {
         throw new Error(`Backend API error: ${response.status}`)
       }
-    } catch (error) {
+    } catch (error: any) {
       console.error('❌ Agent discovery failed:', error)
+      
+      // Handle timeout or network errors gracefully
+      if (error.name === 'AbortError') {
+        console.log('⏱️ Discovery request timed out, using demo agents')
+      }
+      
       // Fallback to demo agents - silent fallback without warning
       console.log('🔄 Falling back to demo agents...')
       const fallbackAgents = getDemoAgents()
@@ -146,8 +162,15 @@ export const AgentProvider = ({ children }: AgentProviderProps) => {
   // Discover agents on component mount
   useEffect(() => {
     console.log('🚀 AgentContext mounted, starting agent discovery...')
+    // Only attempt discovery once
+    if (hasAttemptedDiscovery.current) {
+      console.log('⏭️ Skipping duplicate discovery attempt')
+      return
+    }
+    hasAttemptedDiscovery.current = true
+    // Try to discover to get fresh data from backend
     discoverAgents()
-  }, []) // Remove discoverAgents from dependency array to avoid infinite loops
+  }, [discoverAgents]) // Include discoverAgents in dependency array
   
   const [selectedAgent, setSelectedAgent] = useState<Agent | null>(null)
   const [isConnected, setIsConnected] = useState(false)
