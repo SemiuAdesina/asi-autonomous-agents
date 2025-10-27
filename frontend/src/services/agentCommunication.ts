@@ -65,17 +65,20 @@ class DirectAgentService {
 
   async sendMessage(agentId: string, message: string): Promise<string> {
     try {
-      console.log(`📤 Sending message to Render-optimized agent ${agentId}`)
+      console.log(`📤 Sending message to agent ${agentId}`)
+      console.log(`📋 Available agent URLs:`, Array.from(this.agentUrls.entries()))
       
       // Get the agent URL
       const agentUrl = this.agentUrls.get(agentId) || this.agentUrls.get(`fetch-${agentId}`)
       
       if (!agentUrl) {
         console.error(`❌ Agent URL not found for ${agentId}`)
+        console.error(`📋 Tried keys: ${agentId}, fetch-${agentId}`)
         throw new Error(`Agent URL not configured for ${agentId}`)
       }
       
       console.log(`🌐 Calling agent endpoint: ${agentUrl}/chat`)
+      console.log(`📝 Sending message: ${message.substring(0, 50)}...`)
       
       // Call the agent's HTTP endpoint directly
       const response = await fetch(`${agentUrl}/chat`, {
@@ -86,6 +89,8 @@ class DirectAgentService {
         body: JSON.stringify({ message })
       })
 
+      console.log(`📥 Response status: ${response.status}`)
+
       if (!response.ok) {
         console.error(`❌ Agent API error for ${agentId}: ${response.status}`)
         const errorText = await response.text()
@@ -94,11 +99,13 @@ class DirectAgentService {
       }
 
       const data = await response.json()
-      console.log(`✅ Received response from ${agentId}:`, data.response)
+      console.log(`✅ Received response from ${agentId}:`, data)
+      console.log(`📝 Response data:`, JSON.stringify(data, null, 2))
       
       return data.response || data.message || 'Agent responded successfully'
     } catch (error) {
       console.error(`❌ Error sending message to agent ${agentId}:`, error)
+      console.error(`Full error object:`, error)
       throw error
     }
   }
