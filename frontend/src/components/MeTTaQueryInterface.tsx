@@ -238,10 +238,16 @@ const MeTTaQueryInterface = () => {
                 </label>
                 <textarea
                   value={query}
-                  onChange={(e) => setQuery(e.target.value)}
+                  onChange={(e) => {
+                    setQuery(e.target.value)
+                    // Auto-resize textarea
+                    e.target.style.height = 'auto'
+                    e.target.style.height = Math.min(e.target.scrollHeight, 200) + 'px'
+                  }}
                   onKeyPress={handleKeyPress}
                   placeholder="Enter your MeTTa knowledge query (e.g., 'What are the symptoms of migraine?', 'Find relationships between diabetes and treatment')"
-                  className="w-full h-24 px-4 py-3 bg-dark-700 border border-gray-600 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:border-primary-500 resize-none"
+                  className="w-full min-h-24 max-h-48 px-4 py-3 bg-dark-700 border border-gray-600 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:border-primary-500 resize-none hide-scrollbar"
+                  style={{ overflowY: 'auto' }}
                 />
               </div>
               

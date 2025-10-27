@@ -148,7 +148,8 @@ class DirectAgentService {
     try {
       console.log(`Sending message via backend to agent ${agentId}`)
       
-      const response = await fetch('/api/generate-response', {
+      const backendUrl = process.env.NEXT_PUBLIC_API_URL || 'https://asi-backend-new.onrender.com'
+      const response = await fetch(`${backendUrl}/api/generate-response`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -178,7 +179,8 @@ export default DirectAgentService
 // Export convenience functions for backward compatibility
 export const sendMessageToAgent = async (agentId: string, message: string) => {
   try {
-    const response = await fetch('/api/generate-response', {
+    const backendUrl = process.env.NEXT_PUBLIC_API_URL || 'https://asi-backend-new.onrender.com'
+    const response = await fetch(`${backendUrl}/api/generate-response`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -203,7 +205,8 @@ export const sendMessageToAgent = async (agentId: string, message: string) => {
 
 export const discoverAgents = async () => {
   try {
-      const response = await fetch('/api/discover-agents')
+      const backendUrl = process.env.NEXT_PUBLIC_API_URL || 'https://asi-backend-new.onrender.com'
+      const response = await fetch(`${backendUrl}/api/discover-agents`)
     if (!response.ok) {
       throw new Error(`Failed to discover agents: ${response.status}`)
     }

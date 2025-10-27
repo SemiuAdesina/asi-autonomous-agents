@@ -103,7 +103,8 @@ const SmartContractAuditor = () => {
     try {
       setIsValidating(true)
       
-      const response = await fetch('/api/audit/validate', {
+      const backendUrl = process.env.NEXT_PUBLIC_API_URL || 'https://asi-backend-new.onrender.com'
+      const response = await fetch(`${backendUrl}/api/audit/validate`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

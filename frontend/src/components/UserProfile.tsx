@@ -70,7 +70,8 @@ const UserProfile: React.FC<UserProfileProps> = ({ onClose }) => {
 
     setIsPasswordLoading(true)
     try {
-      const response = await fetch('/api/auth/update-password', {
+      const backendUrl = process.env.NEXT_PUBLIC_API_URL || 'https://asi-backend-new.onrender.com'
+      const response = await fetch(`${backendUrl}/api/auth/update-password`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -109,7 +110,8 @@ const UserProfile: React.FC<UserProfileProps> = ({ onClose }) => {
 
     setIsDeletingAccount(true)
     try {
-      const response = await fetch('/api/auth/delete-account', {
+      const backendUrl = process.env.NEXT_PUBLIC_API_URL || 'https://asi-backend-new.onrender.com'
+      const response = await fetch(`${backendUrl}/api/auth/delete-account`, {
         method: 'DELETE',
         headers: {
           'Authorization': `Bearer ${localStorage.getItem('token')}`

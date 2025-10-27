@@ -233,7 +233,6 @@ def search_knowledge():
         return jsonify({'error': f'Search failed: {str(e)}'}), 500
         
 @knowledge_bp.route('/concepts', methods=['GET'])
-@jwt_required()
 def get_concepts():
     """Get all concepts from the knowledge graph"""
     try:

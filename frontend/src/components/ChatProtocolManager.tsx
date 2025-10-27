@@ -33,6 +33,8 @@ const ChatProtocolManager = () => {
   const [isLoading, setIsLoading] = useState(false)
   const [showCreateSession, setShowCreateSession] = useState(false)
   const [newSessionAgent, setNewSessionAgent] = useState('')
+  const [currentMessage, setCurrentMessage] = useState('')
+  const [isSending, setIsSending] = useState(false)
 
   // Available agents for Chat Protocol
   const availableAgents = [
@@ -101,6 +103,26 @@ const ChatProtocolManager = () => {
       if (!agent) {
         toast.error('Invalid agent selected')
         return
+      }
+
+      // Map agent IDs to their Render URLs
+      const agentUrls: { [key: string]: string } = {
+        'healthcare-agent': 'https://asi-healthcare-agent1.onrender.com',
+        'financial-agent': 'https://asi-financial-agent2.onrender.com',
+        'logistics-agent': 'https://asi-logistics-agent3.onrender.com'
+      }
+
+      // Test connection to agent
+      const agentUrl = agentUrls[agent.id]
+      if (!agentUrl) {
+        toast.error(`Agent ${agent.name} not configured`)
+        return
+      }
+
+      // Send initial message to agent to verify connection
+      const testResponse = await fetch(`${agentUrl}/health`)
+      if (!testResponse.ok) {
+        throw new Error('Agent not available')
       }
 
       const newSession: ChatSession = {
@@ -281,6 +303,87 @@ const ChatProtocolManager = () => {
     }
   }
 
+  const sendMessageToAgent = async (message: string) => {
+    if (!activeSession || !message.trim()) return
+
+    try {
+      setIsSending(true)
+      
+      // Map agent IDs to their Render URLs
+      const agentUrls: { [key: string]: string } = {
+        'healthcare-agent': 'https://asi-healthcare-agent1.onrender.com',
+        'financial-agent': 'https://asi-financial-agent2.onrender.com',
+        'logistics-agent': 'https://asi-logistics-agent3.onrender.com'
+      }
+
+      const agentUrl = agentUrls[activeSession.agentId]
+      if (!agentUrl) {
+        toast.error('Agent not configured')
+        return
+      }
+
+      // Add user message
+      const userMessage: ChatMessage = {
+        id: `user-${Date.now()}`,
+        sessionId: activeSession.id,
+        sender: 'user',
+        content: message,
+        timestamp: new Date().toISOString(),
+        protocol: 'chat'
+      }
+
+      setMessages(prev => [...prev, userMessage])
+      setCurrentMessage('')
+      
+      // Update session activity
+      setSessions(prev => prev.map(s => 
+        s.id === activeSession.id 
+          ? { ...s, lastActivity: new Date().toISOString(), messageCount: s.messageCount + 1 }
+          : s
+      ))
+
+      // Send to agent
+      const response = await fetch(`${agentUrl}/chat`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ message })
+      })
+
+      if (!response.ok) {
+        throw new Error('Agent response failed')
+      }
+
+      const data = await response.json()
+      
+      // Add agent response
+      const agentMessage: ChatMessage = {
+        id: `agent-${Date.now()}`,
+        sessionId: activeSession.id,
+        sender: 'agent',
+        content: data.response || data.message || 'No response',
+        timestamp: new Date().toISOString(),
+        protocol: 'chat'
+      }
+
+      setMessages(prev => [...prev, agentMessage])
+      
+      // Update session activity and message count
+      setSessions(prev => prev.map(s => 
+        s.id === activeSession.id 
+          ? { ...s, lastActivity: new Date().toISOString(), messageCount: s.messageCount + 1 }
+          : s
+      ))
+
+    } catch (error) {
+      console.error('Failed to send message:', error)
+      toast.error('Failed to send message to agent')
+    } finally {
+      setIsSending(false)
+    }
+  }
+
   const getStatusIcon = (status: string) => {
     switch (status) {
       case 'active':
@@ -310,27 +413,27 @@ const ChatProtocolManager = () => {
   return (
     <div className="space-y-6">
       {/* Header */}
-      <div className="flex items-center justify-between">
+      <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
         <div className="flex items-center space-x-3">
           <div className="w-10 h-10 bg-gradient-to-r from-blue-500 to-blue-600 rounded-lg flex items-center justify-center">
             <FontAwesomeIcon icon={faComments} className="w-5 h-5 text-white" />
           </div>
           <div>
-            <h3 className="text-xl font-semibold text-white">Chat Protocol Manager</h3>
-            <p className="text-gray-400 text-sm">Manage Chat Protocol sessions with agents</p>
+            <h3 className="text-lg sm:text-xl font-semibold text-white">Chat Protocol Manager</h3>
+            <p className="text-gray-400 text-xs sm:text-sm">Manage Chat Protocol sessions with agents</p>
           </div>
         </div>
         
         <button
           onClick={() => setShowCreateSession(true)}
-          className="bg-primary-600 hover:bg-primary-700 text-white px-4 py-2 rounded-lg transition-colors flex items-center space-x-2"
+          className="bg-primary-600 hover:bg-primary-700 text-white px-4 py-2 rounded-lg transition-colors flex items-center space-x-2 w-full sm:w-auto"
         >
           <FontAwesomeIcon icon={faPlus} className="w-4 h-4" />
-          <span>New Session</span>
+          <span className="text-sm sm:text-base">New Session</span>
         </button>
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 sm:gap-6">
         {/* Sessions List */}
         <div className="lg:col-span-1">
           <div className="bg-dark-800 rounded-lg border border-gray-700">
@@ -372,7 +475,6 @@ const ChatProtocolManager = () => {
                     <div className="text-xs text-gray-400 space-y-1">
                       <div className="flex items-center justify-between">
                         <span>{session.messageCount} messages</span>
-                        <span>{session.protocol.toUpperCase()}</span>
                       </div>
                       <div className="flex items-center space-x-1">
                         <FontAwesomeIcon icon={faClock} className="w-3 h-3" />
@@ -449,10 +551,7 @@ const ChatProtocolManager = () => {
                       <div className="flex items-center space-x-2">
                         {getStatusIcon(activeSession.status)}
                         <span className="text-sm text-gray-400">
-                          {activeSession.protocol.toUpperCase()} Protocol
-                        </span>
-                        <span className="text-sm text-gray-400">
-                          • {activeSession.messageCount} messages
+                          {activeSession.messageCount} messages
                         </span>
                       </div>
                     </div>
@@ -498,9 +597,6 @@ const ChatProtocolManager = () => {
                           <span className="text-xs opacity-75">
                             {message.sender === 'user' ? 'You' : activeSession.agentName}
                           </span>
-                          <span className="text-xs opacity-50">
-                            {message.protocol.toUpperCase()}
-                          </span>
                         </div>
                         <p className="text-sm">{message.content}</p>
                         <p className="text-xs opacity-75 mt-1">
@@ -509,6 +605,43 @@ const ChatProtocolManager = () => {
                       </div>
                     </div>
                   ))}
+                </div>
+              </div>
+
+              {/* Message Input */}
+              <div className="p-3 sm:p-4 border-t border-gray-700">
+                <div className="flex items-center space-x-2 sm:space-x-3">
+                  <input
+                    type="text"
+                    value={currentMessage}
+                    onChange={(e) => setCurrentMessage(e.target.value)}
+                    onKeyPress={(e) => {
+                      if (e.key === 'Enter' && !e.shiftKey) {
+                        e.preventDefault()
+                        if (currentMessage.trim() && !isSending) {
+                          sendMessageToAgent(currentMessage)
+                        }
+                      }
+                    }}
+                    placeholder="Type your message..."
+                    className="flex-1 bg-dark-700 border border-gray-600 rounded-lg px-3 sm:px-4 py-2 text-sm sm:text-base text-white placeholder-gray-400 focus:border-primary-500 focus:outline-none"
+                    disabled={isSending}
+                  />
+                  <button
+                    onClick={() => {
+                      if (currentMessage.trim() && !isSending) {
+                        sendMessageToAgent(currentMessage)
+                      }
+                    }}
+                    disabled={!currentMessage.trim() || isSending}
+                    className="px-4 sm:px-6 py-2 bg-primary-600 hover:bg-primary-700 text-white rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center space-x-2 text-sm sm:text-base"
+                  >
+                    {isSending ? (
+                      <FontAwesomeIcon icon={faSpinner} className="w-4 h-4 animate-spin" />
+                    ) : (
+                      <span>Send</span>
+                    )}
+                  </button>
                 </div>
               </div>
 

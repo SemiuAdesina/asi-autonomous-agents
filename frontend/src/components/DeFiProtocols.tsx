@@ -175,7 +175,8 @@ const DeFiProtocols = () => {
     try {
       // Fetch real DeFi data from external APIs (DeFiPulse, Uniswap, Compound)
       console.log('Fetching real DeFi data from external APIs...')
-      const response = await fetch('/api/defi-data')
+      const backendUrl = process.env.NEXT_PUBLIC_API_URL || 'https://asi-backend-new.onrender.com'
+      const response = await fetch(`${backendUrl}/api/defi-data`)
       if (response.ok) {
         const realData = await response.json()
         console.log('Real DeFi API Data received:', realData)

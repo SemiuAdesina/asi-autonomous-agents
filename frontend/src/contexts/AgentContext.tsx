@@ -99,7 +99,8 @@ export const AgentProvider = ({ children }: AgentProviderProps) => {
     try {
       // Try to fetch fresh agent data from the backend API
       console.log('🌐 Fetching agents from backend API...')
-      const response = await fetch('/api/coordinator/agents', {
+      const backendUrl = process.env.NEXT_PUBLIC_API_URL || 'https://asi-backend-new.onrender.com'
+      const response = await fetch(`${backendUrl}/api/coordinator/agents`, {
         method: 'GET',
         headers: {
           'Content-Type': 'application/json',
@@ -170,7 +171,8 @@ export const AgentProvider = ({ children }: AgentProviderProps) => {
 
     try {
       // Use OpenAI API or similar service for intelligent responses
-      const response = await fetch('/api/generate-response', {
+      const backendUrl = process.env.NEXT_PUBLIC_API_URL || 'https://asi-backend-new.onrender.com'
+      const response = await fetch(`${backendUrl}/api/generate-response`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
