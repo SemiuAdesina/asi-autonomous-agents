@@ -17,21 +17,29 @@ export default function App({ Component, pageProps }: AppProps) {
               <div className="min-h-screen bg-dark-900">
                 <Component {...pageProps} />
                 <ToastContainer 
-                  position="top-right"
+                  position="top-center"
                   autoClose={5000}
                   hideProgressBar={false}
-                  newestOnTop={false}
+                  newestOnTop={true}
                   closeOnClick
                   rtl={false}
                   pauseOnFocusLoss
                   draggable
                   pauseOnHover
                   theme="dark"
+                  limit={3}
                   toastStyle={{
                     background: 'rgba(30, 41, 59, 0.95)',
                     color: '#fff',
                     border: '1px solid rgba(124, 58, 237, 0.3)',
                     backdropFilter: 'blur(10px)',
+                    width: '90%',
+                    maxWidth: '400px',
+                    fontSize: '14px',
+                  }}
+                  toastClassName="toast-mobile-friendly"
+                  progressStyle={{
+                    background: 'rgba(124, 58, 237, 0.5)',
                   }}
                 />
               </div>
