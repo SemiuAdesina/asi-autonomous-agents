@@ -214,22 +214,27 @@ const PortfolioPage = ({ onClose }: PortfolioPageProps) => {
             </div>
             
             <nav className="space-y-1 sm:space-y-2">
-              {tabs.map((tab) => (
-                <button
-                  key={tab.id}
-                  onClick={() => setActiveTab(tab.id)}
-                  className={`w-full flex items-center space-x-2 sm:space-x-3 px-2 sm:px-3 py-1.5 sm:py-2 rounded-lg text-left transition-colors duration-200 group ${
-                    activeTab === tab.id
-                      ? 'bg-primary-500/20 text-primary-400 border border-primary-500/30'
-                      : 'text-gray-300 hover:text-white hover:bg-dark-700/50'
-                  }`}
-                  title={isSidebarCollapsed ? tab.name : ''}
-                >
-                  <FontAwesomeIcon icon={tab.icon} className="w-3 h-3 sm:w-4 sm:h-4 flex-shrink-0" />
-                  {!isSidebarCollapsed && (
-                    <span className="text-xs sm:text-sm font-medium truncate">{tab.name}</span>
+              {tabs.map((tab, index) => (
+                <React.Fragment key={tab.id}>
+                  {/* Add a faint divider line between items */}
+                  {index > 0 && (
+                    <div className="border-t border-gray-700/30 my-1"></div>
                   )}
-                </button>
+                  <button
+                    onClick={() => setActiveTab(tab.id)}
+                    className={`w-full flex items-center space-x-2 sm:space-x-3 px-2 sm:px-3 py-1.5 sm:py-2 rounded-lg text-left transition-colors duration-200 group ${
+                      activeTab === tab.id
+                        ? 'bg-primary-500/20 text-primary-400 border border-primary-500/30'
+                        : 'text-gray-300 hover:text-white hover:bg-dark-700/50'
+                    }`}
+                    title={isSidebarCollapsed ? tab.name : ''}
+                  >
+                    <FontAwesomeIcon icon={tab.icon} className="w-3 h-3 sm:w-4 sm:h-4 flex-shrink-0" />
+                    {!isSidebarCollapsed && (
+                      <span className="text-xs sm:text-sm font-medium truncate">{tab.name}</span>
+                    )}
+                  </button>
+                </React.Fragment>
               ))}
             </nav>
           </div>
@@ -252,22 +257,27 @@ const PortfolioPage = ({ onClose }: PortfolioPageProps) => {
                   </button>
                 </div>
                 <nav className="space-y-1 sm:space-y-2">
-                  {tabs.map((tab) => (
-                    <button
-                      key={tab.id}
-                      onClick={() => {
-                        setActiveTab(tab.id)
-                        setIsMobileMenuOpen(false)
-                      }}
-                      className={`w-full flex items-center space-x-2 sm:space-x-3 px-2 sm:px-3 py-2 sm:py-2.5 rounded-lg text-left transition-colors duration-200 ${
-                        activeTab === tab.id
-                          ? 'bg-primary-500/20 text-primary-400 border border-primary-500/30'
-                          : 'text-gray-300 hover:text-white hover:bg-dark-700/50'
-                      }`}
-                    >
-                      <FontAwesomeIcon icon={tab.icon} className="w-3 h-3 sm:w-4 sm:h-4 flex-shrink-0" />
-                      <span className="text-xs sm:text-sm font-medium truncate">{tab.name}</span>
-                    </button>
+                  {tabs.map((tab, index) => (
+                    <React.Fragment key={tab.id}>
+                      {/* Add a faint divider line between items */}
+                      {index > 0 && (
+                        <div className="border-t border-gray-700/30 my-1"></div>
+                      )}
+                      <button
+                        onClick={() => {
+                          setActiveTab(tab.id)
+                          setIsMobileMenuOpen(false)
+                        }}
+                        className={`w-full flex items-center space-x-2 sm:space-x-3 px-2 sm:px-3 py-2 sm:py-2.5 rounded-lg text-left transition-colors duration-200 ${
+                          activeTab === tab.id
+                            ? 'bg-primary-500/20 text-primary-400 border border-primary-500/30'
+                            : 'text-gray-300 hover:text-white hover:bg-dark-700/50'
+                        }`}
+                      >
+                        <FontAwesomeIcon icon={tab.icon} className="w-3 h-3 sm:w-4 sm:h-4 flex-shrink-0" />
+                        <span className="text-xs sm:text-sm font-medium truncate">{tab.name}</span>
+                      </button>
+                    </React.Fragment>
                   ))}
                 </nav>
               </div>
