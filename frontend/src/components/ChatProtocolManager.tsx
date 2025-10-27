@@ -575,7 +575,7 @@ const ChatProtocolManager = () => {
               </div>
 
               {/* Messages */}
-              <div className="flex-1 p-4 overflow-y-auto max-h-96">
+              <div className="flex-1 p-3 sm:p-4 overflow-y-auto max-h-96 hide-scrollbar">
                 <div className="space-y-4">
                   {messages.map((message) => (
                     <div
@@ -646,8 +646,8 @@ const ChatProtocolManager = () => {
               </div>
 
               {/* Session Info */}
-              <div className="p-4 border-t border-gray-700 bg-dark-700/50">
-                <div className="grid grid-cols-2 gap-4 text-sm">
+              <div className="p-3 sm:p-4 border-t border-gray-700 bg-dark-700/50">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4 text-sm">
                   <div>
                     <span className="text-gray-400">Started:</span>
                     <span className="text-white ml-2">
