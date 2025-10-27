@@ -133,7 +133,8 @@ const MultiAgentDashboard = () => {
           <button
             onClick={refreshCommunications}
             disabled={isLoading}
-            className={`px-3 py-2 bg-dark-700 hover:bg-dark-600 text-gray-300 hover:text-white rounded-lg transition-colors duration-200 flex items-center space-x-2 ${isLoading ? 'opacity-50 cursor-not-allowed' : ''}`}
+            className={`px-3 sm:px-3 py-2 bg-dark-700 hover:bg-dark-600 text-gray-300 hover:text-white rounded-lg transition-colors duration-200 flex items-center space-x-2 ${isLoading ? 'opacity-50 cursor-not-allowed' : ''}`}
+            title="Refresh communications"
           >
             <FontAwesomeIcon 
               icon={faRefresh} 
@@ -145,11 +146,12 @@ const MultiAgentDashboard = () => {
           <button
             onClick={isMonitoring ? stopMonitoring : startMonitoring}
             disabled={isLoading}
-            className={`px-4 py-2 rounded-lg transition-colors duration-200 flex items-center space-x-2 ${
+            className={`px-3 sm:px-4 py-2 rounded-lg transition-colors duration-200 flex items-center space-x-2 ${
               isMonitoring 
                 ? 'bg-red-600 hover:bg-red-700 text-white' 
                 : 'bg-primary-600 hover:bg-primary-700 text-white'
             } ${isLoading ? 'opacity-50 cursor-not-allowed' : ''}`}
+            title={isMonitoring ? 'Stop monitoring' : 'Start monitoring'}
           >
             <FontAwesomeIcon 
               icon={isLoading ? faRefresh : (isMonitoring ? faPause : faPlay)} 
