@@ -41,15 +41,28 @@ const MeTTaQueryInterface = () => {
   }, [])
 
   const loadConcepts = async () => {
+    setIsLoading(true)
     try {
       const backendUrl = process.env.NEXT_PUBLIC_API_URL || 'https://asi-backend-new.onrender.com'
       const response = await fetch(`${backendUrl}/api/knowledge/concepts?domain=metta`)
       if (response.ok) {
         const data = await response.json()
         setConcepts(data.concepts || [])
+        
+        // If we get concepts, show success message
+        if (data.concepts && data.concepts.length > 0) {
+          toast.success(`Loaded ${data.concepts.length} concepts`)
+        } else {
+          toast.info('No concepts found in MeTTa knowledge base')
+        }
+      } else {
+        toast.error('Failed to load concepts')
       }
     } catch (error) {
       console.error('Failed to load concepts:', error)
+      toast.error('Failed to load concepts from MeTTa')
+    } finally {
+      setIsLoading(false)
     }
   }
 
@@ -178,10 +191,56 @@ const MeTTaQueryInterface = () => {
       )
     }
 
+    // Try to extract meaningful information from raw_result
+    if (result.raw_result && result.raw_result.message) {
+      return (
+        <div className="space-y-3">
+          <div className="text-green-400 text-sm font-medium">
+            <FontAwesomeIcon icon={faCheckCircle} className="mr-2" />
+            {result.raw_result.message}
+          </div>
+          
+          {/* Show raw_result.results if available */}
+          {result.raw_result.results && result.raw_result.results.length > 0 && (
+            <div className="space-y-2">
+              {result.raw_result.results.map((item: any, index: number) => (
+                <div key={index} className="bg-dark-700/50 p-3 rounded-lg border border-gray-600/30">
+                  <div className="font-medium text-white">{item.entity || 'Knowledge Entity'}</div>
+                  {item.relation && item.target && (
+                    <div className="text-gray-300 text-sm mt-1">
+                      {item.relation}: {item.target}
+                    </div>
+                  )}
+                  {item.confidence && (
+                    <div className="text-xs text-gray-400 mt-2">
+                      Confidence: {(item.confidence * 100).toFixed(1)}%
+                    </div>
+                  )}
+                  {item.metadata && (
+                    <div className="text-xs text-gray-400 mt-1">
+                      Source: {item.metadata.source || 'Unknown'}
+                    </div>
+                  )}
+                </div>
+              ))}
+            </div>
+          )}
+          
+          {/* Fallback to raw data if no structure found */}
+          {(!result.raw_result.results || result.raw_result.results.length === 0) && (
+            <div className="text-gray-400 text-sm mt-2 italic">
+              No structured results available
+            </div>
+          )}
+        </div>
+      )
+    }
+
+    // Final fallback
     return (
       <div className="text-gray-300 text-sm">
         <FontAwesomeIcon icon={faInfoCircle} className="mr-2" />
-        {JSON.stringify(result, null, 2)}
+        Query executed successfully
       </div>
     )
   }
@@ -301,36 +360,48 @@ const MeTTaQueryInterface = () => {
             <h4 className="text-lg font-semibold text-white">Knowledge Concepts</h4>
             <button
               onClick={loadConcepts}
-              className="px-4 py-2 bg-primary-600 hover:bg-primary-700 text-white rounded-lg transition-colors"
+              disabled={isLoading}
+              className="px-4 py-2 bg-primary-600 hover:bg-primary-700 text-white rounded-lg transition-colors flex items-center space-x-2 disabled:opacity-50 disabled:cursor-not-allowed"
             >
-              <FontAwesomeIcon icon={faSpinner} className="w-4 h-4 mr-2" />
-              Refresh
+              <FontAwesomeIcon 
+                icon={faSpinner} 
+                className={`w-4 h-4 ${isLoading ? 'animate-spin' : ''}`} 
+              />
+              <span>{isLoading ? 'Loading...' : 'Refresh'}</span>
             </button>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-            {concepts.map((concept) => (
-              <div
-                key={concept.id}
-                onClick={() => setSelectedConcept(concept)}
-                className="bg-dark-800 p-4 rounded-lg border border-gray-700 hover:border-primary-500/50 cursor-pointer transition-colors"
-              >
-                <div className="flex items-center justify-between mb-2">
-                  <h5 className="font-semibold text-white truncate">{concept.name}</h5>
-                  <span className="text-xs text-gray-400">{concept.domain}</span>
+          {concepts.length === 0 ? (
+            <div className="text-center py-12">
+              <FontAwesomeIcon icon={faDatabase} className="w-16 h-16 text-gray-600 mb-4" />
+              <p className="text-gray-400 mb-2">No concepts found in MeTTa knowledge base</p>
+              <p className="text-sm text-gray-500">Concepts will appear here when you execute MeTTa queries</p>
+            </div>
+          ) : (
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+              {concepts.map((concept) => (
+                <div
+                  key={concept.id}
+                  onClick={() => setSelectedConcept(concept)}
+                  className="bg-dark-800 p-4 rounded-lg border border-gray-700 hover:border-primary-500/50 cursor-pointer transition-colors"
+                >
+                  <div className="flex items-center justify-between mb-2">
+                    <h5 className="font-semibold text-white truncate">{concept.name}</h5>
+                    <span className="text-xs text-gray-400">{concept.domain}</span>
+                  </div>
+                  <p className="text-gray-300 text-sm mb-2 line-clamp-2">{concept.definition}</p>
+                  <div className="flex items-center justify-between">
+                    <span className="text-xs text-gray-400">
+                      Confidence: {(concept.confidence * 100).toFixed(1)}%
+                    </span>
+                    <span className="text-xs text-gray-400">
+                      {concept.relationships.length} relations
+                    </span>
+                  </div>
                 </div>
-                <p className="text-gray-300 text-sm mb-2 line-clamp-2">{concept.definition}</p>
-                <div className="flex items-center justify-between">
-                  <span className="text-xs text-gray-400">
-                    Confidence: {(concept.confidence * 100).toFixed(1)}%
-                  </span>
-                  <span className="text-xs text-gray-400">
-                    {concept.relationships.length} relations
-                  </span>
-                </div>
-              </div>
-            ))}
-          </div>
+              ))}
+            </div>
+          )}
         </motion.div>
       )}
 
