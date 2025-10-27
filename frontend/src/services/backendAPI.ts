@@ -124,6 +124,10 @@ class BackendAPIService {
       const response = await fetch(url, config)
       
       if (!response.ok) {
+        // If 502 Bad Gateway, log for debugging
+        if (response.status === 502) {
+          console.error(`Backend gateway error for ${endpoint} - backend might be restarting`)
+        }
         const error = await response.json().catch(() => ({ error: 'Network error' }))
         throw new Error(error.error || `HTTP ${response.status}`)
       }
@@ -131,6 +135,11 @@ class BackendAPIService {
       return response.json()
     } catch (error) {
       console.error(`API request failed for ${endpoint}:`, error)
+      // Return empty array or object instead of throwing for graceful degradation
+      if (endpoint.includes('communications')) {
+        console.log('Returning empty communications array due to error')
+        return [] as unknown as T
+      }
       throw error
     }
   }
