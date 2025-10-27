@@ -99,7 +99,8 @@ const PortfolioDashboard = () => {
       if (isConnected && account) {
         // Fetch real wallet data
         console.log('Fetching real wallet data for:', account)
-        const response = await fetch(`/api/portfolio-data?wallet=${account}`)
+        const backendUrl = process.env.NEXT_PUBLIC_API_URL || 'https://asi-backend-new.onrender.com'
+        const response = await fetch(`${backendUrl}/api/portfolio-data?wallet=${account}`)
         if (response.ok) {
           const realData = await response.json()
           setPortfolioData(realData)
