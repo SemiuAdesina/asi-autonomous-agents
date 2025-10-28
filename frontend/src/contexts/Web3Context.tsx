@@ -191,36 +191,55 @@ export const Web3Provider = ({ children }: Web3ProviderProps) => {
          (window.ethereum as any).providers?.some((provider: any) => provider.isMetaMask === true))
       
       if (!isMetaMaskInstalled) {
-        // For mobile devices, use deep linking
+        // For mobile devices, try multiple approaches to open the wallet
         if (isMobile) {
-          toast.info('Opening MetaMask...')
-          // Create a Universal Link for MetaMask
-          const deepLink = `https://metamask.app.link/wc?uri=${encodeURIComponent(window.location.href)}`
+          const isIOS = /iPhone|iPad|iPod/i.test(navigator.userAgent)
           
-          // Try to open the MetaMask app
-          window.location.href = deepLink
+          toast.info('Opening MetaMask... Please approve the connection in the app.')
           
-          // Fallback: Open in browser with instructions
-          setTimeout(() => {
-            if (confirm('MetaMask app not found. Would you like to download it?')) {
-              const isIOS = /iPhone|iPad|iPod/i.test(navigator.userAgent)
-              if (isIOS) {
+          // For mobile, try to open MetaMask app using different methods
+          const dappUrl = window.location.href
+          
+          if (isIOS) {
+            // iOS - Try multiple deep link formats
+            const tryOpenApp = () => {
+              // Method 1: Universal Link
+              window.location.href = `https://metamask.app.link/dapp?url=${encodeURIComponent(dappUrl)}`
+              
+              // Method 2: Custom scheme (fallback after delay)
+              setTimeout(() => {
+                window.location.href = `metamask://dapp?url=${encodeURIComponent(dappUrl)}`
+              }, 1000)
+            }
+            
+            tryOpenApp()
+            
+            // Show download link if app doesn't open
+            setTimeout(() => {
+              if (confirm('MetaMask didn\'t open. Would you like to download it?')) {
                 window.open('https://apps.apple.com/app/metamask/id1438144202', '_blank')
-              } else {
+              }
+            }, 2000)
+          } else {
+            // Android
+            window.location.href = `metamask://wc?uri=${encodeURIComponent(dappUrl)}`
+            
+            setTimeout(() => {
+              if (confirm('MetaMask didn\'t open. Would you like to download it?')) {
                 window.open('https://play.google.com/store/apps/details?id=io.metamask', '_blank')
               }
-            }
-          }, 1500)
+            }, 2000)
+          }
+          
           return
         }
         
         toast.error('MetaMask is not installed. Please install MetaMask to continue.')
-        // Open MetaMask installation page
         window.open('https://metamask.io/download/', '_blank')
         return
       }
 
-      // Request account access
+      // Desktop: Request account access
       const accounts = await window.ethereum.request({
         method: 'eth_requestAccounts'
       })
@@ -368,26 +387,40 @@ export const Web3Provider = ({ children }: Web3ProviderProps) => {
         (window as any).solana.isPhantom === true
       
       if (!isPhantomInstalled) {
-        // For mobile devices, use deep linking
+        // For mobile devices, try multiple deep link approaches
         if (isMobile) {
-          toast.info('Opening Phantom...')
-          // Use Phantom's Universal Link
-          const deepLink = `https://phantom.app/ul/v1/connect?app_url=${encodeURIComponent(window.location.origin)}&redirect_link=${encodeURIComponent(window.location.href)}`
+          const isIOS = /iPhone|iPad|iPod/i.test(navigator.userAgent)
           
-          // Try to open the Phantom app
-          window.location.href = deepLink
+          toast.info('Opening Phantom... Please approve the connection in the app.')
           
-          // Fallback: Open in browser with instructions
-          setTimeout(() => {
-            if (confirm('Phantom wallet not found. Would you like to download it?')) {
-              const isIOS = /iPhone|iPad|iPod/i.test(navigator.userAgent)
-              if (isIOS) {
+          const dappUrl = window.location.href
+          
+          if (isIOS) {
+            // iOS - Try multiple deep link formats
+            window.location.href = `https://phantom.app/ul/v1/connect?app_url=${encodeURIComponent(window.location.origin)}&redirect_link=${encodeURIComponent(dappUrl)}`
+            
+            // Fallback after delay
+            setTimeout(() => {
+              window.location.href = `phantom://www.phantom.app/connect?app_url=${encodeURIComponent(window.location.origin)}&redirect_link=${encodeURIComponent(dappUrl)}`
+            }, 1000)
+            
+            // Show download link if app doesn't open
+            setTimeout(() => {
+              if (confirm('Phantom didn\'t open. Would you like to download it?')) {
                 window.open('https://apps.apple.com/app/phantom-solana-wallet/1598432977', '_blank')
-              } else {
+              }
+            }, 2000)
+          } else {
+            // Android
+            window.location.href = `phantom://www.phantom.app/connect?app_url=${encodeURIComponent(window.location.origin)}&redirect_link=${encodeURIComponent(dappUrl)}`
+            
+            setTimeout(() => {
+              if (confirm('Phantom didn\'t open. Would you like to download it?')) {
                 window.open('https://play.google.com/store/apps/details?id=app.phantom', '_blank')
               }
-            }
-          }, 1500)
+            }, 2000)
+          }
+          
           return
         }
         
@@ -396,7 +429,7 @@ export const Web3Provider = ({ children }: Web3ProviderProps) => {
         return
       }
 
-      // Request account access
+      // Desktop: Request account access
       const response = await (window as any).solana.connect()
       
       if (response.publicKey) {
