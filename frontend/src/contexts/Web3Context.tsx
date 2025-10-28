@@ -57,8 +57,22 @@ export const Web3Provider = ({ children }: Web3ProviderProps) => {
           
           // Check if we were attempting a connection and prompt user to try again
           const pendingConnection = localStorage.getItem('wallet_pending_connection')
-          if (pendingConnection) {
-            toast.info('Please tap "Connect Wallet" again to complete the connection.')
+          const pendingType = localStorage.getItem('wallet_pending_type')
+          
+          if (pendingConnection && pendingType) {
+            toast.success('Welcome back! Connect using your wallet\'s in-app browser.', {
+              autoClose: 8000,
+              hideProgressBar: false
+            })
+            
+            // For mobile, show instructions to use wallet's in-app browser
+            const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent)
+            if (isMobile && pendingConnection === 'metamask') {
+              toast.info('Tip: Open this site in MetaMask\'s in-app browser for the best experience.', {
+                autoClose: 10000
+              })
+            }
+            
             localStorage.removeItem('wallet_pending_connection')
             localStorage.removeItem('wallet_pending_type')
             localStorage.removeItem('wallet_pending_url')
