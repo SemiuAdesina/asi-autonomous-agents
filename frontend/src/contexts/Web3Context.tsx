@@ -46,6 +46,25 @@ export const Web3Provider = ({ children }: Web3ProviderProps) => {
   useEffect(() => {
     const loadWalletState = async () => {
       try {
+        // Check for URL parameters (returning from mobile wallet)
+        const urlParams = new URLSearchParams(window.location.search)
+        const returningFromWallet = urlParams.has('wallet') || urlParams.has('account')
+        
+        if (returningFromWallet) {
+          console.log('Returning from mobile wallet, checking connection...')
+          // Clean up URL parameters
+          window.history.replaceState({}, document.title, window.location.pathname)
+          
+          // Check if we were attempting a connection and prompt user to try again
+          const pendingConnection = localStorage.getItem('wallet_pending_connection')
+          if (pendingConnection) {
+            toast.info('Please tap "Connect Wallet" again to complete the connection.')
+            localStorage.removeItem('wallet_pending_connection')
+            localStorage.removeItem('wallet_pending_type')
+            localStorage.removeItem('wallet_pending_url')
+          }
+        }
+        
         const savedAccount = localStorage.getItem('wallet_account')
         const savedChainId = localStorage.getItem('wallet_chainId')
         const savedBalance = localStorage.getItem('wallet_balance')
@@ -195,7 +214,12 @@ export const Web3Provider = ({ children }: Web3ProviderProps) => {
         if (isMobile) {
           const isIOS = /iPhone|iPad|iPod/i.test(navigator.userAgent)
           
-          toast.info('Opening MetaMask... Please approve the connection in the app.')
+          toast.info('Opening MetaMask... Please approve the connection in the app, then return to this page.')
+          
+          // Store in localStorage that we're attempting a connection
+          localStorage.setItem('wallet_pending_connection', 'metamask')
+          localStorage.setItem('wallet_pending_type', 'ethereum')
+          localStorage.setItem('wallet_pending_url', window.location.href)
           
           // For mobile, try to open MetaMask app using different methods
           const dappUrl = window.location.href
