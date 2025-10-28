@@ -174,7 +174,7 @@ const PortfolioPage = ({ onClose }: PortfolioPageProps) => {
 
       <div className="flex h-[calc(100vh-120px)] lg:h-[calc(100vh-80px)]">
         {/* Desktop Sidebar */}
-        <div className={`hidden lg:block bg-dark-800 border-r border-gray-700 overflow-y-auto transition-all duration-300 ${
+        <div className={`hidden lg:block bg-dark-800 border-r border-gray-700 overflow-y-auto hide-scrollbar transition-all duration-300 ${
           isSidebarCollapsed ? 'w-16' : 'w-64'
         }`}>
           <div className="p-4">
@@ -243,7 +243,7 @@ const PortfolioPage = ({ onClose }: PortfolioPageProps) => {
         {/* Mobile Sidebar Overlay */}
         {isMobileMenuOpen && (
           <div className="lg:hidden fixed inset-0 z-40 bg-black/50" onClick={() => setIsMobileMenuOpen(false)}>
-            <div className="fixed left-0 top-0 h-full w-64 sm:w-72 bg-dark-800 border-r border-gray-700 overflow-y-auto">
+            <div className="fixed left-0 top-0 h-full w-64 sm:w-72 bg-dark-800 border-r border-gray-700 overflow-y-auto hide-scrollbar">
               <div className="p-3 sm:p-4">
                 <div className="flex items-center justify-between mb-4">
                   <h3 className="text-xs sm:text-sm font-semibold text-gray-400 uppercase tracking-wider">
@@ -286,7 +286,7 @@ const PortfolioPage = ({ onClose }: PortfolioPageProps) => {
         )}
 
         {/* Main Content */}
-        <div className="flex-1 overflow-y-auto bg-dark-900">
+        <div className="flex-1 overflow-y-auto hide-scrollbar bg-dark-900">
           <div className="p-4 sm:p-6">
             <motion.div
               key={activeTab}
