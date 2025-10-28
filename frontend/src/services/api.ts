@@ -19,17 +19,32 @@ class APIService {
       headers.Authorization = `Bearer ${this.token}`
     }
 
-    const response = await fetch(url, {
-      ...options,
-      headers,
-    })
+    // Add timeout to prevent hanging requests
+    const controller = new AbortController()
+    const timeoutId = setTimeout(() => controller.abort(), 10000) // 10 second timeout
 
-    if (!response.ok) {
-      const error = await response.json().catch(() => ({ error: 'Network error' }))
-      throw new Error(error.error || `HTTP ${response.status}`)
+    try {
+      const response = await fetch(url, {
+        ...options,
+        headers,
+        signal: controller.signal,
+      })
+
+      clearTimeout(timeoutId)
+
+      if (!response.ok) {
+        const error = await response.json().catch(() => ({ error: 'Network error' }))
+        throw new Error(error.error || `HTTP ${response.status}`)
+      }
+
+      return response.json()
+    } catch (error: any) {
+      clearTimeout(timeoutId)
+      if (error.name === 'AbortError') {
+        throw new Error('Request timed out. Please check your connection and try again.')
+      }
+      throw error
     }
-
-    return response.json()
   }
 
   // Multi-signature wallet endpoints

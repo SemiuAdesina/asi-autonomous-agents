@@ -49,25 +49,41 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
         if (token) {
           setToken(token)
           apiService.setToken(token)
-          // Verify token with backend
-          const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5001'}/api/auth/profile`, {
-            headers: {
-              'Authorization': `Bearer ${token}`,
-              'Content-Type': 'application/json'
+          // Verify token with backend (with timeout)
+          const controller = new AbortController()
+          const timeoutId = setTimeout(() => controller.abort(), 5000) // 5 second timeout
+          
+          try {
+            const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5001'}/api/auth/profile`, {
+              headers: {
+                'Authorization': `Bearer ${token}`,
+                'Content-Type': 'application/json'
+              },
+              signal: controller.signal
+            })
+            
+            clearTimeout(timeoutId)
+          
+            console.log('🔐 Profile response status:', response.status)
+            
+            if (response.ok) {
+              const userData = await response.json()
+              console.log('🔐 Profile data received:', userData)
+              setUser(userData.user)
+            } else {
+              console.log('🔐 Token invalid, removing from localStorage')
+              // Token is invalid, remove it
+              localStorage.removeItem('auth_token')
+              setToken(null)
             }
-          })
-          
-          console.log('🔐 Profile response status:', response.status)
-          
-          if (response.ok) {
-            const userData = await response.json()
-            console.log('🔐 Profile data received:', userData)
-            setUser(userData.user)
-          } else {
-            console.log('🔐 Token invalid, removing from localStorage')
-            // Token is invalid, remove it
-            localStorage.removeItem('auth_token')
-            setToken(null)
+          } catch (fetchError: any) {
+            clearTimeout(timeoutId)
+            if (fetchError.name === 'AbortError') {
+              console.log('🔐 Profile request timed out')
+            } else {
+              console.error('🔐 Error fetching profile:', fetchError)
+            }
+            // Don't remove token on timeout - keep it for offline use
           }
         }
       } catch (error) {
