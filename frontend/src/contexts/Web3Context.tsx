@@ -182,12 +182,38 @@ export const Web3Provider = ({ children }: Web3ProviderProps) => {
 
   const connectMetaMask = async () => {
     try {
+      // Detect mobile device
+      const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent)
+      
       // Check if MetaMask is installed with robust detection
       const isMetaMaskInstalled = typeof window.ethereum !== 'undefined' && 
         (window.ethereum.isMetaMask === true || 
          (window.ethereum as any).providers?.some((provider: any) => provider.isMetaMask === true))
       
       if (!isMetaMaskInstalled) {
+        // For mobile devices, use deep linking
+        if (isMobile) {
+          toast.info('Opening MetaMask...')
+          // Create a Universal Link for MetaMask
+          const deepLink = `https://metamask.app.link/wc?uri=${encodeURIComponent(window.location.href)}`
+          
+          // Try to open the MetaMask app
+          window.location.href = deepLink
+          
+          // Fallback: Open in browser with instructions
+          setTimeout(() => {
+            if (confirm('MetaMask app not found. Would you like to download it?')) {
+              const isIOS = /iPhone|iPad|iPod/i.test(navigator.userAgent)
+              if (isIOS) {
+                window.open('https://apps.apple.com/app/metamask/id1438144202', '_blank')
+              } else {
+                window.open('https://play.google.com/store/apps/details?id=io.metamask', '_blank')
+              }
+            }
+          }, 1500)
+          return
+        }
+        
         toast.error('MetaMask is not installed. Please install MetaMask to continue.')
         // Open MetaMask installation page
         window.open('https://metamask.io/download/', '_blank')
@@ -216,9 +242,35 @@ export const Web3Provider = ({ children }: Web3ProviderProps) => {
 
   const connectCoinbaseWallet = async () => {
     try {
+      // Detect mobile device
+      const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent)
+      
       // Check if Coinbase Wallet is installed
       if (typeof (window as any).coinbaseWalletExtension === 'undefined') {
+        if (isMobile) {
+          toast.info('Opening Coinbase Wallet...')
+          // Use Coinbase Wallet Universal Link
+          const deepLink = `cbwallet://wc`
+          
+          // Try to open the Coinbase Wallet app
+          window.location.href = deepLink
+          
+          // Fallback: Open in browser with instructions
+          setTimeout(() => {
+            if (confirm('Coinbase Wallet app not found. Would you like to download it?')) {
+              const isIOS = /iPhone|iPad|iPod/i.test(navigator.userAgent)
+              if (isIOS) {
+                window.open('https://apps.apple.com/app/coinbase-wallet/id1278383455', '_blank')
+              } else {
+                window.open('https://play.google.com/store/apps/details?id=org.toshi', '_blank')
+              }
+            }
+          }, 1500)
+          return
+        }
+        
         toast.error('Coinbase Wallet is not installed. Please install Coinbase Wallet to continue.')
+        window.open('https://www.coinbase.com/wallet', '_blank')
         return
       }
 
@@ -254,9 +306,35 @@ export const Web3Provider = ({ children }: Web3ProviderProps) => {
 
   const connectRainbow = async () => {
     try {
+      // Detect mobile device
+      const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent)
+      
       // Check if Rainbow is installed
       if (typeof (window as any).rainbow === 'undefined') {
+        if (isMobile) {
+          toast.info('Opening Rainbow Wallet...')
+          // Use Rainbow's Universal Link
+          const deepLink = `rainbow://wc`
+          
+          // Try to open the Rainbow app
+          window.location.href = deepLink
+          
+          // Fallback: Open in browser with instructions
+          setTimeout(() => {
+            if (confirm('Rainbow Wallet app not found. Would you like to download it?')) {
+              const isIOS = /iPhone|iPad|iPod/i.test(navigator.userAgent)
+              if (isIOS) {
+                window.open('https://apps.apple.com/app/rainbow-wallet/id1473514152', '_blank')
+              } else {
+                window.open('https://play.google.com/store/apps/details?id=me.rainbow', '_blank')
+              }
+            }
+          }, 1500)
+          return
+        }
+        
         toast.error('Rainbow Wallet is not installed. Please install Rainbow Wallet to continue.')
+        window.open('https://rainbow.me/', '_blank')
         return
       }
 
@@ -282,11 +360,37 @@ export const Web3Provider = ({ children }: Web3ProviderProps) => {
 
   const connectPhantomWallet = async () => {
     try {
+      // Detect mobile device
+      const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent)
+      
       // Check if Phantom is installed
       const isPhantomInstalled = typeof (window as any).solana !== 'undefined' && 
         (window as any).solana.isPhantom === true
       
       if (!isPhantomInstalled) {
+        // For mobile devices, use deep linking
+        if (isMobile) {
+          toast.info('Opening Phantom...')
+          // Use Phantom's Universal Link
+          const deepLink = `https://phantom.app/ul/v1/connect?app_url=${encodeURIComponent(window.location.origin)}&redirect_link=${encodeURIComponent(window.location.href)}`
+          
+          // Try to open the Phantom app
+          window.location.href = deepLink
+          
+          // Fallback: Open in browser with instructions
+          setTimeout(() => {
+            if (confirm('Phantom wallet not found. Would you like to download it?')) {
+              const isIOS = /iPhone|iPad|iPod/i.test(navigator.userAgent)
+              if (isIOS) {
+                window.open('https://apps.apple.com/app/phantom-solana-wallet/1598432977', '_blank')
+              } else {
+                window.open('https://play.google.com/store/apps/details?id=app.phantom', '_blank')
+              }
+            }
+          }, 1500)
+          return
+        }
+        
         toast.error('Phantom wallet is not installed. Please install Phantom to continue.')
         window.open('https://phantom.app/', '_blank')
         return
